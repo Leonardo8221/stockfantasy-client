@@ -63,15 +63,16 @@ img {
 }
 
 .text-center {
-  text-align: center;
+  text-align: center !important;
 }
 
 .text-primary {
-  color: var(--primary-color);
+  color: var(--primary-color) !important;
+  font-weight: 600 !important;
 }
 
 .text-dark {
-  color: var(--dark-color);
+  color: var(--dark-color) !important;
 }
 
 /* Padding */
@@ -314,6 +315,7 @@ button {
 
 .navbar ul {
   display: flex;
+  margin: 0;
 }
 
 .navbar a {

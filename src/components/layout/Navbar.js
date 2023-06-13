@@ -9,8 +9,14 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
     <ul>
       <li>
         <Link to="/home">
-          <i className="fas fa-user" />{' '}
+          <i className="fas fa-home" />{' '}
           <span className="hide-sm">Home</span>
+        </Link>
+      </li>
+      <li>
+        <Link to="/profile">
+          <i className="fas fa-user" />{' '}
+          <span className="hide-sm">My Profile</span>
         </Link>
       </li>
       <li>
@@ -35,11 +41,11 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
 
   return (
     <nav className="navbar bg-dark">
-      <h1>
+      <h3 style={{ margin:0 }}>
         <Link to="/">
           <i className="fas fa-chart-bar" /> Stock Fantasy
         </Link>
-      </h1>
+      </h3>
       <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>
     </nav>
   );

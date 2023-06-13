@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentProfile, deleteAccount } from '../../actions/profile';
-
+import { useNavigate } from 'react-router-dom';
 import './style.css';
 
 const Home = ({
@@ -15,105 +15,111 @@ const Home = ({
   useEffect(() => {
     getCurrentProfile();
   }, [getCurrentProfile]);
+  const navige = useNavigate();
 
   const handleGameRoom = (room) => {
-    alert('Game');
-  }
+    navige('/gameRoom');
+  };
   return (
     <section className="container">
       <div className="home-header">
-        <h1 className="large text-primary">Home</h1>
-        <Link to="/create-game" className="btn btn-primary my-1">
-          Create Game
-        </Link>
+        <h1 className="text-primary">Home</h1>
+        <div>
+          <Link to="/create-game" className="btn btn-success my-1">
+            Join Room
+          </Link>
+          <Link to="/create-game" className="btn btn-primary my-1">
+            Create Game
+          </Link>
+        </div>
       </div>
 
       <div className="home-main">
+        <h3>The List of Rooms in progress</h3>
         <div className="game-rooms">
-          <div className='game-room' onClick={handleGameRoom}>
+          <div className="game-room" onClick={handleGameRoom}>
             <h1>Game1</h1>
-            <div className='players'>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
+            <div className="players">
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
             </div>
-            
-            <div className='playing-badge playing'>Playing..</div>
-          </div>
-          <div className='game-room' onClick={handleGameRoom}>
-            <h1>Game2</h1>
-            <div className='players'>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-            </div>
-            <div className='playing-badge finished'>Finished</div>
 
+            <div className="playing-badge playing">Playing..</div>
           </div>
-          <div className='game-room' onClick={handleGameRoom}>
+          <div className="game-room" onClick={handleGameRoom}>
+            <h1>Game2</h1>
+            <div className="players">
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+            </div>
+            <div className="playing-badge finished">Finished</div>
+          </div>
+          <div className="game-room" onClick={handleGameRoom}>
             <h1>Game3</h1>
-            <div className='players'>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
+            <div className="players">
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
             </div>
           </div>
-          <div className='game-room' onClick={handleGameRoom}>
+          <div className="game-room" onClick={handleGameRoom}>
             <h1>Game2</h1>
-            <div className='players'>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
+            <div className="players">
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
             </div>
           </div>
-          <div className='game-room'>
+          <div className="game-room">
             <h1>Game2</h1>
-            <div className='players'>
-              <i className='fa fa-user'></i>
+            <div className="players">
+              <i className="fa fa-user"></i>
             </div>
           </div>
-          <div className='game-room' onClick={handleGameRoom}>
+          <div className="game-room" onClick={handleGameRoom}>
             <h1>Game2</h1>
-            <div className='players'>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
+            <div className="players">
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
             </div>
           </div>
-          <div className='game-room' onClick={handleGameRoom}>
+          <div className="game-room" onClick={handleGameRoom}>
             <h1>Game2</h1>
-            <div className='players'>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
+            <div className="players">
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
             </div>
           </div>
-          <div className='game-room' onClick={handleGameRoom}>
+          <div className="game-room" onClick={handleGameRoom}>
             <h1>Game2</h1>
-            <div className='players'>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
+            <div className="players">
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
             </div>
           </div>
-          <div className='game-room' onClick={handleGameRoom}>
+          <div className="game-room" onClick={handleGameRoom}>
             <h1>Game2</h1>
-            <div className='players'>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
+            <div className="players">
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
             </div>
           </div>
-          <div className='game-room' onClick={handleGameRoom}>
+          <div className="game-room" onClick={handleGameRoom}>
             <h1>Game2</h1>
-            <div className='players'>
-              <i className='fa fa-user player'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
-              <i className='fa fa-user'></i>
+            <div className="players">
+              <i className="fa fa-user player"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
+              <i className="fa fa-user"></i>
             </div>
           </div>
         </div>

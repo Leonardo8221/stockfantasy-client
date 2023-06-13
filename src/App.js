@@ -21,6 +21,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
+import 'bootstrap/dist/css/bootstrap.css';
 
 import './App.css';
 import GameRoom from './components/Game/GameRoom';
@@ -63,7 +64,7 @@ const App = () => {
             element={<PrivateRoute component={Home} />}
           />
           <Route
-            path="gameroom"
+            path="gameRoom"
             element={<PrivateRoute component={GameRoom} />}
           />
           <Route
