@@ -129,3 +129,30 @@
 .stock-list-item:hover {
     background-color: #ddd;
 }
+
+.players-in-progress .player {
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.players-in-progress .player .player-info {
+    text-align: center;
+    background-color: #2d5dd6c6;
+    height: 100% !important;
+    color: #fff;
+    font-weight: 600;
+}
+
+.players-in-progress .player .player-stocks {
+    height: 100%;
+}
+.players-in-progress .player .player-point {
+    background-color: #0d6493c5;
+    height: 100%;
+    color: #fff;
+    text-align: center;
+    font-size: 42px;
+}

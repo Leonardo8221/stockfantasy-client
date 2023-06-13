@@ -70,6 +70,10 @@ img {
   color: var(--primary-color) !important;
   font-weight: 600 !important;
 }
+.text-danger {
+  color: var(--danger-color) !important;
+  font-weight: 600 !important;
+}
 
 .text-dark {
   color: var(--dark-color) !important;

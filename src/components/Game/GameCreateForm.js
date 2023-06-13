@@ -1,17 +1,26 @@
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const GameCreateForm = () => {
   const [roomType, setRoomType] = useState('random');
+
+  const navigate = useNavigate();
 
   const handleRoomTypeChange = (event) => {
     setRoomType(event.target.value);
   };
 
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    navigate('/game-setup')
+
+  }
+
   return (
     <section className="container">
       <h1>Game Create</h1>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="roomName">
           <Form.Label>Room Name</Form.Label>
           <Form.Control
@@ -49,7 +58,7 @@ const GameCreateForm = () => {
             <Form.Label>Invite Users</Form.Label> <br />
             <Form.Control
               type="text"
-              placeholder="Serach user name"
+              placeholder="Serach User"
               className="mb-2"
             />
             <Form.Check
