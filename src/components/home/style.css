@@ -2,26 +2,65 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    margin-bottom: 25px;
 }
 
-.home-main {
-
-}
+.home-main {}
 
 .game-rooms {
     display: flex;
-    
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 .game-rooms .game-room {
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 5px solid rgba(13, 130, 255, 0.807);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    width: 20%;
+    padding: 50px 20px;
+    width: 24%;
+    gap: 10px;
+    position: relative;
+}
+
+.game-rooms .game-room .players {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    font-size: 30px;
+    color: #48deff;
+}
+
+.game-rooms .game-room .playing-badge{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-sizing: border-box;
+    padding: 5px 15px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    height: 30px;
+    border-radius: 15px;
+    font-size: 12px;
+}
+
+.playing {
+    background: #5c69f9;
+}
+
+.finished {
+    background-color: #f95c5c;
+}
+
+.disabled {
+    background-color: #ddd;
 }
 
 .game-rooms .game-room:hover {

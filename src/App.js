@@ -23,6 +23,8 @@ import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
 import './App.css';
+import GameRoom from './components/Game/GameRoom';
+import GameCreateForm from './components/Game/GameCreateForm';
 
 const App = () => {
   useEffect(() => {
@@ -59,6 +61,14 @@ const App = () => {
           <Route
             path="home"
             element={<PrivateRoute component={Home} />}
+          />
+          <Route
+            path="gameroom"
+            element={<PrivateRoute component={GameRoom} />}
+          />
+          <Route
+            path="create-game"
+            element={<PrivateRoute component={GameCreateForm} />}
           />
           <Route
             path="create-profile"

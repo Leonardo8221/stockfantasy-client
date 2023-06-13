@@ -16,6 +16,9 @@ const Home = ({
     getCurrentProfile();
   }, [getCurrentProfile]);
 
+  const handleGameRoom = (room) => {
+    alert('Game');
+  }
   return (
     <section className="container">
       <div className="home-header">
@@ -27,10 +30,39 @@ const Home = ({
 
       <div className="home-main">
         <div className="game-rooms">
-          <div className='game-room'>
+          <div className='game-room' onClick={handleGameRoom}>
             <h1>Game1</h1>
             <div className='players'>
               <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+            </div>
+            
+            <div className='playing-badge playing'>Playing..</div>
+          </div>
+          <div className='game-room' onClick={handleGameRoom}>
+            <h1>Game2</h1>
+            <div className='players'>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+            </div>
+            <div className='playing-badge finished'>Finished</div>
+
+          </div>
+          <div className='game-room' onClick={handleGameRoom}>
+            <h1>Game3</h1>
+            <div className='players'>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+            </div>
+          </div>
+          <div className='game-room' onClick={handleGameRoom}>
+            <h1>Game2</h1>
+            <div className='players'>
               <i className='fa fa-user'></i>
               <i className='fa fa-user'></i>
               <i className='fa fa-user'></i>
@@ -40,6 +72,45 @@ const Home = ({
             <h1>Game2</h1>
             <div className='players'>
               <i className='fa fa-user'></i>
+            </div>
+          </div>
+          <div className='game-room' onClick={handleGameRoom}>
+            <h1>Game2</h1>
+            <div className='players'>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+            </div>
+          </div>
+          <div className='game-room' onClick={handleGameRoom}>
+            <h1>Game2</h1>
+            <div className='players'>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+            </div>
+          </div>
+          <div className='game-room' onClick={handleGameRoom}>
+            <h1>Game2</h1>
+            <div className='players'>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+            </div>
+          </div>
+          <div className='game-room' onClick={handleGameRoom}>
+            <h1>Game2</h1>
+            <div className='players'>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+            </div>
+          </div>
+          <div className='game-room' onClick={handleGameRoom}>
+            <h1>Game2</h1>
+            <div className='players'>
+              <i className='fa fa-user player'></i>
               <i className='fa fa-user'></i>
               <i className='fa fa-user'></i>
               <i className='fa fa-user'></i>
