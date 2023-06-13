@@ -28,6 +28,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import './App.css';
 import GameSetup from './components/Game/GameSetup';
+import Setting from './components/setting';
 
 const App = () => {
   useEffect(() => {
@@ -80,6 +81,10 @@ const App = () => {
           <Route
             path="game-setup"
             element={<PrivateRoute component={GameSetup} />}
+          />
+          <Route
+            path="user-setting"
+            element={<PrivateRoute component={Setting} />}
           />
           <Route
             path="create-profile"
