@@ -13,6 +13,7 @@ import Profiles from './components/profiles/Profiles';
 import Profile from './components/profile/Profile';
 import NotFound from './components/layout/NotFound';
 import PrivateRoute from './components/routing/PrivateRoute';
+import Home from './components/home';
 import { LOGOUT } from './actions/types';
 
 // Redux

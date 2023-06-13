@@ -9,7 +9,7 @@ const NavbarD = ({ auth: { isAuthenticated }, logout }) => {
   const authLinks = (
     <Navbar.Collapse className="justify-content-end" id="basic-navbar-nav">
       <Nav className="me-auto">
-        <Nav.Link href="/dashboard">Home</Nav.Link>
+        <Nav.Link href="/home">Home</Nav.Link>
         <NavDropdown title="Dropdown" id="basic-nav-dropdown">
           <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
           <NavDropdown.Divider />

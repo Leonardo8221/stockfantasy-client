@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentProfile, deleteAccount } from '../../actions/profile';
 
+import './style.css';
+
 const Home = ({
   getCurrentProfile,
   deleteAccount,
@@ -16,12 +18,35 @@ const Home = ({
 
   return (
     <section className="container">
-      <h1 className="large text-primary">Home</h1>
+      <div className="home-header">
+        <h1 className="large text-primary">Home</h1>
+        <Link to="/create-game" className="btn btn-primary my-1">
+          Create Game
+        </Link>
+      </div>
 
-      <p>You have not yet setup a profile, please add some info</p>
-      <Link to="/create-profile" className="btn btn-primary my-1">
-        Create Profile
-      </Link>
+      <div className="home-main">
+        <div className="game-rooms">
+          <div className='game-room'>
+            <h1>Game1</h1>
+            <div className='players'>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+            </div>
+          </div>
+          <div className='game-room'>
+            <h1>Game2</h1>
+            <div className='players'>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+              <i className='fa fa-user'></i>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };
