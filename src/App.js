@@ -14,6 +14,9 @@ import Profile from './components/profile/Profile';
 import NotFound from './components/layout/NotFound';
 import PrivateRoute from './components/routing/PrivateRoute';
 import Home from './components/home';
+import GameRoom from './components/Game/GameRoom';
+import GameCreateForm from './components/Game/GameCreateForm';
+import JoinGameRoom from './components/Game/JoinGameRoom';
 import { LOGOUT } from './actions/types';
 
 // Redux
@@ -24,8 +27,7 @@ import setAuthToken from './utils/setAuthToken';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import './App.css';
-import GameRoom from './components/Game/GameRoom';
-import GameCreateForm from './components/Game/GameCreateForm';
+import GameSetup from './components/Game/GameSetup';
 
 const App = () => {
   useEffect(() => {
@@ -70,6 +72,14 @@ const App = () => {
           <Route
             path="create-game"
             element={<PrivateRoute component={GameCreateForm} />}
+          />
+          <Route
+            path="join-room"
+            element={<PrivateRoute component={JoinGameRoom} />}
+          />
+          <Route
+            path="game-setup"
+            element={<PrivateRoute component={GameSetup} />}
           />
           <Route
             path="create-profile"
