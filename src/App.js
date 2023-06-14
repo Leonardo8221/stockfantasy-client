@@ -29,6 +29,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
 import GameSetup from './components/Game/GameSetup';
 import Setting from './components/setting';
+import GameResult from './components/Game/GameResult';
 
 const App = () => {
   useEffect(() => {
@@ -62,10 +63,7 @@ const App = () => {
             path="dashboard"
             element={<PrivateRoute component={Dashboard} />}
           />
-          <Route
-            path="home"
-            element={<PrivateRoute component={Home} />}
-          />
+          <Route path="home" element={<PrivateRoute component={Home} />} />
           <Route
             path="gameRoom"
             element={<PrivateRoute component={GameRoom} />}
@@ -81,6 +79,10 @@ const App = () => {
           <Route
             path="game-setup"
             element={<PrivateRoute component={GameSetup} />}
+          />
+          <Route
+            path="game-result"
+            element={<PrivateRoute component={GameResult} />}
           />
           <Route
             path="user-setting"

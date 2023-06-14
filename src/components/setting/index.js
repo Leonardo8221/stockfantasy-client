@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentProfile, deleteAccount } from '../../actions/profile';
+import { Form, Button } from 'react-bootstrap';
 
 const Setting = ({
   getCurrentProfile,
@@ -17,14 +18,31 @@ const Setting = ({
   return (
     <section className="container">
       <h1 className="large text-primary">User Settings</h1>
-      <p className="lead">
-        <i className="fas fa-user" /> Welcome {user && user.name}
-      </p>
-
-      <p>You have not yet setup a profile, please add some info</p>
-      <Link to="/create-profile" className="btn btn-primary my-1">
-        Create Profile
-      </Link>
+      <div className="d-flex gap-3">
+        <div className='col-3'>
+          <p>Username: {user && user.name}</p>
+          <p> Email: {user && user.email}</p>
+        </div>
+        <div className='col-9'>
+          <Form>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Label>Current Password</Form.Label>
+              <Form.Control type="password" placeholder="Current Password" />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>New Password</Form.Label>
+              <Form.Control type="password" placeholder="New password" />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Confirm Password</Form.Label>
+              <Form.Control type="password" placeholder="Confirm password" />
+            </Form.Group>
+            <Button className="btn btn-primary my-1" type="submit">
+              Update Password
+            </Button>
+          </Form>
+        </div>
+      </div>
     </section>
   );
 };

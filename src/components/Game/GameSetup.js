@@ -31,7 +31,7 @@ const handleDoneBtn = (e) => {
             <i className="fa fa-user"></i>
             <span>User3</span>
           </div>
-          <div className="caption">Building Portfolio...</div>
+          <div className="caption ready">Ready</div>
         </div>
       </div>
 
