@@ -5,12 +5,7 @@ import Landing from './components/layout/Landing';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import Alert from './components/layout/Alert';
-import Dashboard from './components/dashboard/Dashboard';
-import ProfileForm from './components/profile-forms/ProfileForm';
-import AddExperience from './components/profile-forms/AddExperience';
-import AddEducation from './components/profile-forms/AddEducation';
-import Profiles from './components/profiles/Profiles';
-import Profile from './components/profile/Profile';
+import Dashboard from './components/dashboard/Dashboard'
 import NotFound from './components/layout/NotFound';
 import PrivateRoute from './components/routing/PrivateRoute';
 import Home from './components/home';
@@ -57,8 +52,6 @@ const App = () => {
           <Route path="/" element={<Landing />} />
           <Route path="register" element={<Register />} />
           <Route path="login" element={<Login />} />
-          <Route path="profiles" element={<Profiles />} />
-          <Route path="profile/:id" element={<Profile />} />
           <Route
             path="dashboard"
             element={<PrivateRoute component={Dashboard} />}
@@ -87,22 +80,6 @@ const App = () => {
           <Route
             path="user-setting"
             element={<PrivateRoute component={Setting} />}
-          />
-          <Route
-            path="create-profile"
-            element={<PrivateRoute component={ProfileForm} />}
-          />
-          <Route
-            path="edit-profile"
-            element={<PrivateRoute component={ProfileForm} />}
-          />
-          <Route
-            path="add-experience"
-            element={<PrivateRoute component={AddExperience} />}
-          />
-          <Route
-            path="add-education"
-            element={<PrivateRoute component={AddEducation} />}
           />
           <Route path="/*" element={<NotFound />} />
         </Routes>
