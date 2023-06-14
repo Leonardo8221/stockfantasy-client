@@ -7,7 +7,9 @@ import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
-  LOGOUT
+  LOGOUT,
+  UPDATE_PASSWORD,
+  UPDATE_PASSWORD_FAIL
 } from './types';
 
 /*
@@ -53,6 +55,27 @@ export const register = (formData) => async (dispatch) => {
     dispatch({
       type: REGISTER_FAIL
     });
+  }
+};
+
+//Update User Password
+export const updatePassword = (formData) => async (dispatch) => {
+  try {
+    console.log(formData)
+    const res = await api.put('/users/update-password', formData);
+
+    dispatch({
+      type: UPDATE_PASSWORD,
+      payload: res.data
+    });
+    dispatch(setAlert('Updated Password Successfully', 'success'));
+  } catch (err) {
+    console.log("ERRR", err)
+    dispatch({
+      type: UPDATE_PASSWORD_FAIL,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+    dispatch(setAlert('Unknown Error', 'danger'));
   }
 };
 

@@ -1,41 +1,67 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getCurrentProfile, deleteAccount } from '../../actions/profile';
+import { updatePassword } from '../../actions/auth';
 import { Form, Button } from 'react-bootstrap';
+import { setAlert } from '../../actions/alert';
 
-const Setting = ({
-  getCurrentProfile,
-  deleteAccount,
-  auth: { user },
-  profile: { profile }
-}) => {
-  useEffect(() => {
-    getCurrentProfile();
-  }, [getCurrentProfile]);
+const Setting = ({ setAlert, updatePassword, auth: { user } }) => {
 
+  const [formData, setFormData] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+
+  const { oldPassword, newPassword, confirmPassword } = formData;
+
+  const onChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setAlert('Passwords do not match', 'danger');
+    } else {
+      updatePassword({ oldPassword, newPassword });
+    }
+  };
   return (
     <section className="container">
       <h1 className="large text-primary">User Settings</h1>
       <div className="d-flex gap-3">
-        <div className='col-3'>
+        <div className="col-3">
           <p>Username: {user && user.name}</p>
           <p> Email: {user && user.email}</p>
         </div>
-        <div className='col-9'>
-          <Form>
+        <div className="col-9">
+          <Form onSubmit={onSubmit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Current Password</Form.Label>
-              <Form.Control type="password" placeholder="Current Password" />
+              <Form.Control
+                type="password"
+                placeholder="Old Password"
+                name="oldPassword"
+                onChange={onChange}
+              />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>New Password</Form.Label>
-              <Form.Control type="password" placeholder="New password" />
+              <Form.Control
+                type="password"
+                placeholder="New password"
+                name="newPassword"
+                onChange={onChange}
+              />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Confirm Password</Form.Label>
-              <Form.Control type="password" placeholder="Confirm password" />
+              <Form.Control
+                type="password"
+                placeholder="Confirm password"
+                name="confirmPassword"
+                onChange={onChange}
+              />
             </Form.Group>
             <Button className="btn btn-primary my-1" type="submit">
               Update Password
@@ -48,17 +74,13 @@ const Setting = ({
 };
 
 Setting.propTypes = {
-  getCurrentProfile: PropTypes.func.isRequired,
-  deleteAccount: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  profile: PropTypes.object.isRequired
+  updatePassword: PropTypes.func.isRequired,
+  setAlert: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  auth: state.auth,
-  profile: state.profile
+  auth: state.auth
 });
 
-export default connect(mapStateToProps, { getCurrentProfile, deleteAccount })(
-  Setting
-);
+export default connect(mapStateToProps, { setAlert, updatePassword })(Setting);
