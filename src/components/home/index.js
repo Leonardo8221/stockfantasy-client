@@ -1,17 +1,16 @@
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { getCurrentProfile, deleteAccount } from '../../actions/profile';
-import { useNavigate } from 'react-router-dom';
-import './style.css';
-import { encodeBase64 } from 'bcryptjs';
+import React, { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { getCurrentProfile, deleteAccount } from "../../actions/profile";
+import { useNavigate } from "react-router-dom";
+import "./style.css";
 
 const Home = ({
   getCurrentProfile,
   deleteAccount,
   auth: { user },
-  profile: { profile }
+  profile: { profile },
 }) => {
   useEffect(() => {
     getCurrentProfile();
@@ -22,9 +21,7 @@ const Home = ({
   const roomRef = useRef();
 
   const handleViewGame = (val) => {
-    // let route = roomRef.current.getAttribute("value");
-  //  console.log("status", route);
-     navigate(val);
+    navigate(val);
   };
   return (
     <section className="container">
@@ -43,7 +40,10 @@ const Home = ({
       <div className="home-main">
         <h3>The List of Rooms in progress</h3>
         <div className="game-rooms">
-          <div className="game-room" onClick={()=>handleViewGame('/game-result')}>
+          <div
+            className="game-room"
+            onClick={() => handleViewGame("/game-result")}
+          >
             <h1>Game1</h1>
             <div className="players">
               <i className="fa fa-user"></i>
@@ -53,7 +53,10 @@ const Home = ({
             </div>
             <div className="room-badge finished">Finshed</div>
           </div>
-          <div className="game-room" onClick={()=>handleViewGame('/gameRoom')}>
+          <div
+            className="game-room"
+            onClick={() => handleViewGame("/gameRoom")}
+          >
             <h1>Game2</h1>
             <div className="players">
               <i className="fa fa-user"></i>
@@ -63,7 +66,10 @@ const Home = ({
             </div>
             <div className="room-badge playing">Playing...</div>
           </div>
-          <div className="game-room" onClick={()=>handleViewGame('/gameRoom')}>
+          <div
+            className="game-room"
+            onClick={() => handleViewGame("/gameRoom")}
+          >
             <h1>Game3</h1>
             <div className="players">
               <i className="fa fa-user"></i>
@@ -83,12 +89,12 @@ Home.propTypes = {
   getCurrentProfile: PropTypes.func.isRequired,
   deleteAccount: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  profile: PropTypes.object.isRequired
+  profile: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  profile: state.profile
+  profile: state.profile,
 });
 
 export default connect(mapStateToProps, { getCurrentProfile, deleteAccount })(

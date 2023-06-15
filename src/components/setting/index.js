@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { updatePassword } from '../../actions/auth';
-import { Form, Button } from 'react-bootstrap';
-import { setAlert } from '../../actions/alert';
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { updatePassword } from "../../actions/auth";
+import { Form, Button } from "react-bootstrap";
+import { setAlert } from "../../actions/alert";
 
 const Setting = ({ setAlert, updatePassword, auth: { user } }) => {
-
   const [formData, setFormData] = useState({
-    oldPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
   const { oldPassword, newPassword, confirmPassword } = formData;
@@ -21,9 +20,15 @@ const Setting = ({ setAlert, updatePassword, auth: { user } }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setAlert('Passwords do not match', 'danger');
+      setAlert("Passwords do not match", "danger");
     } else {
       updatePassword({ oldPassword, newPassword });
+      setFormData({
+        ...formData,
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
     }
   };
   return (
@@ -76,11 +81,11 @@ const Setting = ({ setAlert, updatePassword, auth: { user } }) => {
 Setting.propTypes = {
   updatePassword: PropTypes.func.isRequired,
   setAlert: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  auth: state.auth
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps, { setAlert, updatePassword })(Setting);
