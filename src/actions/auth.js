@@ -10,7 +10,7 @@ import {
   LOGOUT,
   UPDATE_PASSWORD,
   UPDATE_PASSWORD_FAIL
-} from './types';
+} from '../constants/userConstant';
 
 /*
   NOTE: we don't need a config object for axios as the

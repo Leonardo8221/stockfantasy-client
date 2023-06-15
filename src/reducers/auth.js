@@ -8,7 +8,7 @@ import {
   LOGOUT,
   ACCOUNT_DELETED,
   UPDATE_PASSWORD
-} from '../actions/types';
+} from '../constants/userConstant';
 
 const initialState = {
   token: localStorage.getItem('token'),

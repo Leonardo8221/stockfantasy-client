@@ -1,21 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, {useRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getCurrentProfile, deleteAccount } from "../../actions/profile";
 import { useNavigate } from "react-router-dom";
 import "./style.css";
 
-const Home = ({
-  getCurrentProfile,
-  deleteAccount,
-  auth: { user },
-  profile: { profile },
-}) => {
-  useEffect(() => {
-    getCurrentProfile();
-  }, [getCurrentProfile]);
-
+const Home = ({ auth: { user } }) => {
   const navigate = useNavigate();
 
   const roomRef = useRef();
@@ -86,17 +76,11 @@ const Home = ({
 };
 
 Home.propTypes = {
-  getCurrentProfile: PropTypes.func.isRequired,
-  deleteAccount: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  profile: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  profile: state.profile,
 });
 
-export default connect(mapStateToProps, { getCurrentProfile, deleteAccount })(
-  Home
-);
+export default connect(mapStateToProps, null)(Home);

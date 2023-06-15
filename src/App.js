@@ -1,30 +1,29 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './components/layout/Navbar';
-import Landing from './components/layout/Landing';
-import Register from './components/auth/Register';
-import Login from './components/auth/Login';
-import Alert from './components/layout/Alert';
-import Dashboard from './components/dashboard/Dashboard'
-import NotFound from './components/layout/NotFound';
-import PrivateRoute from './components/routing/PrivateRoute';
-import Home from './components/home';
-import GameRoom from './components/Game/GameRoom';
-import GameCreateForm from './components/Game/GameCreateForm';
-import JoinGameRoom from './components/Game/JoinGameRoom';
-import { LOGOUT } from './actions/types';
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Navbar from "./components/layout/Navbar";
+import Landing from "./components/layout/Landing";
+import Register from "./components/auth/Register";
+import Login from "./components/auth/Login";
+import Alert from "./components/layout/Alert";
+import NotFound from "./components/layout/NotFound";
+import PrivateRoute from "./components/routing/PrivateRoute";
+import Home from "./components/home";
+import GameRoom from "./components/Game/GameRoom";
+import GameCreateForm from "./components/Game/GameCreateForm";
+import JoinGameRoom from "./components/Game/JoinGameRoom";
+import { LOGOUT } from "./constants/userConstant";
 
 // Redux
-import { Provider } from 'react-redux';
-import store from './store';
-import { loadUser } from './actions/auth';
-import setAuthToken from './utils/setAuthToken';
-import 'bootstrap/dist/css/bootstrap.css';
+import { Provider } from "react-redux";
+import store from "./store";
+import { loadUser } from "./actions/auth";
+import setAuthToken from "./utils/setAuthToken";
+import "bootstrap/dist/css/bootstrap.css";
 
-import './App.css';
-import GameSetup from './components/Game/GameSetup';
-import Setting from './components/setting';
-import GameResult from './components/Game/GameResult';
+import "./App.css";
+import GameSetup from "./components/Game/GameSetup";
+import Setting from "./components/setting";
+import GameResult from "./components/Game/GameResult";
 
 const App = () => {
   useEffect(() => {
@@ -38,7 +37,7 @@ const App = () => {
     store.dispatch(loadUser());
 
     // log user out from all tabs if they log out in one tab
-    window.addEventListener('storage', () => {
+    window.addEventListener("storage", () => {
       if (!localStorage.token) store.dispatch({ type: LOGOUT });
     });
   }, []);
@@ -52,10 +51,6 @@ const App = () => {
           <Route path="/" element={<Landing />} />
           <Route path="register" element={<Register />} />
           <Route path="login" element={<Login />} />
-          <Route
-            path="dashboard"
-            element={<PrivateRoute component={Dashboard} />}
-          />
           <Route path="home" element={<PrivateRoute component={Home} />} />
           <Route
             path="gameRoom"
