@@ -17,12 +17,13 @@ const GameCreateForm = ({
 }) => {
   const [validated, setValidated] = useState(false);
   const navigate = useNavigate();
-  // const [isUserChecked, setIsUserChecked] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     roomType: "random",
     players: [],
   });
+  const [searchTerm, setSearchTerm] = useState('');
+
 
   //Fetch users from the server
   useEffect(() => {
@@ -56,6 +57,19 @@ const GameCreateForm = ({
       players: newArray,
     });
   };
+
+  //Handles the search event
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    users = users.filter((item) => item.name !== event.target.value);
+  };
+
+  const filteredData = users.filter((item) => {
+    return (
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   //Handles the submit
   const handleSubmit = (e) => {
@@ -120,8 +134,11 @@ const GameCreateForm = ({
             <Form.Label>Invite Users</Form.Label> <br />
             <Form.Control
               type="text"
-              placeholder="Serach User"
+              placeholder="Search User by username or email"
               className="mb-2"
+              name="searchTerm"
+              value={searchTerm}
+              onChange={handleSearchChange}
             />
             <p className="text-muted text-primary mb-2">
               {formData.players.length} user selected
@@ -147,8 +164,8 @@ const GameCreateForm = ({
                 </div>
               ))}
             </div>
-            {users.length ? (
-              users.map((user) => (
+            {filteredData.length ? (
+              filteredData.map((user) => (
                 <Form.Check
                   inline
                   type="checkbox"
