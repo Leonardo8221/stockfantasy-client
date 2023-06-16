@@ -1,12 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect, useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Toast } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { createRoom } from "../../actions/room";
 import { getAllUers } from "../../actions/user";
+import { setAlert } from "../../actions/alert";
+import { right } from "@popperjs/core";
 
 const GameCreateForm = ({
   createRoom,
@@ -16,19 +18,26 @@ const GameCreateForm = ({
   isRoomCreated,
 }) => {
   const [validated, setValidated] = useState(false);
+  const [isPlayersFull, setIsPlayersFull] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     roomType: "random",
     players: [],
   });
-  const [searchTerm, setSearchTerm] = useState('');
-
+  const [searchTerm, setSearchTerm] = useState("");
 
   //Fetch users from the server
   useEffect(() => {
     getAllUers();
   }, []);
+
+  useEffect(() => {
+    if (formData.players.length === 3) {
+      setIsPlayersFull(true);
+      setAlert("You can't invite users more than 3", "danger");
+    }
+  }, [formData.players.length]);
 
   //Handels the form values changing events
   const onChange = (e) => {
@@ -90,6 +99,16 @@ const GameCreateForm = ({
 
   return (
     <section className="container">
+      <Toast
+        onClose={() => setIsPlayersFull(false)}
+        show={isPlayersFull}
+        delay={3000}
+        autohide
+        bg="warning"
+        style={{ position: "fixed", top: "10%", right:"1%"}}
+      >
+        <Toast.Body style={{ color: "#fff", fontSize: "1.2rem"}}>You can't invite more than three users.</Toast.Body>
+      </Toast>
       <h1>Game Create</h1>
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="roomName">
@@ -140,7 +159,7 @@ const GameCreateForm = ({
               value={searchTerm}
               onChange={handleSearchChange}
             />
-            <p className="text-muted text-primary mb-2">
+            <p className="text-muted text-primary text-end mb-2">
               {formData.players.length} user selected
             </p>
             <div className="d-flex gap-3 mb-4">
@@ -185,10 +204,13 @@ const GameCreateForm = ({
                       ? true
                       : false
                   }
+                  disabled={isPlayersFull}
                 />
               ))
             ) : (
-              <p>Loading...</p>
+              <p className="text-center text-danger">
+                There are no users who has that name or email
+              </p>
             )}
           </Form.Group>
         )}
