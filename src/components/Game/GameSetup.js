@@ -1,12 +1,26 @@
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import { useNavigate } from 'react-router-dom';
 import './style.css';
-const GameSetup = () => {
+import { useEffect } from "react";
+import { formatRoom } from "../../actions/room";
+
+const GameSetup = ({
+  isRoomCreated,
+  formatRoom,
+}) => {
 
     const navigated = useNavigate()
 const handleDoneBtn = (e) => {
     e.target.disabled = true;
     navigated('/gameRoom');
 }
+
+  useEffect(() => {
+    if(isRoomCreated) {
+      formatRoom();
+    }
+  }, [isRoomCreated])
 
   return (
     <section className="container p-2">
@@ -77,4 +91,15 @@ const handleDoneBtn = (e) => {
   );
 };
 
-export default GameSetup;
+GameSetup.propTypes = {
+  isRoomCreated: PropTypes.bool,
+  formatRoom: PropTypes.func,
+};
+
+const mapStateToProps = (state) => ({
+  isRoomCreated: state.roomCreateReducer.isRoomCreated,
+});
+
+export default connect(mapStateToProps, {formatRoom})(
+  GameSetup
+);

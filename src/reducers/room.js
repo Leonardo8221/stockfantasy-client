@@ -11,13 +11,14 @@ import {
   GET_ROOM_REQUEST,
   GET_ROOM_REQUEST_ERROR,
   GET_ROOM_REQUEST_SUCCESS,
+  FORMAT_ROOM_REQUEST,
 } from "../constants/roomConstant";
 
 const initialState = {
-  room: {},
+  room: [],
+  isRoomCreated: false,
   loading: false,
   error: null,
-  isRoomCreated: false,
 };
 
 export const roomCreateReducer = (state = initialState, action) => {
@@ -25,9 +26,11 @@ export const roomCreateReducer = (state = initialState, action) => {
     case CREATE_ROOM_REQUEST:
       return { ...state, loading: true };
     case CREATE_ROOM_REQUEST_SUCCESS:
-      return { ...state, loading: false, room: action.payload, isRoomCreated: true};
+      return { ...state, loading: false, room: [...state.room, action.payload], isRoomCreated: true};
     case CREATE_ROOM_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
+    case FORMAT_ROOM_REQUEST:
+      return {...state, isRoomCreated: false};
     default:
       return state;
   }

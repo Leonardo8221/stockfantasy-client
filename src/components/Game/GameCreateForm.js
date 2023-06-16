@@ -7,20 +7,12 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { createRoom } from "../../actions/room";
 import { getAllUers } from "../../actions/user";
-import { setAlert } from "../../actions/alert";
-import { right } from "@popperjs/core";
 
-const GameCreateForm = ({
-  createRoom,
-  getAllUers,
-  room,
-  users,
-  isRoomCreated,
-}) => {
+const GameCreateForm = ({ createRoom, getAllUers, room, users, isRoomCreated }) => {
   const [validated, setValidated] = useState(false);
   const [isPlayersFull, setIsPlayersFull] = useState(false);
   const [isToastShow, setIsToastShow] = useState(false);
-  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     roomType: "random",
@@ -28,6 +20,7 @@ const GameCreateForm = ({
   });
   const [searchTerm, setSearchTerm] = useState("");
 
+  const navigator = useNavigate();
   //Fetch users from the server
   useEffect(() => {
     getAllUers();
@@ -42,6 +35,12 @@ const GameCreateForm = ({
       setIsToastShow(false);
     }
   }, [formData.players.length]);
+
+  useEffect(() => {
+   if(isRoomCreated && room.length) {
+      navigator("/game-setup/" + room[room.length-1]._id)
+    }
+  }, [isRoomCreated, room]);
 
   //Handels the form values changing events
   const onChange = (e) => {
@@ -77,7 +76,8 @@ const GameCreateForm = ({
     users = users.filter((item) => item.name !== event.target.value);
   };
 
-  const filteredData = users.filter((item) => {
+  //Filtered users
+  const filteredUsers = users.filter((item) => {
     return (
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -92,14 +92,11 @@ const GameCreateForm = ({
     if (form.checkValidity() === false) {
       e.stopPropagation();
     }
-    createRoom(formData);
-    setValidated(true);
-    if (isRoomCreated) {
-      navigate("/game-setup/" + room._id);
-    }
-  };
 
-  //When the room is created successfully, move to "Game setting page"
+    createRoom(formData);
+
+    setValidated(true);
+  };
 
   return (
     <section className="container">
@@ -189,8 +186,8 @@ const GameCreateForm = ({
                 </div>
               ))}
             </div>
-            {filteredData.length ? (
-              filteredData.map((user) => (
+            {filteredUsers.length ? (
+              filteredUsers.map((user) => (
                 <Form.Check
                   inline
                   type="checkbox"
@@ -231,14 +228,14 @@ const GameCreateForm = ({
 GameCreateForm.propTypes = {
   createRoom: PropTypes.func.isRequired,
   getAllUers: PropTypes.func.isRequired,
-  room: PropTypes.object,
+  room: PropTypes.arrayOf(PropTypes.object),
   users: PropTypes.arrayOf(PropTypes.object),
   isRoomCreated: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
-  room: state.roomCreateReducer.room,
   users: state.getAllUsersReducer.users,
+  room: state.roomCreateReducer.room,
   isRoomCreated: state.roomCreateReducer.isRoomCreated,
 });
 
