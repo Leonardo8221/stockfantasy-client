@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -104,8 +105,27 @@ const GameCreateForm = ({
               className="mb-2"
             />
 
-            <p className="text-muted text-primary mb-4">{formData.players.length} user selected</p>
-
+            <p className="text-muted text-primary mb-2">
+              {formData.players.length} user selected
+            </p>
+            <div className="d-flex gap-3 selected-users mb-4">
+              {formData.players.map((user) => (
+                <div className="d-flex gap-4 slected-user" key={user}>
+                  <div className="user-info">
+                    <p className="mb-0">
+                      {users.find((obj) => obj._id === user).name}
+                    </p>
+                    <p className="text-muted mb-0">
+                      {users.find((obj) => obj._id === user).email}
+                    </p>
+                  </div>
+                  <a className="text-dark" href="#">
+                    <i className="fa fa-times"></i>
+                  </a>
+                </div>
+              ))}
+            </div>
+            
             {users.length ? (
               users.map((user) => (
                 <Form.Check
