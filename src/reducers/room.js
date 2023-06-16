@@ -2,6 +2,7 @@ import {
   CREATE_ROOM_REQUEST,
   CREATE_ROOM_REQUEST_ERROR,
   CREATE_ROOM_REQUEST_SUCCESS,
+  FORMAT_ROOM_REQUEST,
   UPDATE_ROOM_REQUEST,
   UPDATE_ROOM_REQUEST_ERROR,
   UPDATE_ROOM_REQUEST_SUCCESS,
@@ -11,7 +12,12 @@ import {
   GET_ROOM_REQUEST,
   GET_ROOM_REQUEST_ERROR,
   GET_ROOM_REQUEST_SUCCESS,
-  FORMAT_ROOM_REQUEST,
+  GET_ROOMS_REQUEST,
+  GET_ROOMS_REQUEST_ERROR,
+  GET_ROOMS_REQUEST_SUCCESS,
+  GET_ALL_ROOMS_REQUEST,
+  GET_ALL_ROOMS_REQUEST_ERROR,
+  GET_ALL_ROOMS_REQUEST_SUCCESS,
 } from "../constants/roomConstant";
 
 const initialState = {
@@ -21,16 +27,29 @@ const initialState = {
   error: null,
 };
 
-export const roomCreateReducer = (state = initialState, action) => {
+export const roomReducer = (state = initialState, action) => {
   switch (action.type) {
     case CREATE_ROOM_REQUEST:
       return { ...state, loading: true };
     case CREATE_ROOM_REQUEST_SUCCESS:
-      return { ...state, loading: false, room: [...state.room, action.payload], isRoomCreated: true};
+      return {
+        ...state,
+        loading: false,
+        room: [...state.room, action.payload],
+        isRoomCreated: true,
+      };
     case CREATE_ROOM_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
     case FORMAT_ROOM_REQUEST:
-      return {...state, isRoomCreated: false};
+      return { ...state, isRoomCreated: false };
+
+    case GET_ROOMS_REQUEST:
+      return { ...state, loading: true };
+    case GET_ROOMS_REQUEST_SUCCESS:
+      return { ...state, loading: false, room: action.payload };
+    case GET_ROOMS_REQUEST_ERROR:
+      return { ...state, loading: false, error: action.payload };
+      
     default:
       return state;
   }

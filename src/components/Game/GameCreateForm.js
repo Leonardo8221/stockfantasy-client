@@ -235,8 +235,8 @@ GameCreateForm.propTypes = {
 
 const mapStateToProps = (state) => ({
   users: state.getAllUsersReducer.users,
-  room: state.roomCreateReducer.room,
-  isRoomCreated: state.roomCreateReducer.isRoomCreated,
+  room: state.roomReducer.room,
+  isRoomCreated: state.roomReducer.isRoomCreated,
 });
 
 export default connect(mapStateToProps, { createRoom, getAllUers })(

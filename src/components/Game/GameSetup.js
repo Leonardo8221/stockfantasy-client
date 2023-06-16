@@ -97,7 +97,7 @@ GameSetup.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  isRoomCreated: state.roomCreateReducer.isRoomCreated,
+  isRoomCreated: state.roomReducer.isRoomCreated,
 });
 
 export default connect(mapStateToProps, {formatRoom})(

@@ -1,14 +1,21 @@
-import React, {useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "./style.css";
 
-const Home = ({ auth: { user } }) => {
+import { getRooms } from "../../actions/room";
+import TimeCounter from "../TimeCounter";
+
+const Home = ({ rooms, getRooms }) => {
   const navigate = useNavigate();
 
   const roomRef = useRef();
+
+  useEffect(() => {
+    getRooms(false);
+  }, []);
 
   const handleViewGame = (val) => {
     navigate(val);
@@ -29,46 +36,35 @@ const Home = ({ auth: { user } }) => {
 
       <div className="home-main">
         <h3>The List of Rooms in progress</h3>
+
         <div className="game-rooms">
-          <div
-            className="game-room"
-            onClick={() => handleViewGame("/game-result")}
-          >
-            <h1>Game1</h1>
-            <div className="players">
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-            </div>
-            <div className="room-badge finished">Finshed</div>
-          </div>
-          <div
-            className="game-room"
-            onClick={() => handleViewGame("/gameRoom")}
-          >
-            <h1>Game2</h1>
-            <div className="players">
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-            </div>
-            <div className="room-badge playing">Playing...</div>
-          </div>
-          <div
-            className="game-room"
-            onClick={() => handleViewGame("/gameRoom")}
-          >
-            <h1>Game3</h1>
-            <div className="players">
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-            </div>
-            <div className="room-badge playing">Playing...</div>
-          </div>
+          {rooms.length > 0 &&
+            rooms
+              .sort((a, b) => new Date(b.endDate) - new Date(a.endDate))
+              .map((room) => (
+                <div
+                  className="game-room"
+                  onClick={() => handleViewGame(`/game-result/${room._id}`)}
+                  key={room._id}
+                >
+                  <h3>{room.name}</h3>
+                  {room.endDate ? (
+                    <>
+                      <h6 className="text-dark">
+                        <TimeCounter />
+                      </h6>
+                      <p className="room-badge playing">Playing...</p>
+                    </>
+                  ) : (
+                    <>
+                      <h4 className="text-success">
+                        Finished <i className="fa fa-check" />
+                      </h4>
+                      <p className="room-badge finished">Finshed</p>
+                    </>
+                  )}
+                </div>
+              ))}
         </div>
       </div>
     </section>
@@ -76,11 +72,12 @@ const Home = ({ auth: { user } }) => {
 };
 
 Home.propTypes = {
-  auth: PropTypes.object.isRequired,
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  getRooms: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  auth: state.auth,
+  rooms: state.roomReducer.room,
 });
 
-export default connect(mapStateToProps, null)(Home);
+export default connect(mapStateToProps, { getRooms })(Home);
