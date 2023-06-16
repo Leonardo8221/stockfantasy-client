@@ -1,4 +1,5 @@
 import api from "../utils/api";
+import { logout } from "./auth";
 import { setAlert } from "./alert";
 import {
   CREATE_ROOM_REQUEST,
@@ -19,8 +20,22 @@ export const createRoom = (formData) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_ROOM_REQUEST });
 
-    const res = await api.post("/rooms", formData);
+    const {data} = await api.post("/rooms", formData);
 
-    dispatch({ type: CREATE_ROOM_REQUEST_SUCCESS, payload: res });
-  } catch (error) {}
+   
+    dispatch({ type: CREATE_ROOM_REQUEST_SUCCESS, payload: data });
+    dispatch(setAlert(`Created Room successfully-${data.room.name}`, "success"));
+
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Not authorized, token failed') {
+      dispatch(logout())
+    }
+    dispatch(setAlert(message, "error"));
+    dispatch({ type: CREATE_ROOM_REQUEST_ERROR, payload: message });
+
+  }
 };

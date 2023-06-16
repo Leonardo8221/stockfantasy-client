@@ -1,21 +1,30 @@
-import { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { Form, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
-const GameCreateForm = () => {
-  const [roomType, setRoomType] = useState('random');
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { createRoom } from "../../actions/room";
+
+const GameCreateForm = ({createRoom}) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    roomType: "random",
+    players: [],
+  });
+
+  const onChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // const [roomType, setRoomType] = useState('random');
 
   const navigate = useNavigate();
 
-  const handleRoomTypeChange = (event) => {
-    setRoomType(event.target.value);
-  };
-
-  const handleSubmit = (e) =>{
+  const handleSubmit = (e) => {
     e.preventDefault();
-    navigate('/game-setup')
-
-  }
+    console.log(formData);
+    // navigate('/game-setup')
+    createRoom(formData);
+  };
 
   return (
     <section className="container">
@@ -25,8 +34,9 @@ const GameCreateForm = () => {
           <Form.Label>Room Name</Form.Label>
           <Form.Control
             type="text"
-            name="roomName"
+            name="name"
             placeholder="Enter room name"
+            onChange={onChange}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="roomType">
@@ -35,25 +45,25 @@ const GameCreateForm = () => {
           <Form.Check
             inline
             type="radio"
-            id="roomType-private"
-            value="private"
-            label="Private"
-            name="roomType"
-            checked={roomType === 'private'}
-            onChange={handleRoomTypeChange}
-          />
-          <Form.Check
-            inline
-            type="radio"
             name="roomType"
             label="Random"
             value="random"
             id="roomType-random"
-            checked={roomType === 'random'}
-            onChange={handleRoomTypeChange}
+            checked={formData.roomType === "random"}
+            onChange={onChange}
+          />
+          <Form.Check
+            inline
+            type="radio"
+            id="roomType-private"
+            value="private"
+            label="Private"
+            name="roomType"
+            checked={formData.roomType === "private"}
+            onChange={onChange}
           />
         </Form.Group>
-        {roomType === 'private' && (
+        {formData.roomType === "private" && (
           <Form.Group className="mb-3">
             <Form.Label>Invite Users</Form.Label> <br />
             <Form.Control
@@ -85,4 +95,8 @@ const GameCreateForm = () => {
   );
 };
 
-export default GameCreateForm;
+GameCreateForm.propTypes = {
+  createRoom: PropTypes.func.isRequired,
+};
+
+export default connect(null, { createRoom })(GameCreateForm);
