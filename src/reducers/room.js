@@ -14,7 +14,7 @@ import {
 } from "../constants/roomConstant";
 
 const initialState = {
-  room: null,
+  room: {},
   loading: false,
   error: null,
 };

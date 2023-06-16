@@ -6,12 +6,8 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { createRoom } from "../../actions/room";
 
-const GameCreateForm = ({ createRoom, roomData }) => {
+const GameCreateForm = ({ createRoom, room }) => {
   const [validated, setValidated] = useState(false);
-
-  useEffect(() => {
-    console.log(roomData);
-  }, []);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -21,10 +17,16 @@ const GameCreateForm = ({ createRoom, roomData }) => {
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  // const [roomType, setRoomType] = useState('random');
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+
+    console.log(room)
+    if (room._id){
+    navigate("/game-setup/" + room._id);
+    }
+  }, [room])
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -32,9 +34,6 @@ const GameCreateForm = ({ createRoom, roomData }) => {
       e.stopPropagation();
     } else {
       createRoom(formData);
-      console.log("create",roomData);
-
-      if (roomData) navigate("/game-setup/" + roomData.room._id);
     }
     setValidated(true);
   };
@@ -114,11 +113,11 @@ const GameCreateForm = ({ createRoom, roomData }) => {
 
 GameCreateForm.propTypes = {
   createRoom: PropTypes.func.isRequired,
-  roomData: PropTypes.object,
+  room: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
-  roomData: state.roomCreateReducer.roomData,
+  room: state.roomCreateReducer.room,
 });
 
 export default connect(mapStateToProps, { createRoom })(GameCreateForm);
