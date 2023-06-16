@@ -19,6 +19,7 @@ const GameCreateForm = ({
 }) => {
   const [validated, setValidated] = useState(false);
   const [isPlayersFull, setIsPlayersFull] = useState(false);
+  const [isToastShow, setIsToastShow] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -34,8 +35,11 @@ const GameCreateForm = ({
 
   useEffect(() => {
     if (formData.players.length === 3) {
+      setIsToastShow(true);
       setIsPlayersFull(true);
-      setAlert("You can't invite users more than 3", "danger");
+    } else {
+      setIsPlayersFull(false);
+      setIsToastShow(false);
     }
   }, [formData.players.length]);
 
@@ -100,14 +104,16 @@ const GameCreateForm = ({
   return (
     <section className="container">
       <Toast
-        onClose={() => setIsPlayersFull(false)}
-        show={isPlayersFull}
+        onClose={() => setIsToastShow(false)}
+        show={isToastShow}
         delay={3000}
         autohide
         bg="warning"
-        style={{ position: "fixed", top: "10%", right:"1%"}}
+        style={{ position: "fixed", top: "10%", right: "1%" }}
       >
-        <Toast.Body style={{ color: "#fff", fontSize: "1.2rem"}}>You can't invite more than three users.</Toast.Body>
+        <Toast.Body style={{ color: "#fff", fontSize: "1.2rem" }}>
+          You can't invite more than three users.
+        </Toast.Body>
       </Toast>
       <h1>Game Create</h1>
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
