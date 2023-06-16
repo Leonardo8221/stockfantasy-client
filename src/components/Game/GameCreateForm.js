@@ -7,6 +7,8 @@ import PropTypes from "prop-types";
 import { createRoom } from "../../actions/room";
 
 const GameCreateForm = ({createRoom}) => {
+  const [validated, setValidated] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     roomType: "random",
@@ -20,16 +22,22 @@ const GameCreateForm = ({createRoom}) => {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+      e.preventDefault();
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+    }
+
     console.log(formData);
     // navigate('/game-setup')
     createRoom(formData);
+    setValidated(true);
   };
 
   return (
     <section className="container">
       <h1>Game Create</h1>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} noValidate validated={validated}>
         <Form.Group className="mb-3" controlId="roomName">
           <Form.Label>Room Name</Form.Label>
           <Form.Control
@@ -37,7 +45,9 @@ const GameCreateForm = ({createRoom}) => {
             name="name"
             placeholder="Enter room name"
             onChange={onChange}
+            required
           />
+          <Form.Control.Feedback type="invalid">Insert Room Name</Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="roomType">
           <Form.Label>Room Type</Form.Label>
