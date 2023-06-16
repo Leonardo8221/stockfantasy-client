@@ -65,7 +65,7 @@ const App = () => {
             element={<PrivateRoute component={JoinGameRoom} />}
           />
           <Route
-            path="game-setup"
+            path="game-setup/:id"
             element={<PrivateRoute component={GameSetup} />}
           />
           <Route

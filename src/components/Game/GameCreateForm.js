@@ -21,12 +21,10 @@ const GameCreateForm = ({ createRoom, room }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-
-    console.log(room)
-    if (room._id){
-    navigate("/game-setup/" + room._id);
+    if (room._id) {
+      navigate("/game-setup/" + room._id);
     }
-  }, [room])
+  }, [room]);
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -91,7 +89,12 @@ const GameCreateForm = ({ createRoom, room }) => {
               inline
               type="checkbox"
               id="roomType-private"
-              label="User1"
+              label={
+                <div>
+                  <div>Option 1</div>
+                  <div className="text-muted">{room.name}</div>
+                </div>
+              }
               name="roomType"
             />
             <Form.Check
