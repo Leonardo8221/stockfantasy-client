@@ -17,6 +17,7 @@ const initialState = {
   room: {},
   loading: false,
   error: null,
+  isRoomCreated: false,
 };
 
 export const roomCreateReducer = (state = initialState, action) => {
@@ -24,7 +25,7 @@ export const roomCreateReducer = (state = initialState, action) => {
     case CREATE_ROOM_REQUEST:
       return { ...state, loading: true };
     case CREATE_ROOM_REQUEST_SUCCESS:
-      return { ...state, loading: false, room: action.payload };
+      return { ...state, loading: false, room: action.payload, isRoomCreated: true};
     case CREATE_ROOM_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
     default:

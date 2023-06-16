@@ -5,9 +5,10 @@ import {
   } from "../constants/userConstant";
   
   const initialState = {
-    users: {},
+    users: [],
     loading: false,
     error: null,
+    isLoadedUsers: false,
   };
   
   export const getAllUsersReducer = (state = initialState, action) => {
@@ -15,7 +16,7 @@ import {
       case GET_ALL_USERS_REQUEST:
         return { ...state, loading: true };
       case GET_ALL_USERS_REQUEST_SUCCESS:
-        return { ...state, loading: false, users: action.payload };
+        return { ...state, loading: false, users: action.payload, isLoadedUsers: true};
       case GET_ALL_USERS_REQUEST_ERROR:
         return { ...state, loading: false, error: action.payload };
       default:

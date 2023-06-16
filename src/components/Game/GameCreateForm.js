@@ -5,9 +5,23 @@ import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { createRoom } from "../../actions/room";
+import { getAllUers } from "../../actions/user";
 
-const GameCreateForm = ({ createRoom, room }) => {
+const GameCreateForm = ({
+  createRoom,
+  getAllUers,
+  room,
+  users,
+  isRoomCreated,
+  // isLoadedUsers,
+}) => {
   const [validated, setValidated] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    getAllUers();
+  }, []);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -15,27 +29,31 @@ const GameCreateForm = ({ createRoom, room }) => {
     players: [],
   });
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const onChange = (e) => {
+    if (e.target.name === "players") {
+      let index = formData.players.indexOf(e.target.value);
+      if (index !== -1) formData.players.splice(index, 1);
+      else formData.players.push(e.target.value);
+      setFormData({
+        ...formData,
+        players: formData.players,
+      });
+    } else setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (room._id) {
-      navigate("/game-setup/" + room._id);
-    }
-  }, [room]);
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(formData);
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.stopPropagation();
-    } else {
-      createRoom(formData);
     }
+    createRoom(formData);
     setValidated(true);
   };
-
+  if (isRoomCreated) {
+    // navigate("/game-setup/" + room._id);
+  }
   return (
     <section className="container">
       <h1>Game Create</h1>
@@ -85,25 +103,30 @@ const GameCreateForm = ({ createRoom, room }) => {
               placeholder="Serach User"
               className="mb-2"
             />
-            <Form.Check
-              inline
-              type="checkbox"
-              id="roomType-private"
-              label={
-                <div>
-                  <div>Option 1</div>
-                  <div className="text-muted">{room.name}</div>
-                </div>
-              }
-              name="roomType"
-            />
-            <Form.Check
-              inline
-              type="checkbox"
-              name="roomType"
-              label="User2"
-              id="roomType-random"
-            />
+
+            <p className="text-muted text-primary mb-4">{formData.players.length} user selected</p>
+
+            {users.length ? (
+              users.map((user) => (
+                <Form.Check
+                  inline
+                  type="checkbox"
+                  id={user._id}
+                  label={
+                    <div>
+                      <div>{user.name}</div>
+                      <div className="text-muted">{user.email}</div>
+                    </div>
+                  }
+                  name="players"
+                  key={user._id}
+                  value={user._id}
+                  onChange={onChange}
+                />
+              ))
+            ) : (
+              <p>Loading...</p>
+            )}
           </Form.Group>
         )}
         <Button variant="primary" type="submit">
@@ -116,11 +139,20 @@ const GameCreateForm = ({ createRoom, room }) => {
 
 GameCreateForm.propTypes = {
   createRoom: PropTypes.func.isRequired,
+  getAllUers: PropTypes.func.isRequired,
   room: PropTypes.object,
+  users: PropTypes.arrayOf(PropTypes.object),
+  isRoomCreated: PropTypes.bool,
+  // isLoadedUsers: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
   room: state.roomCreateReducer.room,
+  users: state.getAllUsersReducer.users,
+  isRoomCreated: state.roomCreateReducer.isRoomCreated,
+  // isLoadedUsers: state.getAllUsersReducer.isLoadedUsers,
 });
 
-export default connect(mapStateToProps, { createRoom })(GameCreateForm);
+export default connect(mapStateToProps, { createRoom, getAllUers })(
+  GameCreateForm
+);
