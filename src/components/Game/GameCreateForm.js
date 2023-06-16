@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
@@ -6,8 +6,12 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { createRoom } from "../../actions/room";
 
-const GameCreateForm = ({createRoom}) => {
+const GameCreateForm = ({ createRoom, roomData }) => {
   const [validated, setValidated] = useState(false);
+
+  useEffect(() => {
+    console.log(roomData);
+  }, []);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -22,22 +26,23 @@ const GameCreateForm = ({createRoom}) => {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-      e.preventDefault();
+    e.preventDefault();
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.stopPropagation();
-    }
+    } else {
+      createRoom(formData);
+      console.log("create",roomData);
 
-    console.log(formData);
-    // navigate('/game-setup')
-    createRoom(formData);
+      if (roomData) navigate("/game-setup/" + roomData.room._id);
+    }
     setValidated(true);
   };
 
   return (
     <section className="container">
       <h1>Game Create</h1>
-      <Form onSubmit={handleSubmit} noValidate validated={validated}>
+      <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="roomName">
           <Form.Label>Room Name</Form.Label>
           <Form.Control
@@ -47,7 +52,9 @@ const GameCreateForm = ({createRoom}) => {
             onChange={onChange}
             required
           />
-          <Form.Control.Feedback type="invalid">Insert Room Name</Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">
+            Insert Room Name
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="roomType">
           <Form.Label>Room Type</Form.Label>
@@ -107,6 +114,11 @@ const GameCreateForm = ({createRoom}) => {
 
 GameCreateForm.propTypes = {
   createRoom: PropTypes.func.isRequired,
+  roomData: PropTypes.object,
 };
 
-export default connect(null, { createRoom })(GameCreateForm);
+const mapStateToProps = (state) => ({
+  roomData: state.roomCreateReducer.roomData,
+});
+
+export default connect(mapStateToProps, { createRoom })(GameCreateForm);

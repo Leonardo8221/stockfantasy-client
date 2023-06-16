@@ -14,9 +14,9 @@ import {
 } from "../constants/roomConstant";
 
 const initialState = {
-  room: {},
+  room: null,
   loading: false,
-  error: {},
+  error: null,
 };
 
 export const roomCreateReducer = (state = initialState, action) => {

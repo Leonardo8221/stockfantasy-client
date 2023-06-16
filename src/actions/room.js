@@ -21,10 +21,11 @@ export const createRoom = (formData) => async (dispatch) => {
     dispatch({ type: CREATE_ROOM_REQUEST });
 
     const {data} = await api.post("/rooms", formData);
-
    
     dispatch({ type: CREATE_ROOM_REQUEST_SUCCESS, payload: data });
-    dispatch(setAlert(`Created Room successfully-${data.room.name}`, "success"));
+    dispatch(setAlert(`Created Room successfully-${data.name}`, "success"));
+
+    return true;
 
   } catch (error) {
     const message =
@@ -37,5 +38,6 @@ export const createRoom = (formData) => async (dispatch) => {
     dispatch(setAlert(message, "error"));
     dispatch({ type: CREATE_ROOM_REQUEST_ERROR, payload: message });
 
+    return false
   }
 };
