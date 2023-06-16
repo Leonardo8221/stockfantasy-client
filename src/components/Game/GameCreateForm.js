@@ -14,27 +14,30 @@ const GameCreateForm = ({
   room,
   users,
   isRoomCreated,
-  // isLoadedUsers,
 }) => {
   const [validated, setValidated] = useState(false);
-
   const navigate = useNavigate();
-
-  useEffect(() => {
-    getAllUers();
-  }, []);
-
+  // const [isUserChecked, setIsUserChecked] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     roomType: "random",
     players: [],
   });
 
+  //Fetch users from the server
+  useEffect(() => {
+    getAllUers();
+  }, []);
+
+  //Handels the form values changing events
   const onChange = (e) => {
     if (e.target.name === "players") {
       let index = formData.players.indexOf(e.target.value);
       if (index !== -1) formData.players.splice(index, 1);
-      else formData.players.push(e.target.value);
+      else {
+        // setIsUserChecked(true);
+        formData.players.push(e.target.value);
+      }
       setFormData({
         ...formData,
         players: formData.players,
@@ -42,6 +45,19 @@ const GameCreateForm = ({
     } else setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  //Handles the selected user box close event
+  const handleSeletedUserClose = (e, id) => {
+    e.preventDefault();
+    console.log(id);
+    let newArray = formData.players.filter((item) => item !== id);
+    // formData.players = ;
+    setFormData({
+      ...formData,
+      players: newArray,
+    });
+  };
+
+  //Handles the submit
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
@@ -52,9 +68,12 @@ const GameCreateForm = ({
     createRoom(formData);
     setValidated(true);
   };
+
+  //When the room is created successfully, move to "Game setting page"
   if (isRoomCreated) {
-    // navigate("/game-setup/" + room._id);
+    navigate("/game-setup/" + room._id);
   }
+
   return (
     <section className="container">
       <h1>Game Create</h1>
@@ -104,28 +123,30 @@ const GameCreateForm = ({
               placeholder="Serach User"
               className="mb-2"
             />
-
             <p className="text-muted text-primary mb-2">
               {formData.players.length} user selected
             </p>
-            <div className="d-flex gap-3 selected-users mb-4">
-              {formData.players.map((user) => (
-                <div className="d-flex gap-4 slected-user" key={user}>
+            <div className="d-flex gap-3 mb-4">
+              {formData.players.map((userID) => (
+                <div className="d-flex gap-4 slected-user" key={userID}>
                   <div className="user-info">
                     <p className="mb-0">
-                      {users.find((obj) => obj._id === user).name}
+                      {users.find((obj) => obj._id === userID).name}
                     </p>
                     <p className="text-muted mb-0">
-                      {users.find((obj) => obj._id === user).email}
+                      {users.find((obj) => obj._id === userID).email}
                     </p>
                   </div>
-                  <a className="text-dark" href="#">
+                  <a
+                    className="text-dark"
+                    href="#"
+                    onClick={(e) => handleSeletedUserClose(e, userID)}
+                  >
                     <i className="fa fa-times"></i>
                   </a>
                 </div>
               ))}
             </div>
-            
             {users.length ? (
               users.map((user) => (
                 <Form.Check
@@ -142,6 +163,11 @@ const GameCreateForm = ({
                   key={user._id}
                   value={user._id}
                   onChange={onChange}
+                  checked={
+                    formData.players.find((item) => item === user._id)
+                      ? true
+                      : false
+                  }
                 />
               ))
             ) : (
@@ -163,14 +189,12 @@ GameCreateForm.propTypes = {
   room: PropTypes.object,
   users: PropTypes.arrayOf(PropTypes.object),
   isRoomCreated: PropTypes.bool,
-  // isLoadedUsers: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
   room: state.roomCreateReducer.room,
   users: state.getAllUsersReducer.users,
   isRoomCreated: state.roomCreateReducer.isRoomCreated,
-  // isLoadedUsers: state.getAllUsersReducer.isLoadedUsers,
 });
 
 export default connect(mapStateToProps, { createRoom, getAllUers })(
