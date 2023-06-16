@@ -16,7 +16,7 @@ const Home = ({ auth: { user } }) => {
   return (
     <section className="container">
       <div className="home-header">
-        <h1 className="text-primary">Home</h1>
+        <h1 className="large text-primary mb-4">Home</h1>
         <div>
           <Link to="/join-room" className="btn btn-success my-1">
             Join Room

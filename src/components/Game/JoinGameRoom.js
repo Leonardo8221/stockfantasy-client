@@ -8,7 +8,7 @@ const JoinGameRoom = () => {
 
   return (
     <section className="container">
-      <h1 className="text-primary mb-4">Join Room</h1>
+      <h1 className="large text-primary mb-4">Join Room</h1>
 
       <div className="mb-4">
         <h4>Invited Rooms</h4>

@@ -7,7 +7,7 @@ const GameRoom = () => {
   return (
     <section className="container">
       <div className="d-flex flex-row align-items-center justify-content-between mb-4">
-        <h1 className="text-primary">
+        <h1 className="large text-primary mb-4">
           Game Room {' '}
           {isGameFinished ? (
             <span className="lead text-dark">Playing...</span>

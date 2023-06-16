@@ -94,12 +94,12 @@ const GameCreateForm = ({
     }
     createRoom(formData);
     setValidated(true);
+    if (isRoomCreated) {
+      navigate("/game-setup/" + room._id);
+    }
   };
 
   //When the room is created successfully, move to "Game setting page"
-  if (isRoomCreated) {
-    navigate("/game-setup/" + room._id);
-  }
 
   return (
     <section className="container">
@@ -115,7 +115,7 @@ const GameCreateForm = ({
           You can't invite more than three users.
         </Toast.Body>
       </Toast>
-      <h1>Game Create</h1>
+      <h1 className="large text-primary mb-4">Game Create</h1>
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="roomName">
           <Form.Label>Room Name</Form.Label>

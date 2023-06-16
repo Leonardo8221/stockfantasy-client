@@ -33,7 +33,7 @@ const Setting = ({ setAlert, updatePassword, auth: { user } }) => {
   };
   return (
     <section className="container">
-      <h1 className="large text-primary">User Settings</h1>
+      <h1 className="large text-primary mb-4">User Settings</h1>
       <div className="d-flex gap-3">
         <div className="col-3">
           <p>Username: {user && user.name}</p>

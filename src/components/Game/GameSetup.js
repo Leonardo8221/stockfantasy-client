@@ -10,7 +10,7 @@ const handleDoneBtn = (e) => {
 
   return (
     <section className="container p-2">
-      <h2 className="text-primary mb-4">Game Setup</h2>
+      <h1 className="large text-primary mb-4">Game Setup</h1>
       <div className="game-players mb-4">
         <div className="game-player">
           <div className="user-icon">
