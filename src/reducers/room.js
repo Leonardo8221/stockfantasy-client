@@ -21,7 +21,7 @@ import {
 } from "../constants/roomConstant";
 
 const initialState = {
-  room: [],
+  rooms: [],
   isRoomCreated: false,
   loading: false,
   error: null,
@@ -35,7 +35,7 @@ export const roomReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        room: [...state.room, action.payload],
+        rooms: [...state.rooms, action.payload],
         isRoomCreated: true,
       };
     case CREATE_ROOM_REQUEST_ERROR:
@@ -46,7 +46,7 @@ export const roomReducer = (state = initialState, action) => {
     case GET_ROOMS_REQUEST:
       return { ...state, loading: true };
     case GET_ROOMS_REQUEST_SUCCESS:
-      return { ...state, loading: false, room: action.payload };
+      return { ...state, loading: false, rooms: action.payload };
     case GET_ROOMS_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
 

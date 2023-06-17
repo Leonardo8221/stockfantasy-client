@@ -1,25 +1,15 @@
-import { useNavigate } from "react-router-dom";
-
 import TimeCounter from "../TimeCounter";
 
 import "./style.scss";
 
-const Room = (props) => {
-  const navigate = useNavigate();
-  const { _id, name, startedDate, endDate, duration, players, page } = props;
-
-  const route = endDate ? "game-result" : "gameRoom";
-  const handleViewGame = (val) => {
-    navigate(val);
-  };
+const RoomBox = (props) => {
+  const { name, startedDate, endDate, duration, players, page, onClick } = props;
 
   return (
-    <div
-      className="gameRoom"
-      onClick={() => handleViewGame(`/${route}/${_id}`)}
-      key={_id}
-    >
-      <h3 className="gameRoom-name text-center text-primary text-uppercase">{name}</h3>
+    <div className="gameRoom" onClick={onClick}>
+      <h3 className="gameRoom-name text-center text-primary text-uppercase">
+        {name}
+      </h3>
       {page === "home" &&
         (endDate ? (
           <>
@@ -50,4 +40,4 @@ const Room = (props) => {
   );
 };
 
-export default Room;
+export default RoomBox;

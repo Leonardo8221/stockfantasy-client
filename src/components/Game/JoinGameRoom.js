@@ -1,10 +1,31 @@
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const JoinGameRoom = () => {
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+
+import { getRooms } from "../../actions/room";
+import RoomBox from "../RoomBox";
+
+const JoinGameRoom = ({ rooms, user, getRooms }) => {
+  const [randomRooms, setRandomRooms] = useState([]);
+  const [invitedRooms, setInvitedRooms] = useState([]);
+
   const navigate = useNavigate();
   const handleJoinGameRoom = (room) => {
-    navigate('/game-setup');
+    navigate("/game-setup");
   };
+
+  useEffect(() => {
+    getRooms(false);
+  }, [getRooms]);
+
+  useEffect(() => {
+    if (rooms.length) {
+      setInvitedRooms(rooms.filter((room) => room.players.includes(user._id)));
+      setRandomRooms(rooms.filter((room) => !room.players.includes(user._id)));
+    }
+  }, [rooms, user._id]);
 
   return (
     <section className="container">
@@ -13,66 +34,51 @@ const JoinGameRoom = () => {
       <div className="mb-4">
         <h4>Invited Rooms</h4>
         <div className="game-rooms">
-          <div className="game-room" onClick={handleJoinGameRoom}>
-            <h1>Game3</h1>
-            <div className="players">
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-            </div>
-            <div className="room-badge pending">Pending...</div>
-          </div>
-          <div className="game-room" onClick={handleJoinGameRoom}>
-            <h1>Game2</h1>
-            <div className="players">
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-            </div>
-            <div className="room-badge pending">Pending...</div>
-          </div>
+          {invitedRooms.length > 0 ? (
+            invitedRooms.map((room) => (
+              <RoomBox
+                onClick={handleJoinGameRoom}
+                key={room._id}
+                page="join"
+                {...room}
+              />
+            ))
+          ) : (
+            <h3 className="mt-5 text-dark">There is no room in progess</h3>
+          )}
         </div>
       </div>
       <hr className="divider" />
       <div className="">
         <h4>Random Rooms</h4>
         <div className="game-rooms">
-          <div className="game-room" onClick={handleJoinGameRoom}>
-            <h1>Game1</h1>
-            <div className="players">
-              <i className="fa fa-user"></i>
-            </div>
-            <div className="room-badge pending">Pending...</div>
-          </div>
-          <div className="game-room" onClick={handleJoinGameRoom}>
-            <h1>Game2</h1>
-            <div className="players">
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-            </div>
-            <div className="room-badge pending">Pending...</div>
-          </div>
-          <div className="game-room" onClick={handleJoinGameRoom}>
-            <h1>Game3</h1>
-            <div className="players">
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-              <div className="room-badge pending">Pending...</div>
-            </div>
-          </div>
-          <div className="game-room" onClick={handleJoinGameRoom}>
-            <h1>Game2</h1>
-            <div className="players">
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-              <i className="fa fa-user"></i>
-            </div>
-            <div className="room-badge pending">Pending...</div>
-          </div>
+          {randomRooms.length > 0 ? (
+            invitedRooms.map((room) => (
+              <RoomBox
+                onClick={handleJoinGameRoom}
+                key={room._id}
+                page="join"
+                {...room}
+              />
+            ))
+          ) : (
+            <h3 className="mt-5 text-dark text-center">There is no room in progess</h3>
+          )}
         </div>
       </div>
     </section>
   );
 };
 
-export default JoinGameRoom;
+JoinGameRoom.propTypes = {
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  user: PropTypes.object.isRequired,
+  getRooms: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  rooms: state.roomReducer.rooms,
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps, { getRooms })(JoinGameRoom);

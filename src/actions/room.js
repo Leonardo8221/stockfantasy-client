@@ -61,11 +61,11 @@ export const formatRoom = () => async (dispatch) => {
   }
 };
 
-export const getRooms = () => async (dispatch) => {
+export const getRooms = (isStarted) => async (dispatch) => {
    try {
     dispatch({ type: GET_ROOMS_REQUEST });
 
-    const { data } = await api.get("/rooms");
+    const { data } = await api.get(`/rooms?isStarted=${isStarted}`);
 
     dispatch({ type: GET_ROOMS_REQUEST_SUCCESS, payload: data });
     

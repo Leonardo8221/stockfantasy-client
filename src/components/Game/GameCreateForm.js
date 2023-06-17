@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import { createRoom } from "../../actions/room";
 import { getAllUers } from "../../actions/user";
 
-const GameCreateForm = ({ createRoom, getAllUers, room, users, isRoomCreated }) => {
+const GameCreateForm = ({ createRoom, getAllUers, rooms, users, isRoomCreated }) => {
   const [validated, setValidated] = useState(false);
   const [isPlayersFull, setIsPlayersFull] = useState(false);
   const [isToastShow, setIsToastShow] = useState(false);
@@ -37,10 +37,10 @@ const GameCreateForm = ({ createRoom, getAllUers, room, users, isRoomCreated }) 
   }, [formData.players.length]);
 
   useEffect(() => {
-   if(isRoomCreated && room.length) {
-      navigator("/game-setup/" + room[room.length-1]._id)
+   if(isRoomCreated && rooms.length) {
+      navigator("/game-setup/" + rooms[rooms.length-1]._id)
     }
-  }, [isRoomCreated, room]);
+  }, [isRoomCreated, rooms]);
 
   //Handels the form values changing events
   const onChange = (e) => {
@@ -228,14 +228,14 @@ const GameCreateForm = ({ createRoom, getAllUers, room, users, isRoomCreated }) 
 GameCreateForm.propTypes = {
   createRoom: PropTypes.func.isRequired,
   getAllUers: PropTypes.func.isRequired,
-  room: PropTypes.arrayOf(PropTypes.object),
+  rooms: PropTypes.arrayOf(PropTypes.object),
   users: PropTypes.arrayOf(PropTypes.object),
   isRoomCreated: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
   users: state.getAllUsersReducer.users,
-  room: state.roomReducer.room,
+  rooms: state.roomReducer.rooms,
   isRoomCreated: state.roomReducer.isRoomCreated,
 });
 

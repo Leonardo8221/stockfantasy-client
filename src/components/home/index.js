@@ -2,16 +2,23 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { getRooms } from "../../actions/room";
-import Room from "../Room";
+import RoomBox from "../RoomBox";
 
 import "./style.css";
 
 const Home = ({ rooms, getRooms }) => {
   const [orderedRooms, setOrderedRooms] = useState([]);
+  const navigate = useNavigate();
+
+  const handleViewGame = (val) => {
+    navigate(val);
+  };
+
   useEffect(() => {
-    getRooms();
+    getRooms(true);
   }, [getRooms]);
 
   useEffect(() => {
@@ -40,7 +47,18 @@ const Home = ({ rooms, getRooms }) => {
 
       <div className="game-rooms">
         {orderedRooms.length > 0 ? (
-          orderedRooms.map((room) => <Room {...room} page="home"/>)
+          orderedRooms.map((room) => (
+            <RoomBox
+              key={room._id}
+              onClick={() =>
+                handleViewGame(
+                  `/${room.endDate ? "game-result" : "gameRoom"}/${room._id}`
+                )
+              }
+              page="home"
+              {...room}
+            />
+          ))
         ) : (
           <h3 className="mt-5 text-dark">There is no room in progess</h3>
         )}
@@ -55,7 +73,7 @@ Home.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  rooms: state.roomReducer.room
+  rooms: state.roomReducer.rooms,
 });
 
 export default connect(mapStateToProps, { getRooms })(Home);
