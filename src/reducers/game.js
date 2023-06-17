@@ -18,16 +18,16 @@ import {
     GET_ALL_GAMESS_REQUEST,
     GET_ALL_GAMESS_REQUEST_ERROR,
     GET_ALL_GAMESS_REQUEST_SUCCESS,
-  } from "../constants/roomConstant";
+  } from "../constants/gameConstant";
   
   const initialState = {
     games: [],
-    isRoomCreated: false,
+    isGameStarted: false,
     loading: false,
     error: null,
   };
   
-  export const roomReducer = (state = initialState, action) => {
+  export const gameReducer = (state = initialState, action) => {
     switch (action.type) {
       case CREATE_GAMES_REQUEST:
         return { ...state, loading: true };
@@ -35,18 +35,18 @@ import {
         return {
           ...state,
           loading: false,
-          rooms: [...state.rooms, action.payload],
-          isRoomCreated: true,
+          games: [...state.games, action.payload],
+          isGameStarted: true,
         };
       case CREATE_GAMES_REQUEST_ERROR:
         return { ...state, loading: false, error: action.payload };
       case FORMAT_GAMES_REQUEST:
-        return { ...state, isRoomCreated: false };
+        return { ...state, isGameStarted: false };
   
       case GET_GAMESS_REQUEST:
         return { ...state, loading: true };
       case GET_GAMESS_REQUEST_SUCCESS:
-        return { ...state, loading: false, rooms: action.payload };
+        return { ...state, loading: false, games: action.payload };
       case GET_GAMESS_REQUEST_ERROR:
         return { ...state, loading: false, error: action.payload };
       case GET_GAMES_REQUEST:
@@ -55,7 +55,7 @@ import {
         return {
           ...state,
           loading: false,
-          rooms: [...state.rooms, action.payload],
+          games: [...state.games, action.payload],
         };
       case GET_GAMES_REQUEST_ERROR:
         return { ...state, loading: false, error: action.payload };

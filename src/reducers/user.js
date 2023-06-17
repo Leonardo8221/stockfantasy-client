@@ -10,7 +10,7 @@ const initialState = {
   error: null,
 };
 
-export const getAllUsersReducer = (state = initialState, action) => {
+export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_ALL_USERS_REQUEST:
       return { ...state, loading: true };
