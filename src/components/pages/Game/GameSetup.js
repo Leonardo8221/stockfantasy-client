@@ -1,30 +1,41 @@
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { useNavigate } from 'react-router-dom';
-import './style.css';
-import { useEffect } from "react";
-import { formatRoom } from "../../actions/room";
 
-const GameSetup = ({
-  isRoomCreated,
-  formatRoom,
-}) => {
+import { formatRoom } from "../../../actions/room";
+import { getRoom } from "../../../actions/room";
 
-    const navigated = useNavigate()
-const handleDoneBtn = (e) => {
-    e.target.disabled = true;
-    navigated('/gameRoom');
-}
+import "./style.css";
+
+const GameSetup = ({ getRoom, formatRoom, rooms, isRoomCreated }) => {
+  const navigated = useNavigate();
+
+  const { id } = useParams();
 
   useEffect(() => {
-    if(isRoomCreated) {
+    if (isRoomCreated) {
       formatRoom();
     }
-  }, [isRoomCreated])
+  }, [formatRoom, isRoomCreated]);
+
+  useEffect(() => {
+    getRoom(id);
+  }, [getRoom, id]);
+
+  const handleDoneBtn = (e) => {
+    e.target.disabled = true;
+    navigated("/gameRoom");
+  };
 
   return (
     <section className="container p-2">
-      <h1 className="large text-primary mb-4">Game Setup</h1>
+      <h1 className="large text-primary mb-4">
+        Game Setup -{" "}
+        <span className="text-success mb-0"> {rooms && rooms.name}</span>
+      </h1>
+      
       <div className="game-players mb-4">
         <div className="game-player">
           <div className="user-icon">
@@ -53,17 +64,17 @@ const handleDoneBtn = (e) => {
         <div className="left p-4">
           <h4>Stock List</h4>
           <div className="stock-list">
-            <div className='stock-list-item'>Stock1</div>
-            <div className='stock-list-item'>Stock2</div>
-            <div className='stock-list-item'>Stock3</div>
-            <div className='stock-list-item'>Stock4</div>
-            <div className='stock-list-item'>Stock5</div>
-            <div className='stock-list-item'>Stock6</div>
-            <div className='stock-list-item'>Stock7</div>
-            <div className='stock-list-item'>Stock8</div>
-            <div className='stock-list-item'>Stock9</div>
-            <div className='stock-list-item'>Stock10</div>
-            <div className='stock-list-item'>Stock11</div>
+            <div className="stock-list-item">Stock1</div>
+            <div className="stock-list-item">Stock2</div>
+            <div className="stock-list-item">Stock3</div>
+            <div className="stock-list-item">Stock4</div>
+            <div className="stock-list-item">Stock5</div>
+            <div className="stock-list-item">Stock6</div>
+            <div className="stock-list-item">Stock7</div>
+            <div className="stock-list-item">Stock8</div>
+            <div className="stock-list-item">Stock9</div>
+            <div className="stock-list-item">Stock10</div>
+            <div className="stock-list-item">Stock11</div>
           </div>
         </div>
         <div className="right p-4">
@@ -73,7 +84,9 @@ const handleDoneBtn = (e) => {
                 Budget: <span className="large text-success">$1000</span>
               </p>
             </div>
-            <button className="btn btn-success" onClick={handleDoneBtn}>Done</button>
+            <button className="btn btn-success" onClick={handleDoneBtn}>
+              Done
+            </button>
           </div>
           <div className="selected-stocks">
             <div className="selected-stocks-item">Stock2</div>
@@ -92,14 +105,15 @@ const handleDoneBtn = (e) => {
 };
 
 GameSetup.propTypes = {
-  isRoomCreated: PropTypes.bool,
-  formatRoom: PropTypes.func,
+  getRoom: PropTypes.func.isRequired,
+  formatRoom: PropTypes.func.isRequired,
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isRoomCreated: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   isRoomCreated: state.roomReducer.isRoomCreated,
+  rooms: state.roomReducer.rooms,
 });
 
-export default connect(mapStateToProps, {formatRoom})(
-  GameSetup
-);
+export default connect(mapStateToProps, { getRoom, formatRoom })(GameSetup);

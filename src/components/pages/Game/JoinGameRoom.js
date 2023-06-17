@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { getRooms } from "../../actions/room";
-import RoomBox from "../RoomBox";
+import { getRooms } from "../../../actions/room";
+import RoomBox from "../../commons/RoomBox";
 
 const JoinGameRoom = ({ rooms, user, getRooms }) => {
   const [randomRooms, setRandomRooms] = useState([]);

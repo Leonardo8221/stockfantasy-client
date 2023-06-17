@@ -5,8 +5,9 @@ import { useNavigate } from "react-router-dom";
 
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { createRoom } from "../../actions/room";
-import { getAllUers } from "../../actions/user";
+
+import { createRoom } from "../../../actions/room";
+import { getAllUers } from "../../../actions/user";
 
 const GameCreateForm = ({ createRoom, getAllUers, rooms, users, isRoomCreated }) => {
   const [validated, setValidated] = useState(false);
@@ -24,7 +25,7 @@ const GameCreateForm = ({ createRoom, getAllUers, rooms, users, isRoomCreated })
   //Fetch users from the server
   useEffect(() => {
     getAllUers();
-  }, []);
+  }, [getAllUers]);
 
   useEffect(() => {
     if (formData.players.length === 3) {
@@ -40,7 +41,7 @@ const GameCreateForm = ({ createRoom, getAllUers, rooms, users, isRoomCreated })
    if(isRoomCreated && rooms.length) {
       navigator("/game-setup/" + rooms[rooms.length-1]._id)
     }
-  }, [isRoomCreated, rooms]);
+  }, [isRoomCreated, navigator, rooms]);
 
   //Handels the form values changing events
   const onChange = (e) => {

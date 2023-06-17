@@ -1,29 +1,35 @@
+///
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Navbar from "./components/layout/Navbar";
-import Landing from "./components/layout/Landing";
-import Register from "./components/auth/Register";
-import Login from "./components/auth/Login";
+import { Provider } from "react-redux";
+
+import setAuthToken from "./utils/setAuthToken";
+
 import Alert from "./components/layout/Alert";
 import NotFound from "./components/layout/NotFound";
+import Navbar from "./components/layout/Navbar";
+import Landing from "./components/layout/Landing";
+
 import PrivateRoute from "./components/routing/PrivateRoute";
-import Home from "./components/home";
-import GameRoom from "./components/Game/GameRoom";
-import GameCreateForm from "./components/Game/GameCreateForm";
-import JoinGameRoom from "./components/Game/JoinGameRoom";
+
+import Login from "./components/pages/auth/Login";
+import Register from "./components/pages/auth/Register";
+import Home from "./components/pages/home";
+import GameRoom from "./components/pages/Game/GameRoom";
+import GameCreateForm from "./components/pages/Game/GameCreateForm";
+import JoinGameRoom from "./components/pages/Game/JoinGameRoom";
+import GameSetup from "./components/pages/Game/GameSetup";
+import Setting from "./components/pages/setting";
+import GameResult from "./components/pages/Game/GameResult";
+
 import { LOGOUT } from "./constants/userConstant";
 
-// Redux
-import { Provider } from "react-redux";
 import store from "./store";
 import { loadUser } from "./actions/auth";
-import setAuthToken from "./utils/setAuthToken";
-import "bootstrap/dist/css/bootstrap.css";
 
+//styles
+import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
-import GameSetup from "./components/Game/GameSetup";
-import Setting from "./components/setting";
-import GameResult from "./components/Game/GameResult";
 
 const App = () => {
   useEffect(() => {

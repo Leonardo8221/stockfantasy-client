@@ -82,7 +82,26 @@ export const getRooms = (isStarted) => async (dispatch) => {
   }
 };
 
-export const getRoom = () => async (dispatch) => {};
+export const getRoom = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: GET_ROOM_REQUEST });
+
+    const { data } = await api.get(`/rooms/${id}`);
+
+    dispatch({ type: GET_ROOM_REQUEST_SUCCESS, payload: data });
+    
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch(setAlert(message, "error"));
+    dispatch({ type: GET_ROOM_REQUEST_ERROR, payload: message });
+  }
+};
 
 export const getAllRooms = () => async (dispatch) => {};
 
