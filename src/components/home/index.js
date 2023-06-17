@@ -1,25 +1,29 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import "./style.css";
 
 import { getRooms } from "../../actions/room";
-import TimeCounter from "../TimeCounter";
+import Room from "../Room";
+
+import "./style.css";
 
 const Home = ({ rooms, getRooms }) => {
-  const navigate = useNavigate();
-
-  const roomRef = useRef();
+  const [orderedRooms, setOrderedRooms] = useState([]);
+  useEffect(() => {
+    getRooms();
+  }, [getRooms]);
 
   useEffect(() => {
-    getRooms(false);
-  }, []);
+    if (rooms.length) {
+      const finishedRooms = rooms.filter((room) => room.endDate !== undefined);
+      const playingRooms = rooms.filter((room) => room.endDate === undefined);
 
-  const handleViewGame = (val) => {
-    navigate(val);
-  };
+      finishedRooms.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
+      setOrderedRooms([...finishedRooms, ...playingRooms]);
+    }
+  }, [rooms]);
+
   return (
     <section className="container">
       <div className="home-header">
@@ -34,38 +38,12 @@ const Home = ({ rooms, getRooms }) => {
         </div>
       </div>
 
-      <div className="home-main">
-        <h3>The List of Rooms in progress</h3>
-
-        <div className="game-rooms">
-          {rooms.length > 0 &&
-            rooms
-              .sort((a, b) => new Date(b.endDate) - new Date(a.endDate))
-              .map((room) => (
-                <div
-                  className="game-room"
-                  onClick={() => handleViewGame(`/game-result/${room._id}`)}
-                  key={room._id}
-                >
-                  <h3>{room.name}</h3>
-                  {room.endDate ? (
-                    <>
-                      <h6 className="text-dark">
-                        <TimeCounter />
-                      </h6>
-                      <p className="room-badge playing">Playing...</p>
-                    </>
-                  ) : (
-                    <>
-                      <h4 className="text-success">
-                        Finished <i className="fa fa-check" />
-                      </h4>
-                      <p className="room-badge finished">Finshed</p>
-                    </>
-                  )}
-                </div>
-              ))}
-        </div>
+      <div className="game-rooms">
+        {orderedRooms.length > 0 ? (
+          orderedRooms.map((room) => <Room {...room} page="home"/>)
+        ) : (
+          <h3 className="mt-5 text-dark">There is no room in progess</h3>
+        )}
       </div>
     </section>
   );
@@ -77,7 +55,7 @@ Home.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  rooms: state.roomReducer.room,
+  rooms: state.roomReducer.room
 });
 
 export default connect(mapStateToProps, { getRooms })(Home);

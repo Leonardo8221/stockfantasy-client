@@ -1,0 +1,63 @@
+.gameRoom {
+  border: 2px solid rgba(13, 130, 255, 0.807);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  padding: 35px 20px;
+  width: 100%;
+  max-width: 300px;
+  gap: 5px;
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  background-color: #fff;
+  cursor: pointer;
+
+  &-name {
+    overflow-wrap: anywhere;
+  }
+
+  &:hover {
+    background-color: #ddd;
+    user-select: none;
+    cursor: pointer;
+  }
+
+  &-completedBadge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    color: #fff;
+    border-radius: 50%;
+    background-color: #28a745;
+    margin: 0;
+  }
+
+  &-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-sizing: border-box;
+    padding: 5px 15px;
+    position: absolute;
+    top: 5px;
+    right: -10%;
+    height: 30px;
+    border-radius: 15px;
+    font-size: 12px;
+  }
+
+  &-players {
+    display: flex;
+    font-size: 40px;
+    color: #4e8efc;
+    gap: 5%;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+  }
+}

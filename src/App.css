@@ -17,7 +17,7 @@ body {
   font-family: 'Raleway', sans-serif;
   font-size: 1rem;
   line-height: 1.6;
-  background-color: #fff;
+  background-color: #FFF;
   color: #333;
 }
 
@@ -36,7 +36,7 @@ img {
 
 /* Utilities */
 .container {
-  max-width: 1100px;
+  max-width: 1800px;
   margin: auto;
   overflow: hidden;
   padding: 0 2rem;
@@ -70,6 +70,7 @@ img {
   color: var(--primary-color) !important;
   font-weight: 600 !important;
 }
+
 .text-danger {
   color: var(--danger-color) !important;
   font-weight: 600 !important;
@@ -77,30 +78,38 @@ img {
 
 .text-dark {
   color: var(--dark-color) !important;
+  font-weight: 600 !important;
 }
 
 /* Padding */
 .p {
   padding: 0.5rem;
 }
+
 .p-1 {
   padding: 1rem;
 }
+
 .p-2 {
   padding: 2rem;
 }
+
 .p-3 {
   padding: 3rem;
 }
+
 .py {
   padding: 0.5rem 0;
 }
+
 .py-1 {
   padding: 1rem 0;
 }
+
 .py-2 {
   padding: 2rem 0;
 }
+
 .py-3 {
   padding: 3rem 0;
 }
@@ -109,24 +118,31 @@ img {
 .m {
   margin: 0.5rem;
 }
+
 .m-1 {
   margin: 1rem;
 }
+
 .m-2 {
   margin: 2rem;
 }
+
 .m-3 {
   margin: 3rem;
 }
+
 .my {
   margin: 0.5rem 0;
 }
+
 .my-1 {
   margin: 1rem 0;
 }
+
 .my-2 {
   margin: 2rem 0;
 }
+
 .my-3 {
   margin: 3rem 0;
 }
@@ -280,15 +296,19 @@ button {
 .form .social-input i.fa-twitter {
   color: #38a1f3;
 }
+
 .form .social-input i.fa-facebook {
   color: #3b5998;
 }
+
 .form .social-input i.fa-instagram {
   color: #3f729b;
 }
+
 .form .social-input i.fa-youtube {
   color: #c4302b;
 }
+
 .form .social-input i.fa-linkedin {
   color: #0077b5;
 }
@@ -425,15 +445,15 @@ button {
   margin-bottom: 1rem;
 }
 
-.profile-exp > div,
-.profile-edu > div {
+.profile-exp>div,
+.profile-edu>div {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: #ccc 1px dotted;
 }
 
-.profile-exp > div:last-child,
-.profile-edu > div:last-child {
+.profile-exp>div:last-child,
+.profile-edu>div:last-child {
   border: 0;
 }
 
@@ -450,12 +470,12 @@ button {
   display: flex;
 }
 
-.profile-github .repo > div:first-child {
+.profile-github .repo>div:first-child {
   flex: 7;
   flex-basis: 70%;
 }
 
-.profile-github > div:last-child {
+.profile-github>div:last-child {
   flex: 3;
   flex-basis: 20%;
 }
@@ -473,7 +493,7 @@ button {
   align-items: center;
 }
 
-.post > div:first-child {
+.post>div:first-child {
   text-align: center;
 }
 
@@ -577,6 +597,7 @@ button {
   .post {
     grid-template-columns: 1fr;
   }
+
   .post a,
   .post button {
     padding: 0.3rem 0.4rem;
@@ -592,48 +613,11 @@ button {
 
 
 .game-rooms {
-  display: flex;
-  flex-wrap: wrap;
-  align-content: center;
-  align-items: center;
-  gap: 10px;
-}
-
-.game-rooms .game-room {
-  border: 2px solid rgba(13, 130, 255, 0.807);
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3%;
   box-sizing: border-box;
-  justify-content: center;
-  align-items: center;
-  padding: 50px 20px;
-  width: 24%;
-  gap: 10px;
-  position: relative;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-}
-
-.game-rooms .game-room .players {
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-  font-size: 40px;
-  color: #48deff;
-}
-
-.game-rooms .game-room .room-badge{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  box-sizing: border-box;
-  padding: 5px 15px;
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  height: 30px;
-  border-radius: 15px;
-  font-size: 12px;
+  padding: 20px 10px;
 }
 
 
@@ -652,10 +636,4 @@ button {
 
 .disabled {
   background-color: #ddd;
-}
-
-.game-rooms .game-room:hover {
-  background-color: #ddd;
-  user-select: none;
-  cursor: pointer;
 }

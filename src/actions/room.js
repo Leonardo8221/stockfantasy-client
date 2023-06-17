@@ -61,14 +61,13 @@ export const formatRoom = () => async (dispatch) => {
   }
 };
 
-export const getRooms = (params) => async (dispatch) => {
+export const getRooms = () => async (dispatch) => {
    try {
     dispatch({ type: GET_ROOMS_REQUEST });
 
-    const { data } = await api.get("/rooms", params);
+    const { data } = await api.get("/rooms");
 
     dispatch({ type: GET_ROOMS_REQUEST_SUCCESS, payload: data });
-    // dispatch(setAlert(`Created Room successfully-${data.name}`, "success"));
     
   } catch (error) {
     const message =

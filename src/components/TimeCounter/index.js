@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-const TimeCounter = () => {
+const TimeCounter = ({ startedDate, duration }) => {
   const [remainingTime, setRemainingTime] = useState({});
-  const [endDate, setEndDate] = useState(new Date('2023-07-01T00:00:00'));
+  
+  let millisecondsInDay = 86400000; // 1000 * 60 * 60 * 24;
+  let start = new Date(startedDate);
+  const endDate = new Date(start.getTime() + duration * millisecondsInDay);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = new Date(endDate).getTime() - now;
+      const distance = new Date(endDate).getTime() - new Date();
 
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const hours = Math.floor(
+        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
@@ -18,11 +22,14 @@ const TimeCounter = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [endDate]);
+  }, []);
 
   return (
     <div>
-      <p>Time Remaining: {remainingTime.days} days, {remainingTime.hours} hours, {remainingTime.minutes} minutes, {remainingTime.seconds} seconds</p>
+      <p className="text-center mb-0">
+        Time Remaining<br></br> {remainingTime.days} days, {remainingTime.hours}
+        :{remainingTime.minutes}:{remainingTime.seconds}
+      </p>
     </div>
   );
 };
