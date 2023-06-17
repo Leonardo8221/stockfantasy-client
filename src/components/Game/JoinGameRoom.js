@@ -12,8 +12,8 @@ const JoinGameRoom = ({ rooms, user, getRooms }) => {
   const [invitedRooms, setInvitedRooms] = useState([]);
 
   const navigate = useNavigate();
-  const handleJoinGameRoom = (room) => {
-    navigate("/game-setup");
+  const handleJoinGameRoom = (val) => {
+    navigate("/game-setup/" + val );
   };
 
   useEffect(() => {
@@ -22,8 +22,8 @@ const JoinGameRoom = ({ rooms, user, getRooms }) => {
 
   useEffect(() => {
     if (rooms.length) {
-      setInvitedRooms(rooms.filter((room) => room.players.includes(user._id)));
-      setRandomRooms(rooms.filter((room) => !room.players.includes(user._id)));
+      setInvitedRooms(rooms.filter((room) => room.players.includes(user._id) && room.roomType === "private"));
+      setRandomRooms(rooms.filter((room) => room.roomType === "random"));
     }
   }, [rooms, user._id]);
 
@@ -37,7 +37,7 @@ const JoinGameRoom = ({ rooms, user, getRooms }) => {
           {invitedRooms.length > 0 ? (
             invitedRooms.map((room) => (
               <RoomBox
-                onClick={handleJoinGameRoom}
+                onClick={() => handleJoinGameRoom(room._id)}
                 key={room._id}
                 page="join"
                 {...room}
@@ -53,9 +53,9 @@ const JoinGameRoom = ({ rooms, user, getRooms }) => {
         <h4>Random Rooms</h4>
         <div className="game-rooms">
           {randomRooms.length > 0 ? (
-            invitedRooms.map((room) => (
+            randomRooms.map((room) => (
               <RoomBox
-                onClick={handleJoinGameRoom}
+                onClick={() => handleJoinGameRoom(room._id)}
                 key={room._id}
                 page="join"
                 {...room}
