@@ -1,0 +1,61 @@
+.playerBox {
+  display: flex;
+  flex-direction: colum;
+  align-items: center;
+  justify-content: center;
+  width: 33.33333333333%;
+  height: 100px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  border: 2px solid rgba(7, 128, 168, 0.827);
+  border-radius: 10px;
+  user-select: none;
+  cursor: pointer;
+  &-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex: 0 0 auto;
+    background-color: rgba(7, 128, 168, 0.827);
+    color: #fff;
+    width: 40%;
+    align-self: stretch;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    box-sizing: border-box;
+    padding: 5px;
+
+    &-icon {
+      font-size: 40px;
+    }
+  }
+  &-caption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex: 1 1 auto;
+    width: 60%;
+    font-size: 20px;
+
+    align-self: stretch;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+
+    gap: 5%;
+
+    &-ready {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      box-sizing: border-box;
+      background-color: #28a745;
+      color: #fff;
+      font-size: 16px;
+    }
+  }
+}

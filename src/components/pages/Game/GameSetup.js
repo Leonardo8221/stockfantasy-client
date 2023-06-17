@@ -8,8 +8,9 @@ import { formatRoom } from "../../../actions/room";
 import { getRoom } from "../../../actions/room";
 
 import "./style.css";
+import PlayerBox from "../../commons/PlayerBox";
 
-const GameSetup = ({ getRoom, formatRoom, rooms, isRoomCreated }) => {
+const GameSetup = ({ getRoom, formatRoom, rooms, user, isRoomCreated }) => {
   const navigated = useNavigate();
 
   const { id } = useParams();
@@ -33,31 +34,16 @@ const GameSetup = ({ getRoom, formatRoom, rooms, isRoomCreated }) => {
     <section className="container p-2">
       <h1 className="large text-primary mb-4">
         Game Setup -{" "}
-        <span className="text-success mb-0"> {rooms && rooms.name}</span>
+        <span className="text-success mb-0 text-uppercase">
+          {rooms.length && rooms[0].name}
+        </span>
       </h1>
-      
+
       <div className="game-players mb-4">
-        <div className="game-player">
-          <div className="user-icon">
-            <i className="fa fa-user"></i>
-            <span>User1</span>
-          </div>
-          <div className="caption">Building Portfolio...</div>
-        </div>
-        <div className="game-player">
-          <div className="user-icon ">
-            <i className="fa fa-user"></i>
-            <span>User2</span>
-          </div>
-          <div className="caption ready">Ready</div>
-        </div>
-        <div className="game-player">
-          <div className="user-icon">
-            <i className="fa fa-user"></i>
-            <span>User3</span>
-          </div>
-          <div className="caption ready">Ready</div>
-        </div>
+        {rooms.length &&
+          rooms[0].players.filter((item) => item !== user._id).map((item) => (
+            <PlayerBox key={item} name="bbb" isReady={true} />
+          ))}
       </div>
 
       <div className="game-setup-container">
@@ -81,7 +67,7 @@ const GameSetup = ({ getRoom, formatRoom, rooms, isRoomCreated }) => {
           <div className="d-flex flex-row justify-content-between align-items-center mb-3">
             <div className="d-flex flex-row justify-content-between align-items-center">
               <p className="large text-primary mb-0">
-                Budget: <span className="large text-success">$1000</span>
+                Budget: <span className="large text-success">{user.budget}</span>
               </p>
             </div>
             <button className="btn btn-success" onClick={handleDoneBtn}>
@@ -108,12 +94,14 @@ GameSetup.propTypes = {
   getRoom: PropTypes.func.isRequired,
   formatRoom: PropTypes.func.isRequired,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  user: PropTypes.object.isRequired,
   isRoomCreated: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  isRoomCreated: state.roomReducer.isRoomCreated,
   rooms: state.roomReducer.rooms,
+  user: state.auth.user,
+  isRoomCreated: state.roomReducer.isRoomCreated,
 });
 
 export default connect(mapStateToProps, { getRoom, formatRoom })(GameSetup);
