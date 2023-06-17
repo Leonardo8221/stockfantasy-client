@@ -67,7 +67,7 @@ const GameSetup = ({ getRoom, formatRoom, rooms, user, isRoomCreated }) => {
           <div className="d-flex flex-row justify-content-between align-items-center mb-3">
             <div className="d-flex flex-row justify-content-between align-items-center">
               <p className="large text-primary mb-0">
-                Budget: <span className="large text-success">{user.budget}</span>
+                Budget: <span className="large text-success">${user.budget}</span>
               </p>
             </div>
             <button className="btn btn-success" onClick={handleDoneBtn}>
