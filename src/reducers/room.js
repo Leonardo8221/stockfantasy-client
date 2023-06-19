@@ -55,7 +55,7 @@ export const roomReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        rooms: [...state.rooms, action.payload],
+        rooms: action.payload,
       };
     case GET_ROOM_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
