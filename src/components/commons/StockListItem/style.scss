@@ -1,0 +1,31 @@
+.stock-list-item {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 10px 20px;
+
+  width: 100%;
+  border-bottom: 1px solid #b0b0b0;
+  user-select: none;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: #ddd;
+  }
+
+  &-name {
+    font-weight: 600;
+    color: rgb(96, 96, 96);
+  }
+  &-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    &-price {
+        margin: 0;
+    }
+    &-date {
+        margin: 0;
+    }
+  }
+}

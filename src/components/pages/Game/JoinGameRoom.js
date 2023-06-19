@@ -67,7 +67,7 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
               />
             ))
           ) : (
-            <h3 className="mt-5 text-dark text-center noRoom">
+            <h3 className="mt-5 text-dark text-center no-rooms">
               There is no room in progess
             </h3>
           )}
@@ -87,7 +87,7 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
               />
             ))
           ) : (
-            <h3 className="mt-5 text-dark text-center noRoom">
+            <h3 className="mt-5 text-dark text-center no-rooms">
               There is no room in progess
             </h3>
           )}

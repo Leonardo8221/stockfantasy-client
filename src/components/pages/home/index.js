@@ -60,7 +60,7 @@ const Home = ({ rooms, getRooms }) => {
             />
           ))
         ) : (
-          <h3 className="mt-5 text-dark noRoom">There is no room in progess</h3>
+          <h3 className="mt-5 text-dark no-rooms">There is no room in progess</h3>
         )}
       </div>
     </section>

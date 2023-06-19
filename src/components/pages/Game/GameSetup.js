@@ -1,13 +1,16 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import { formatRoom } from "../../../actions/room";
 import { getRoom, exitGame } from "../../../actions/room";
+import { v4 as uuidv4 } from "uuid";
 
+import StockListItem from "../../commons/StockListItem";
 import "./style.css";
 import PlayerBox from "../../commons/PlayerBox";
+import SelectedStockItem from "../../commons/SelectedStockItem";
 
 const GameSetup = ({
   getRoom,
@@ -15,11 +18,13 @@ const GameSetup = ({
   exitGame,
   rooms,
   user,
+  stocks,
   isRoomCreated,
   isJoined,
 }) => {
+  const [selectedStocks, setSelectedStocks] = useState([]);
+  const [budget, setBudget] = useState();
   const navigate = useNavigate();
-
   const { id } = useParams();
 
   useEffect(() => {
@@ -45,6 +50,47 @@ const GameSetup = ({
 
   const handleExitBtn = (roomID) => {
     exitGame(user._id, roomID);
+  };
+
+  const handleClickStocksListItem = (stockID) => {
+    if (user.budget < stocks.find((stock) => stock.id === stockID).price) {
+      alert("You can't buy the stock anymore");
+      return;
+    }
+    const index = selectedStocks.find((s) => s.stock.id === stockID);
+    if (index) {
+      const updatedSelectedStocks = [...selectedStocks];
+      index.length += 1;
+      setSelectedStocks(updatedSelectedStocks);
+    } else {
+      setSelectedStocks([
+        ...selectedStocks,
+        {
+          id: uuidv4(),
+          length: 1,
+          stock: stocks.find((stock) => stock.id === stockID),
+        },
+      ]);
+    }
+
+    user.budget = (
+      user.budget - stocks.find((stock) => stock.id === stockID).price
+    ).toFixed(2);
+    
+  };
+  const handleClickSelectedStock = (stockID) => {
+    const index = selectedStocks.find((s) => s.id === stockID);
+    if (index) {
+      const updatedSelectedStocks = [...selectedStocks];
+      index.length -= 1;
+      if (index.length === 0) {
+        console.log(updatedSelectedStocks, index);
+        const newArr = updatedSelectedStocks.filter(
+          (item) => item.id !== index.id
+        );
+        setSelectedStocks(newArr);
+      } else setSelectedStocks(updatedSelectedStocks);
+    }
   };
 
   return (
@@ -74,17 +120,13 @@ const GameSetup = ({
         <div className="left p-4">
           <h4>Stock List</h4>
           <div className="stock-list">
-            <div className="stock-list-item">Stock1</div>
-            <div className="stock-list-item">Stock2</div>
-            <div className="stock-list-item">Stock3</div>
-            <div className="stock-list-item">Stock4</div>
-            <div className="stock-list-item">Stock5</div>
-            <div className="stock-list-item">Stock6</div>
-            <div className="stock-list-item">Stock7</div>
-            <div className="stock-list-item">Stock8</div>
-            <div className="stock-list-item">Stock9</div>
-            <div className="stock-list-item">Stock10</div>
-            <div className="stock-list-item">Stock11</div>
+            {stocks.map((stock) => (
+              <StockListItem
+                key={stock.id}
+                {...stock}
+                onClick={() => handleClickStocksListItem(stock.id)}
+              />
+            ))}
           </div>
         </div>
         <div className="right p-4">
@@ -96,18 +138,24 @@ const GameSetup = ({
               </p>
             </div>
             <button className="btn btn-success" onClick={handleDoneBtn}>
-              Done
+              Ready
             </button>
           </div>
           <div className="selected-stocks">
-            <div className="selected-stocks-item">Stock2</div>
-            <div className="selected-stocks-item">Stock3</div>
-            <div className="selected-stocks-item">Stock1</div>
-            <div className="selected-stocks-item">Stock4</div>
-            <div className="selected-stocks-item">Stock1</div>
-            <div className="selected-stocks-item">Stock4</div>
-            <div className="selected-stocks-item">Stock1</div>
-            <div className="selected-stocks-item">Stock4</div>
+            {selectedStocks.length > 0 ? (
+              selectedStocks.map((stock) => (
+                <SelectedStockItem
+                  key={stock.id}
+                  onClick={() => handleClickSelectedStock(stock.id)}
+                  ticker={stock.stock.ticker}
+                  length={stock.length}
+                />
+              ))
+            ) : (
+              <h3 className="mt-5 text-dark text-center no-stocks">
+                Select the stocks
+              </h3>
+            )}
           </div>
         </div>
       </div>
@@ -120,6 +168,7 @@ GameSetup.propTypes = {
   formatRoom: PropTypes.func.isRequired,
   exitGame: PropTypes.func,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  stocks: PropTypes.arrayOf(PropTypes.object).isRequired,
   user: PropTypes.object.isRequired,
   isRoomCreated: PropTypes.bool.isRequired,
   isJoined: PropTypes.bool,
@@ -129,6 +178,7 @@ const mapStateToProps = (state) => ({
   rooms: state.roomReducer.rooms,
   isJoined: state.roomReducer.isJoined,
   isRoomCreated: state.roomReducer.isRoomCreated,
+  stocks: state.gameReducer.stocks,
   user: state.auth.user,
 });
 

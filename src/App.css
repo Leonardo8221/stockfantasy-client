@@ -621,7 +621,7 @@ button {
   padding: 20px 10px;
 }
 
-.game-rooms:has(.noRoom) {
+.game-rooms:has(.no-rooms) {
   display: flex !important;
   align-items: center;
   justify-content: center;

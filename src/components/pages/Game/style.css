@@ -37,86 +37,25 @@
 }
 
 .selected-stocks {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-around;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3%;
+    box-sizing: border-box;
+    padding: 20px 10px;
 }
 
-.selected-stocks .selected-stocks-item {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    justify-content: center;
+.selected-stocks:has(.no-stocks) {
+    display: flex !important;
     align-items: center;
-    padding: 50px 20px;
-    width: 20%;
-    gap: 10px;
-    position: relative;
-    border: 1px solid rgb(43, 120, 203);
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    justify-content: center;
 }
+
 
 .stock-list {
     display: flex;
     flex-direction: column;
 }
 
-.stock-list-item {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 50px;
-    border-bottom: 1px solid #b0b0b0;
-    user-select: none;
-    cursor: pointer;
-}
-
-.stock-list-item:hover {
-    background-color: #ddd;
-}
-
-.players-in-progress .player {
-    display: flex;
-    box-sizing: border-box;
-    align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
-
-.players-in-progress .player .player-info {
-    text-align: center;
-    background-color: #2e5fdbc6;
-    color: #fff;
-    font-weight: 600;
-    font-size: 34px!important;
-    align-self: stretch;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.players-in-progress .player .player-stocks {
-    padding: 10px;
-    height: 100%;
-}
-.players-in-progress .player .player-point {
-    background-color: #0d6493c5;
-    color: #fff;
-    text-align: center;
-    
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.players-in-progress .player .player-point .score{
-    
-    font-size: 62px;
-    margin: 0;
-}
 
 .mine {
     border: 3px solid #2856ff;
