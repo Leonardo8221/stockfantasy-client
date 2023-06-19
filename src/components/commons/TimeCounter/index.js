@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 
 const TimeCounter = ({ startedDate, duration }) => {
@@ -22,7 +23,7 @@ const TimeCounter = ({ startedDate, duration }) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [endDate]);
 
   return (
     <div>

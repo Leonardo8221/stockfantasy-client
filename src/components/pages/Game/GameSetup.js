@@ -1,27 +1,26 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-import { finvizor } from "finvizor";
-
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import { formatRoom } from "../../../actions/room";
-import { getRoom } from "../../../actions/room";
+import { getRoom, exitGame } from "../../../actions/room";
 
 import "./style.css";
 import PlayerBox from "../../commons/PlayerBox";
 
-const GameSetup = ({ getRoom, formatRoom, rooms, user, isRoomCreated }) => {
-  const navigated = useNavigate();
+const GameSetup = ({
+  getRoom,
+  formatRoom,
+  exitGame,
+  rooms,
+  user,
+  isRoomCreated,
+  isJoined,
+}) => {
+  const navigate = useNavigate();
 
   const { id } = useParams();
-
-  const getStocks = async () => {
-    const stocks = await finvizor.stock();
-    console.log(stocks);
-    return stocks;
-  };
 
   useEffect(() => {
     if (isRoomCreated) {
@@ -34,22 +33,35 @@ const GameSetup = ({ getRoom, formatRoom, rooms, user, isRoomCreated }) => {
   }, [getRoom, id]);
 
   useEffect(() => {
-    getStocks();
-  }, []);
+    if (!isJoined) {
+      navigate("/join-room");
+    }
+  }, [isJoined, navigate]);
 
   const handleDoneBtn = (e) => {
     e.target.disabled = true;
-    navigated("/gameRoom");
+    navigate("/gameRoom");
+  };
+
+  const handleExitBtn = (roomID) => {
+    exitGame(user._id, roomID);
   };
 
   return (
     <section className="container p-2">
-      <h1 className="large text-primary mb-4">
-        Game Setup -{" "}
-        <span className="text-success mb-0 text-uppercase">
-          {rooms.name && rooms.name}
-        </span>
-      </h1>
+      <div className="d-flex align-items justify-content-between">
+        <h1 className="large text-primary mb-4">
+          Game Setup -{" "}
+          <span className="text-success mb-0 text-uppercase">
+            {rooms.name && rooms.name}
+          </span>
+        </h1>
+        <div>
+          <button className="btn btn-danger" onClick={() => handleExitBtn(id)}>
+            Exit
+          </button>
+        </div>
+      </div>
 
       <div className="game-players mb-4">
         {rooms.players &&
@@ -106,15 +118,20 @@ const GameSetup = ({ getRoom, formatRoom, rooms, user, isRoomCreated }) => {
 GameSetup.propTypes = {
   getRoom: PropTypes.func.isRequired,
   formatRoom: PropTypes.func.isRequired,
-  rooms: PropTypes.arrayOf().isRequired,
+  exitGame: PropTypes.func,
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
   user: PropTypes.object.isRequired,
   isRoomCreated: PropTypes.bool.isRequired,
+  isJoined: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
   rooms: state.roomReducer.rooms,
-  user: state.auth.user,
+  isJoined: state.roomReducer.isJoined,
   isRoomCreated: state.roomReducer.isRoomCreated,
+  user: state.auth.user,
 });
 
-export default connect(mapStateToProps, { getRoom, formatRoom })(GameSetup);
+export default connect(mapStateToProps, { getRoom, formatRoom, exitGame })(
+  GameSetup
+);

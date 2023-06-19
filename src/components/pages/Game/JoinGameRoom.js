@@ -4,28 +4,51 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { getRooms } from "../../../actions/room";
+import { getRooms, joinGame } from "../../../actions/room";
 import RoomBox from "../../commons/RoomBox";
 
-const JoinGameRoom = ({ rooms, user, getRooms }) => {
+const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
   const [randomRooms, setRandomRooms] = useState([]);
   const [invitedRooms, setInvitedRooms] = useState([]);
+  const [roomID, setRoomID] = useState();
 
   const navigate = useNavigate();
-  const handleJoinGameRoom = (val) => {
-    navigate("/game-setup/" + val );
-  };
-
   useEffect(() => {
+    // const interval = setInterval(() => {
     getRooms(false);
+    // }, 1000)
+    // return () => clearInterval(interval);
   }, [getRooms]);
 
   useEffect(() => {
     if (rooms.length) {
-      setInvitedRooms(rooms.filter((room) => room.players.includes(user._id) && room.roomType === "private"));
+      setInvitedRooms(
+        rooms.filter(
+          (room) =>
+            room.players.includes(user._id) && room.roomType === "private"
+        )
+      );
       setRandomRooms(rooms.filter((room) => room.roomType === "random"));
     }
   }, [rooms, user._id]);
+  useEffect(() => {
+    if (isJoined) {
+      navigate("/game-setup/" + roomID);
+    }
+  }, [isJoined, navigate, roomID]);
+
+  const handleJoinGameRoom = (roomID) => {
+    if (
+      rooms.find((room) => room._id === roomID).roomType === "random" &&
+      !rooms.find((room) => room._id === roomID).players.includes(user._id) &&
+      rooms.find((room) => room._id === roomID).players.length >= 4
+    ) {
+      alert("This room is full of players");
+      return;
+    }
+    joinGame(user._id, roomID);
+    setRoomID(roomID);
+  };
 
   return (
     <section className="container">
@@ -44,7 +67,9 @@ const JoinGameRoom = ({ rooms, user, getRooms }) => {
               />
             ))
           ) : (
-            <h3 className="mt-5 text-dark text-center noRoom">There is no room in progess</h3>
+            <h3 className="mt-5 text-dark text-center noRoom">
+              There is no room in progess
+            </h3>
           )}
         </div>
       </div>
@@ -62,7 +87,9 @@ const JoinGameRoom = ({ rooms, user, getRooms }) => {
               />
             ))
           ) : (
-            <h3 className="mt-5 text-dark text-center noRoom">There is no room in progess</h3>
+            <h3 className="mt-5 text-dark text-center noRoom">
+              There is no room in progess
+            </h3>
           )}
         </div>
       </div>
@@ -73,12 +100,15 @@ const JoinGameRoom = ({ rooms, user, getRooms }) => {
 JoinGameRoom.propTypes = {
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
   user: PropTypes.object.isRequired,
+  isJoined: PropTypes.bool.isRequired,
   getRooms: PropTypes.func.isRequired,
+  joinGame: PropTypes.func,
 };
 
 const mapStateToProps = (state) => ({
   rooms: state.roomReducer.rooms,
+  isJoined: state.roomReducer.isJoined,
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps, { getRooms })(JoinGameRoom);
+export default connect(mapStateToProps, { getRooms, joinGame })(JoinGameRoom);

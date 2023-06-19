@@ -3,21 +3,20 @@ import {
   CREATE_ROOM_REQUEST_ERROR,
   CREATE_ROOM_REQUEST_SUCCESS,
   FORMAT_ROOM_REQUEST,
-  UPDATE_ROOM_REQUEST,
-  UPDATE_ROOM_REQUEST_ERROR,
-  UPDATE_ROOM_REQUEST_SUCCESS,
-  DELETE_ROOM_REQUEST,
-  DELETE_ROOM_REQUEST_ERROR,
-  DELETE_ROOM_REQUEST_SUCCESS,
   GET_ROOM_REQUEST,
   GET_ROOM_REQUEST_ERROR,
   GET_ROOM_REQUEST_SUCCESS,
   GET_ROOMS_REQUEST,
   GET_ROOMS_REQUEST_ERROR,
   GET_ROOMS_REQUEST_SUCCESS,
-  GET_ALL_ROOMS_REQUEST,
-  GET_ALL_ROOMS_REQUEST_ERROR,
-  GET_ALL_ROOMS_REQUEST_SUCCESS,
+  JOIN_GAME_REQUEST,
+  JOIN_GAME_REQUEST_ERROR,
+  JOIN_GAME_REQUEST_SUCCESS,
+  
+  EXIT_GAME_REQUEST,
+  EXIT_GAME_REQUEST_ERROR,
+  EXIT_GAME_REQUEST_SUCCESS,
+
 } from "../constants/roomConstant";
 
 const initialState = {
@@ -25,6 +24,7 @@ const initialState = {
   isRoomCreated: false,
   loading: false,
   error: null,
+  isJoined: false,
 };
 
 export const roomReducer = (state = initialState, action) => {
@@ -42,12 +42,23 @@ export const roomReducer = (state = initialState, action) => {
       return { ...state, loading: false, error: action.payload };
     case FORMAT_ROOM_REQUEST:
       return { ...state, isRoomCreated: false };
-
     case GET_ROOMS_REQUEST:
       return { ...state, loading: true };
     case GET_ROOMS_REQUEST_SUCCESS:
       return { ...state, loading: false, rooms: action.payload };
     case GET_ROOMS_REQUEST_ERROR:
+      return { ...state, loading: false, error: action.payload };
+    case JOIN_GAME_REQUEST:
+      return { ...state, loading: true };
+    case JOIN_GAME_REQUEST_SUCCESS:
+      return { ...state, loading: false, isJoined: true, rooms: action.payload };
+    case JOIN_GAME_REQUEST_ERROR:
+      return { ...state, loading: false, error: action.payload };
+    case EXIT_GAME_REQUEST:
+      return { ...state, loading: true };
+    case EXIT_GAME_REQUEST_SUCCESS:
+      return { ...state, loading: false, isJoined: false };
+    case EXIT_GAME_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
     case GET_ROOM_REQUEST:
       return { ...state, loading: true };

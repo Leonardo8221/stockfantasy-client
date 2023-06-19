@@ -9,13 +9,13 @@ import {
 
   FORMAT_ROOM_REQUEST,
 
-  UPDATE_ROOM_REQUEST,
-  UPDATE_ROOM_REQUEST_ERROR,
-  UPDATE_ROOM_REQUEST_SUCCESS,
+  JOIN_GAME_REQUEST,
+  JOIN_GAME_REQUEST_ERROR,
+  JOIN_GAME_REQUEST_SUCCESS,
 
-  DELETE_ROOM_REQUEST,
-  DELETE_ROOM_REQUEST_ERROR,
-  DELETE_ROOM_REQUEST_SUCCESS,
+  EXIT_GAME_REQUEST,
+  EXIT_GAME_REQUEST_ERROR,
+  EXIT_GAME_REQUEST_SUCCESS,
 
   GET_ROOM_REQUEST,
   GET_ROOM_REQUEST_ERROR,
@@ -24,11 +24,6 @@ import {
   GET_ROOMS_REQUEST,
   GET_ROOMS_REQUEST_ERROR,
   GET_ROOMS_REQUEST_SUCCESS,
-
-  GET_ALL_ROOMS_REQUEST,
-  GET_ALL_ROOMS_REQUEST_ERROR,
-  GET_ALL_ROOMS_REQUEST_SUCCESS,
-
 
 } from "../constants/roomConstant";
 
@@ -102,6 +97,43 @@ export const getRoom = (id) => async (dispatch) => {
     dispatch({ type: GET_ROOM_REQUEST_ERROR, payload: message });
   }
 };
+
+export const joinGame = (userID, roomID) => async (dispatch) => {
+  try {
+    dispatch({ type: JOIN_GAME_REQUEST});
+
+    const {data} = await api.put(`/rooms/join-game/${roomID}`, {userID});
+    dispatch({type: JOIN_GAME_REQUEST_SUCCESS, payload: data});
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch(setAlert(message, "error"));
+    dispatch({ type: JOIN_GAME_REQUEST_ERROR, payload: message });
+  }
+}
+export const exitGame = (userID, roomID) => async (dispatch) => {
+  try {
+    dispatch({ type: EXIT_GAME_REQUEST});
+
+    const {data} = await api.put(`/rooms/exit-game/${roomID}`, {userID});
+    dispatch({type: EXIT_GAME_REQUEST_SUCCESS, payload: data});
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch(setAlert(message, "error"));
+    dispatch({ type: EXIT_GAME_REQUEST_ERROR, payload: message });
+  }
+}
 
 export const getAllRooms = () => async (dispatch) => {};
 
