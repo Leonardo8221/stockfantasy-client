@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 const TimeCounter = ({ startedDate, duration }) => {
   const [remainingTime, setRemainingTime] = useState({});
-  
+
   let millisecondsInDay = 86400000; // 1000 * 60 * 60 * 24;
   let start = new Date(startedDate);
   const endDate = new Date(start.getTime() + duration * millisecondsInDay);
@@ -26,12 +26,10 @@ const TimeCounter = ({ startedDate, duration }) => {
   }, [endDate]);
 
   return (
-    <div>
-      <p className="text-center mb-0">
-        Time Remaining<br></br> {remainingTime.days} days, {remainingTime.hours}
-        :{remainingTime.minutes}:{remainingTime.seconds}
-      </p>
-    </div>
+    <p className="text-center mb-0">
+      Time Remaining<br></br> {remainingTime.days} days, {remainingTime.hours}:
+      {remainingTime.minutes}:{remainingTime.seconds}
+    </p>
   );
 };
 
