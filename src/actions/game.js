@@ -82,6 +82,7 @@ export const getGame = (id) => async (dispatch) => {
   }
 };
 
+
 export const startGame = (roomID) => async (dispatch) => {
   try {
     const { data } = await api.put(`/rooms/${roomID}`, {startedDate: new Date()});
