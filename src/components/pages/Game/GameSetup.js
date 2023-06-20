@@ -52,7 +52,7 @@ const GameSetup = ({
   useEffect(() => {
     getRoom(roomID);
     getGames(roomID);
-  }, [getGames, getRoom, roomID]);
+  }, [getGames, getRoom]);
 
   //if games are loaded successfully then set the state of seletedstocks
   useEffect(() => {
@@ -73,8 +73,8 @@ const GameSetup = ({
 
   //if all players are ready to start game then move to the game room page
   useEffect(() => {
-    if (isGameStarted) navigate(`/gameRoom/${roomID}`);
-  }, [roomID, isGameStarted, navigate]);
+    if (isGameStarted === true) navigate(`/gameRoom/${roomID}`);
+  }, [isGameStarted]);
 
   //Get all the users
   useEffect(() => {
@@ -276,11 +276,11 @@ GameSetup.propTypes = {
 
 const mapStateToProps = (state) => ({
   rooms: state.roomReducer.rooms,
-  isJoined: state.roomReducer.isJoined,
-  isRoomCreated: state.roomReducer.isRoomCreated,
+  isJoined: state.roomReducer,
+  isRoomCreated: state.roomReducer,
   games: state.gameReducer.games,
   stocks: state.gameReducer.stocks,
-  isGameStarted: state.roomReducer.isGameStarted,
+  isGameStarted: state.roomReducer,
   user: state.auth.user,
   users: state.userReducer.users,
 });
