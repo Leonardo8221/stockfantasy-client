@@ -32,12 +32,14 @@ const GameRoom = ({
     getAllUers();
   }, [getAllUers]);
 
-
   return (
     <section className="container">
       <div className="d-flex flex-row align-items-center justify-content-between mb-4">
         <h1 className="large text-primary mb-4">
           Game Room{" "}
+          <span style={{ textTransform: "uppercase" }}>
+            ({rooms.length > 0 && rooms[rooms.length - 1].name})
+          </span>
           {isGameFinished ? (
             <span className="lead text-dark">Playing...</span>
           ) : (

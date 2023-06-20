@@ -9,7 +9,14 @@ import PropTypes from "prop-types";
 import { createRoom } from "../../../actions/room";
 import { getAllUers } from "../../../actions/user";
 
-const GameCreateForm = ({ createRoom, getAllUers, rooms, users, isRoomCreated }) => {
+const GameCreateForm = ({
+  createRoom,
+  getAllUers,
+  rooms,
+  users,
+  user,
+  isRoomCreated,
+}) => {
   const [validated, setValidated] = useState(false);
   const [isPlayersFull, setIsPlayersFull] = useState(false);
   const [isToastShow, setIsToastShow] = useState(false);
@@ -38,8 +45,8 @@ const GameCreateForm = ({ createRoom, getAllUers, rooms, users, isRoomCreated })
   }, [formData.players.length]);
 
   useEffect(() => {
-   if(isRoomCreated && rooms.length) {
-      navigator("/game-setup/" + rooms[rooms.length-1]._id)
+    if (isRoomCreated && rooms.length) {
+      navigator("/game-setup/" + rooms[rooms.length - 1]._id);
     }
   }, [isRoomCreated, navigator, rooms]);
 
@@ -79,8 +86,9 @@ const GameCreateForm = ({ createRoom, getAllUers, rooms, users, isRoomCreated })
   //Filtered users
   const filteredUsers = users.filter((item) => {
     return (
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.email.toLowerCase().includes(searchTerm.toLowerCase())
+      (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      item._id === user._id
     );
   });
 
@@ -168,7 +176,7 @@ const GameCreateForm = ({ createRoom, getAllUers, rooms, users, isRoomCreated })
               {formData.players.map((userID) => (
                 <div className="d-flex gap-4 slected-user" key={userID}>
                   <div className="user-info">
-                    <p className="mb-0">
+                    <p className="mb-0 name">
                       {users.find((obj) => obj._id === userID).name}
                     </p>
                     <p className="text-muted mb-0">
@@ -236,6 +244,7 @@ const mapStateToProps = (state) => ({
   users: state.userReducer.users,
   rooms: state.roomReducer.rooms,
   isRoomCreated: state.roomReducer.isRoomCreated,
+  user: state.auth.user,
 });
 
 export default connect(mapStateToProps, { createRoom, getAllUers })(

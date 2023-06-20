@@ -52,11 +52,19 @@ const GameSetup = ({
   useEffect(() => {
     getRoom(roomID);
     getGames(roomID);
+    const interval = setInterval(() => {
+      getRoom(roomID);
+      getGames(roomID);
+    }, 5000);
+    return () => clearInterval(interval);
   }, [getGames, getRoom]);
 
   //if games are loaded successfully then set the state of seletedstocks
   useEffect(() => {
-    if (games.length > 0 && games.find((game) => game.roomID === roomID && game.playerID === user._id)) {
+    if (
+      games.length > 0 &&
+      games.find((game) => game.roomID === roomID && game.playerID === user._id)
+    ) {
       setSelectedStocks(
         games.find((game) => game.playerID === user._id).stocks
       );
@@ -73,12 +81,17 @@ const GameSetup = ({
 
   //if all players are ready to start game then move to the game room page
   useEffect(() => {
+    localStorage.setItem("isJoined", false);
     if (isGameStarted === true) navigate(`/gameRoom/${roomID}`);
-  }, [isGameStarted]);
+  }, [isGameStarted, navigate, roomID]);
 
   //Get all the users
   useEffect(() => {
     getAllUers();
+    const interval = setInterval(() => {
+      getAllUers();
+    }, 10000);
+    return () => clearInterval(interval);
   }, [getAllUers]);
 
   //if all users of the room are ready then start the game.
@@ -91,7 +104,7 @@ const GameSetup = ({
         startGame(roomID);
       }
     }
-  }, [rooms, games, startGame]);
+  }, [rooms, games, roomID, startGame]);
 
   const handleReadyBtn = (e) => {
     e.preventDefault();
@@ -280,7 +293,7 @@ const mapStateToProps = (state) => ({
   isRoomCreated: state.roomReducer,
   games: state.gameReducer.games,
   stocks: state.gameReducer.stocks,
-  isGameStarted: state.roomReducer,
+  isGameStarted: state.roomReducer.isGameStarted,
   user: state.auth.user,
   users: state.userReducer.users,
 });

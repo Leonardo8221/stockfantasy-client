@@ -86,8 +86,7 @@ export const startGame = (roomID) => async (dispatch) => {
   try {
     const { data } = await api.put(`/rooms/${roomID}`, {startedDate: new Date()});
     dispatch({ type: START_GAME_REQUEST, payload: data });
-
-    dispatch(setAlert("Game started", "success"));
+    // dispatch(setAlert("Game started", "success"));
   } catch (error) {
     const message =
       error.response && error.response.data.message

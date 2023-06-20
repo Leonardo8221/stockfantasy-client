@@ -63,3 +63,17 @@
     box-sizing: border-box;
     padding: 20px 0;
 }
+
+.slected-user{
+    display: flex;
+    
+    box-sizing: border-box;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+.slected-user .user-info .name {
+    text-transform: capitalize;
+    font-weight: 600;
+    font-size: 22px;
+}

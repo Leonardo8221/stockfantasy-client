@@ -85,7 +85,7 @@ export const roomReducer = (state = initialState, action) => {
       return {
         ...state,
         isJoined: false,
-        rooms: action.payload,
+        rooms: [...state.rooms, action.payload],
         isGameStarted: true,
       };
 
