@@ -7,14 +7,17 @@ import {
   //LOGIN_FAIL,
   LOGOUT,
   ACCOUNT_DELETED,
-  UPDATE_PASSWORD
-} from '../constants/userConstant';
+  UPDATE_PASSWORD,
+  UPDATE_USER_REQUEST,
+  UPDATE_USER_REQUEST_ERROR,
+  UPDATE_USER_REQUEST_SUCCESS,
+} from "../constants/userConstant";
 
 const initialState = {
-  token: localStorage.getItem('token'),
+  token: localStorage.getItem("token"),
   isAuthenticated: null,
   loading: true,
-  user: null
+  user: null,
 };
 
 function authReducer(state = initialState, action) {
@@ -26,7 +29,7 @@ function authReducer(state = initialState, action) {
         ...state,
         isAuthenticated: true,
         loading: false,
-        user: payload
+        user: payload,
       };
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
@@ -34,14 +37,14 @@ function authReducer(state = initialState, action) {
         ...state,
         ...payload,
         isAuthenticated: true,
-        loading: false
+        loading: false,
       };
 
     case UPDATE_PASSWORD:
       return {
         ...state,
         ...payload,
-        loading: false
+        loading: false,
       };
 
     case ACCOUNT_DELETED:
@@ -52,8 +55,16 @@ function authReducer(state = initialState, action) {
         token: null,
         isAuthenticated: false,
         loading: false,
-        user: null
+        user: null,
       };
+
+    case UPDATE_USER_REQUEST:
+      return { ...state, loading: true };
+    case UPDATE_USER_REQUEST_SUCCESS:
+      return { ...state, loading: false, user: action.payload };
+    case UPDATE_USER_REQUEST_ERROR:
+      return { ...state, loading: false, error: action.payload };
+
     default:
       return state;
   }

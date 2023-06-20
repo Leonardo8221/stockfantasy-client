@@ -1,21 +1,26 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import { formatRoom } from "../../../actions/room";
 import { getRoom, exitGame } from "../../../actions/room";
-import { v4 as uuidv4 } from "uuid";
+import { createGame } from "../../../actions/game";
+import { updateUser } from "../../../actions/user";
 
 import StockListItem from "../../commons/StockListItem";
-import "./style.css";
 import PlayerBox from "../../commons/PlayerBox";
 import SelectedStockItem from "../../commons/SelectedStockItem";
+import "./style.css";
 
 const GameSetup = ({
   getRoom,
   formatRoom,
   exitGame,
+  createGame,
+  updateUser,
   rooms,
   user,
   stocks,
@@ -23,7 +28,6 @@ const GameSetup = ({
   isJoined,
 }) => {
   const [selectedStocks, setSelectedStocks] = useState([]);
-  const [budget, setBudget] = useState();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -43,9 +47,12 @@ const GameSetup = ({
     }
   }, [isJoined, navigate]);
 
-  const handleDoneBtn = (e) => {
+  const handleReadyBtn = (e) => {
+    e.preventDefault();
     e.target.disabled = true;
-    navigate("/gameRoom");
+    // createGame({ user, id, selectedStocks });
+    updateUser(user);
+    // navigate(`/gameRoom/${id}`);
   };
 
   const handleExitBtn = (roomID) => {
@@ -76,7 +83,6 @@ const GameSetup = ({
     user.budget = (
       user.budget - stocks.find((stock) => stock.id === stockID).price
     ).toFixed(2);
-    
   };
   const handleClickSelectedStock = (stockID) => {
     const index = selectedStocks.find((s) => s.id === stockID);
@@ -113,7 +119,7 @@ const GameSetup = ({
         {rooms.players &&
           rooms.players
             .filter((item) => item !== user._id)
-            .map((item) => <PlayerBox key={item} name="bbb" isReady={true} />)}
+            .map((item) => <PlayerBox key={item} name="bbb" isReady={false} />)}
       </div>
 
       <div className="game-setup-container">
@@ -137,7 +143,7 @@ const GameSetup = ({
                 <span className="large text-success">${user.budget}</span>
               </p>
             </div>
-            <button className="btn btn-success" onClick={handleDoneBtn}>
+            <button className="btn btn-success" onClick={(e)=>handleReadyBtn(e)}>
               Ready
             </button>
           </div>
@@ -167,6 +173,8 @@ GameSetup.propTypes = {
   getRoom: PropTypes.func.isRequired,
   formatRoom: PropTypes.func.isRequired,
   exitGame: PropTypes.func,
+  createGame: PropTypes.func,
+  updateUser: PropTypes.func,
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
   stocks: PropTypes.arrayOf(PropTypes.object).isRequired,
   user: PropTypes.object.isRequired,
@@ -182,6 +190,10 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps, { getRoom, formatRoom, exitGame })(
-  GameSetup
-);
+export default connect(mapStateToProps, {
+  getRoom,
+  formatRoom,
+  exitGame,
+  createGame,
+  updateUser,
+})(GameSetup);

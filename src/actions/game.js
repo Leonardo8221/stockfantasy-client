@@ -20,6 +20,7 @@ import {
 
 } from "../constants/gameConstant";
 
+
 export const createGame = (formData) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_GAME_REQUEST });
@@ -27,7 +28,9 @@ export const createGame = (formData) => async (dispatch) => {
     const { data } = await api.post("/games", formData);
 
     dispatch({ type: CREATE_GAME_REQUEST_SUCCESS, payload: data });
-    dispatch(setAlert(`Created Game successfully-${data.name}`, "success"));
+
+   
+    dispatch(setAlert(`Game started-${data.name}`, "success"));
     
   } catch (error) {
     const message =

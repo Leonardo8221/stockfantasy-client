@@ -2,6 +2,10 @@ import {
   GET_ALL_USERS_REQUEST,
   GET_ALL_USERS_REQUEST_SUCCESS,
   GET_ALL_USERS_REQUEST_ERROR,
+
+  UPDATE_USER_REQUEST,
+  UPDATE_USER_REQUEST_ERROR,
+  UPDATE_USER_REQUEST_SUCCESS
 } from "../constants/userConstant";
 
 const initialState = {
@@ -18,6 +22,7 @@ export const userReducer = (state = initialState, action) => {
       return { ...state, loading: false, users: action.payload };
     case GET_ALL_USERS_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
+   
     default:
       return state;
   }
