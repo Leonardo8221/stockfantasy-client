@@ -19,6 +19,7 @@ const GameResult = ({
   getRoom,
   getGames,
   getAllUers,
+  getScores
 }) => {
   const { roomID } = useParams();
 
@@ -26,7 +27,8 @@ const GameResult = ({
   useEffect(() => {
     getRoom(roomID);
     getGames(roomID);
-  }, [getGames, getRoom, roomID]);
+    getScores(roomID);
+  }, [getGames, getRoom, getScores, roomID]);
 
   //Get all the users
   useEffect(() => {
