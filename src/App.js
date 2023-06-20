@@ -59,7 +59,7 @@ const App = () => {
           <Route path="login" element={<Login />} />
           <Route path="home" element={<PrivateRoute component={Home} />} />
           <Route
-            path="gameRoom/:id"
+            path="gameRoom/:roomID"
             element={<PrivateRoute component={GameRoom} />}
           />
           <Route
@@ -71,11 +71,11 @@ const App = () => {
             element={<PrivateRoute component={JoinGameRoom} />}
           />
           <Route
-            path="game-setup/:id"
+            path="game-setup/:roomID"
             element={<PrivateRoute component={GameSetup} />}
           />
           <Route
-            path="game-result/:id"
+            path="game-result/:roomID"
             element={<PrivateRoute component={GameResult} />}
           />
           <Route

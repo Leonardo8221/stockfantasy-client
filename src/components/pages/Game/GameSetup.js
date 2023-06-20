@@ -25,11 +25,12 @@ const GameSetup = ({
   user,
   stocks,
   isRoomCreated,
+  isGameStarted,
   isJoined,
 }) => {
   const [selectedStocks, setSelectedStocks] = useState([]);
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { roomID } = useParams();
 
   useEffect(() => {
     if (isRoomCreated) {
@@ -38,8 +39,8 @@ const GameSetup = ({
   }, [formatRoom, isRoomCreated]);
 
   useEffect(() => {
-    getRoom(id);
-  }, [getRoom, id]);
+    getRoom(roomID);
+  }, [getRoom, roomID]);
 
   useEffect(() => {
     if (!isJoined) {
@@ -47,12 +48,15 @@ const GameSetup = ({
     }
   }, [isJoined, navigate]);
 
+  useEffect(() => {
+    if (isGameStarted) navigate(`/gameRoom/${roomID}`);
+  }, [roomID, isGameStarted, navigate]);
+
   const handleReadyBtn = (e) => {
     e.preventDefault();
     e.target.disabled = true;
-    // createGame({ user, id, selectedStocks });
+    createGame({ roomID, selectedStocks });
     updateUser(user);
-    // navigate(`/gameRoom/${id}`);
   };
 
   const handleExitBtn = (roomID) => {
@@ -109,7 +113,7 @@ const GameSetup = ({
           </span>
         </h1>
         <div>
-          <button className="btn btn-danger" onClick={() => handleExitBtn(id)}>
+          <button className="btn btn-danger" onClick={() => handleExitBtn(roomID)}>
             Exit
           </button>
         </div>
@@ -143,7 +147,10 @@ const GameSetup = ({
                 <span className="large text-success">${user.budget}</span>
               </p>
             </div>
-            <button className="btn btn-success" onClick={(e)=>handleReadyBtn(e)}>
+            <button
+              className="btn btn-success"
+              onClick={(e) => handleReadyBtn(e)}
+            >
               Ready
             </button>
           </div>
@@ -179,6 +186,7 @@ GameSetup.propTypes = {
   stocks: PropTypes.arrayOf(PropTypes.object).isRequired,
   user: PropTypes.object.isRequired,
   isRoomCreated: PropTypes.bool.isRequired,
+  isGameStarted: PropTypes.bool.isRequired,
   isJoined: PropTypes.bool,
 };
 
@@ -187,6 +195,7 @@ const mapStateToProps = (state) => ({
   isJoined: state.roomReducer.isJoined,
   isRoomCreated: state.roomReducer.isRoomCreated,
   stocks: state.gameReducer.stocks,
+  isGameStarted: state.gameReducer.isGameStarted,
   user: state.auth.user,
 });
 
