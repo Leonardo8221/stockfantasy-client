@@ -7,10 +7,17 @@ import { connect } from "react-redux";
 import { getRooms, joinGame } from "../../../actions/room";
 import RoomBox from "../../commons/RoomBox";
 
-const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
+const JoinGameRoom = ({
+  rooms,
+  user,
+   isJoined,
+  getRooms,
+  joinGame,
+}) => {
   const [randomRooms, setRandomRooms] = useState([]);
   const [invitedRooms, setInvitedRooms] = useState([]);
   const [roomID, setRoomID] = useState();
+  // const [isJoined, setIsJoined] = useState(localStorage.getItem('isJoined'));
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -34,6 +41,7 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
   useEffect(() => {
     if (isJoined) {
       navigate("/game-setup/" + roomID);
+      localStorage.setItem("isJoined", isJoined);
     }
   }, [isJoined, navigate, roomID]);
 

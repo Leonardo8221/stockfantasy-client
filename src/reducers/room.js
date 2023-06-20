@@ -19,12 +19,14 @@ import {
 
 } from "../constants/roomConstant";
 
+import { LOGOUT } from "../constants/userConstant";
+
 const initialState = {
   rooms: [],
   isRoomCreated: false,
   loading: false,
   error: null,
-  isJoined: false,
+  isJoined: localStorage.getItem("isJoined"),
 };
 
 export const roomReducer = (state = initialState, action) => {
@@ -51,8 +53,10 @@ export const roomReducer = (state = initialState, action) => {
     case JOIN_GAME_REQUEST:
       return { ...state, loading: true };
     case JOIN_GAME_REQUEST_SUCCESS:
+      // localStorage.setItem('isJoined', true);
       return { ...state, loading: false, isJoined: true, rooms: action.payload };
     case JOIN_GAME_REQUEST_ERROR:
+      // localStorage.setItem('isJoined', false);
       return { ...state, loading: false, error: action.payload };
     case EXIT_GAME_REQUEST:
       return { ...state, loading: true };
@@ -70,7 +74,10 @@ export const roomReducer = (state = initialState, action) => {
       };
     case GET_ROOM_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
-
+case LOGOUT:
+  return {
+    ...state, isJoined: false
+  }
     default:
       return state;
   }

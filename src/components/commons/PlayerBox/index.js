@@ -1,11 +1,13 @@
 import "./style.scss";
 const PlayerBox = (props) => {
-  const { name, isReady } = props;
+  const { name, email, isReady } = props;
   return (
     <div className="playerBox">
       <div className="playerBox-info">
         <i className="playerBox-info-icon fa fa-user"></i>
-        <span className="playerBox-info-name">{name}</span>
+        <div className="playerBox-info-name">
+          <strong className="mb-0">{name}</strong>
+        </div>
       </div>
       <div className="playerBox-caption">
         {isReady ? (

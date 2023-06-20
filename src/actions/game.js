@@ -57,7 +57,6 @@ export const getGames = (roomID) => async (dispatch) => {
     dispatch({ type: GET_GAMES_REQUEST });
 
     const { data } = await api.get(`/games?roomID=${roomID}`);
-
     dispatch({ type: GET_GAMES_REQUEST_SUCCESS, payload: data });
     
   } catch (error) {

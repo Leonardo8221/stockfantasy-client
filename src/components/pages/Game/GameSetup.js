@@ -10,6 +10,7 @@ import { getRoom, exitGame } from "../../../actions/room";
 import { createGame } from "../../../actions/game";
 import { updateUser } from "../../../actions/user";
 import { getGames } from "../../../actions/game";
+import { getAllUers } from "../../../actions/user";
 
 import StockListItem from "../../commons/StockListItem";
 import PlayerBox from "../../commons/PlayerBox";
@@ -23,6 +24,8 @@ const GameSetup = ({
   createGame,
   updateUser,
   getGames,
+  getAllUers,
+
   rooms,
   user,
   games,
@@ -30,31 +33,51 @@ const GameSetup = ({
   isRoomCreated,
   isGameStarted,
   isJoined,
+  users,
 }) => {
   const [selectedStocks, setSelectedStocks] = useState([]);
+  const [isReady, setIsReady] = useState(false);
   const navigate = useNavigate();
   const { roomID } = useParams();
 
+  // if user is joined then isRoomCreated set to false
   useEffect(() => {
     if (isRoomCreated) {
       formatRoom();
     }
   }, [formatRoom, isRoomCreated]);
 
+  //Load room, and games by room ID
   useEffect(() => {
     getRoom(roomID);
     getGames(roomID);
-  }, [getRoom, getGames, roomID]);
+  }, [getGames, getRoom, roomID]);
 
+  //if games are loaded successfully then set the state of seletedstocks
+  useEffect(() => {
+    if (games.length > 0 && games.find((game) => game.playerID === user._id)) {
+      setSelectedStocks(
+        games.find((game) => game.playerID === user._id).stocks
+      );
+    }
+  }, [games.length]);
+
+  //if player exit game then move to the join game page
   useEffect(() => {
     if (!isJoined) {
       navigate("/join-room");
     }
   }, [isJoined, navigate]);
 
+  //if all players are ready to start game then move to the game room page
   useEffect(() => {
     if (isGameStarted) navigate(`/gameRoom/${roomID}`);
   }, [roomID, isGameStarted, navigate]);
+
+  //Get all the users
+  useEffect(() => {
+    getAllUers();
+  }, [getAllUers]);
 
   const handleReadyBtn = (e) => {
     e.preventDefault();
@@ -68,7 +91,10 @@ const GameSetup = ({
   };
 
   const handleClickStocksListItem = (stockID) => {
-    if (user.budget < stocks.find((stock) => stock.id === stockID).price) {
+    if (
+      user.budget < stocks.find((stock) => stock.id === stockID).price ||
+      (games.length > 0 && games.find((game) => game.playerID === user._id))
+    ) {
       alert("You can't buy the stock anymore");
       return;
     }
@@ -92,19 +118,21 @@ const GameSetup = ({
       user.budget - stocks.find((stock) => stock.id === stockID).price
     ).toFixed(2);
   };
+
   const handleClickSelectedStock = (stockID) => {
     const index = selectedStocks.find((s) => s.id === stockID);
     if (index) {
       const updatedSelectedStocks = [...selectedStocks];
       index.length -= 1;
       if (index.length === 0) {
-        console.log(updatedSelectedStocks, index);
         const newArr = updatedSelectedStocks.filter(
           (item) => item.id !== index.id
         );
         setSelectedStocks(newArr);
       } else setSelectedStocks(updatedSelectedStocks);
     }
+
+    user.budget = (Number(user.budget) + Number(index.stock.price)).toFixed(2);
   };
 
   return (
@@ -117,7 +145,10 @@ const GameSetup = ({
           </span>
         </h1>
         <div>
-          <button className="btn btn-danger" onClick={() => handleExitBtn(roomID)}>
+          <button
+            className="btn btn-danger"
+            onClick={() => handleExitBtn(roomID)}
+          >
             Exit
           </button>
         </div>
@@ -127,7 +158,19 @@ const GameSetup = ({
         {rooms.players &&
           rooms.players
             .filter((item) => item !== user._id)
-            .map((item) => <PlayerBox key={item} name="bbb" isReady={false} />)}
+            .map((item) => (
+              <PlayerBox
+                key={item}
+                name={users.length > 0 && users.find(user => user._id === item).name}
+                email={users.length > 0 && users.find(user => user._id === item).email}
+                isReady={
+                  games.length > 0 &&
+                  games.find((game) => game.playerID === item)
+                    ? true
+                    : false
+                }
+              />
+            ))}
       </div>
 
       <div className="game-setup-container">
@@ -154,18 +197,30 @@ const GameSetup = ({
             <button
               className="btn btn-success"
               onClick={(e) => handleReadyBtn(e)}
+              disabled={
+                games.length > 0 &&
+                games.find((game) => game.playerID === user._id)
+                  ? true
+                  : false
+              }
             >
               Ready
             </button>
           </div>
           <div className="selected-stocks">
-            {games.length>0 && games.find(game => game.playerID === user._id).stocks.length > 0 ? (
-              games.find(game => game.playerID === user._id).stocks.map((stock) => (
+            {selectedStocks.length > 0 ? (
+              selectedStocks.map((stock) => (
                 <SelectedStockItem
                   key={stock.id}
                   onClick={() => handleClickSelectedStock(stock.id)}
                   ticker={stock.stock.ticker}
                   length={stock.length}
+                  disabled={
+                    games.length > 0 &&
+                    games.find((game) => game.playerID === user._id)
+                      ? true
+                      : false
+                  }
                 />
               ))
             ) : (
@@ -187,6 +242,7 @@ GameSetup.propTypes = {
   createGame: PropTypes.func,
   updateUser: PropTypes.func,
   getGames: PropTypes.func,
+  getAllUers: PropTypes.func,
   rooms: PropTypes.object,
   games: PropTypes.arrayOf(PropTypes.object),
   stocks: PropTypes.arrayOf(PropTypes.object),
@@ -204,6 +260,7 @@ const mapStateToProps = (state) => ({
   stocks: state.gameReducer.stocks,
   isGameStarted: state.gameReducer.isGameStarted,
   user: state.auth.user,
+  users: state.userReducer.users,
 });
 
 export default connect(mapStateToProps, {
@@ -212,5 +269,6 @@ export default connect(mapStateToProps, {
   exitGame,
   createGame,
   updateUser,
-  getGames
+  getGames,
+  getAllUers,
 })(GameSetup);
