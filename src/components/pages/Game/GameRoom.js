@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import TimeCounter from "../../commons/TimeCounter";
 
@@ -21,14 +21,14 @@ const GameRoom = ({
   getGames,
   getAllUers,
   giveScoreToUser,
-  endGame
+  endGame,
 }) => {
-
   const [isGameFinished, setIsGameFinished] = useState(true);
   const [evaluations, setEvaluations] = useState([]);
   const [endTime, setEndtime] = useState();
 
   const { roomID } = useParams();
+  const navigate = useNavigate();
 
   //Get room and games from server
   useEffect(() => {
@@ -40,6 +40,10 @@ const GameRoom = ({
   useEffect(() => {
     getAllUers();
   }, [getAllUers]);
+
+  useEffect(() => {
+    if (isGameFinished) navigate(`/game-result/${roomID}/`);
+  }, [isGameFinished, navigate, roomID]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stockPrices = {
@@ -137,11 +141,7 @@ const GameRoom = ({
           <span style={{ textTransform: "uppercase" }}>
             ({rooms.length > 0 && rooms[rooms.length - 1].name})
           </span>
-          {isGameFinished ? (
-            <span className="lead text-dark">Playing...</span>
-          ) : (
-            <span className="lead text-danger">Finished</span>
-          )}
+          <span className="lead text-dark">Playing...</span>
         </h1>
         <Link className="btn btn-danger" to="/home">
           Back
@@ -171,7 +171,11 @@ const GameRoom = ({
                 ).stocks
               }
               mine={user._id === player ? true : false}
-              score={scores.length>0 ? scores.filter(score => score.playerID === player) : 0}
+              score={
+                scores.length > 0
+                  ? scores.filter((score) => score.playerID === player)
+                  : 0
+              }
               isPlaying={true}
             />
           ))}
@@ -204,5 +208,5 @@ export default connect(mapStateToProps, {
   getGames,
   getAllUers,
   giveScoreToUser,
-  endGame
+  endGame,
 })(GameRoom);

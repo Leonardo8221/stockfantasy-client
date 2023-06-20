@@ -1,91 +1,101 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 
-import PlayingUserBox from '../../commons/PlayingUserBox';
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { getRoom } from "../../../actions/room";
+import { getGames } from "../../../actions/game";
+import { getAllUers } from "../../../actions/user";
+import { getScores } from "../../../actions/score";
 
-const GameResult = () => {
-  const [isGameFinished, setIsGameFinished] = useState(false);
+import PlayingUserBox from "../../commons/PlayingUserBox";
+
+const GameResult = ({
+  rooms,
+  users,
+  user,
+  scores,
+  games,
+  getRoom,
+  getGames,
+  getAllUers,
+}) => {
+  const { roomID } = useParams();
+
+  //Get room and games from server
+  useEffect(() => {
+    getRoom(roomID);
+    getGames(roomID);
+  }, [getGames, getRoom, roomID]);
+
+  //Get all the users
+  useEffect(() => {
+    getAllUers();
+  }, [getAllUers]);
 
   return (
     <section className="container">
       <div className="d-flex flex-row align-items-center justify-content-between mb-4">
         <h1 className="large text-primary mb-4">
-          Game Room {' '}
-          {isGameFinished ? (
-            <span className="lead text-dark">Playing...</span>
-          ) : (
-            <span className="lead text-danger">Finished</span>
-          )}
+          Game Room{" "}
+          <span style={{ textTransform: "uppercase" }}>
+            ({rooms.length > 0 && rooms[rooms.length - 1].name})
+          </span>
+          <span className="lead text-danger">Finished</span>
         </h1>
         <Link className="btn btn-danger" to="/home">
           Back
         </Link>
       </div>
 
-      <div className="players-in-progress d-flex flex-column gap-3 py-2">
-        <div className="player">
-          <div className="player-info col-3">
-            <p className="mb-0">Player 3</p>
-          </div>
-          <div className="player-stocks col-7">
-            <div className="player-stocks-item">player-stocks-item2</div>
-            <div className="player-stocks-item">player-stocks-item4</div>
-            <div className="player-stocks-item">player-stocks-item6</div>
-            <div className="player-stocks-item">player-stocks-item11</div>
-          </div>
-          <div className="player-point col-2">
-            <p className="score">15</p>
-            <p className="score-caption">Current Point</p>
-          </div>
-        </div>
-        <div className="player mine">
-          <div className="player-info col-3">
-            <p className="mb-0">Player 4</p>
-          </div>
-          <div className="player-stocks col-7">
-            <div className="player-stocks-item">player-stocks-item2</div>
-            <div className="player-stocks-item">player-stocks-item4</div>
-            <div className="player-stocks-item">player-stocks-item6</div>
-            <div className="player-stocks-item">player-stocks-item11</div>
-          </div>
-          <div className="player-point col-2">
-            <p className="score">12</p>
-            <p className="score-caption">Current Point</p>
-          </div>
-        </div>
-        <div className="player">
-          <div className="player-info col-3">
-            <p className="mb-0">Player 2</p>
-          </div>
-          <div className="player-stocks col-7">
-            <div className="player-stocks-item">player-stocks-item2</div>
-            <div className="player-stocks-item">player-stocks-item4</div>
-            <div className="player-stocks-item">player-stocks-item6</div>
-            <div className="player-stocks-item">player-stocks-item11</div>
-          </div>
-          <div className="player-point col-2">
-            <p className="score">8</p>
-            <p className="score-caption">Current Point</p>
-          </div>
-        </div>
-        <div className="player">
-          <div className="player-info col-3">
-            <p>Player 1</p>
-          </div>
-          <div className="player-stocks col-7">
-            <div className="player-stocks-item">player-stocks-item2</div>
-            <div className="player-stocks-item">player-stocks-item4</div>
-            <div className="player-stocks-item">player-stocks-item6</div>
-            <div className="player-stocks-item">player-stocks-item11</div>
-          </div>
-          <div className="player-point col-2">
-            <p className="score">6</p>
-            <p className="score-caption">Current Point</p>
-          </div>
-        </div>
+      <div className="players-in-progress">
+        {rooms.length > 0 &&
+          rooms[rooms.length - 1].players.map((player) => (
+            <PlayingUserBox
+              key={player}
+              user={
+                users.length > 0 && users.find((user) => user._id === player)
+              }
+              stocks={
+                games.length > 0 &&
+                games.find(
+                  (game) => game.roomID === roomID && game.playerID === player
+                ).stocks
+              }
+              mine={user._id === player ? true : false}
+              score={
+                scores.length > 0
+                  ? scores.filter((score) => score.playerID === player)
+                  : 0
+              }
+              isPlaying={true}
+            />
+          ))}
       </div>
     </section>
   );
 };
 
-export default GameResult;
+GameResult.propTypes = {
+  getRoom: PropTypes.func,
+  getGames: PropTypes.func,
+  getAllUers: PropTypes.func,
+  getScores: PropTypes.func,
+  rooms: PropTypes.arrayOf(PropTypes.object),
+  users: PropTypes.arrayOf(PropTypes.object),
+  scores: PropTypes.arrayOf(PropTypes.object),
+};
+
+const mapStateToProps = (state) => ({
+  rooms: state.roomReducer.rooms,
+  users: state.userReducer.users,
+  scores: state.scoreReducer.scores,
+  games: state.gameReducer.games,
+  user: state.auth.user,
+});
+export default connect(mapStateToProps, {
+  getRoom,
+  getGames,
+  getAllUers,
+  getScores,
+})(GameResult);
