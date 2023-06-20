@@ -8,15 +8,18 @@ import { connect } from "react-redux";
 import { getRoom } from "../../../actions/room";
 import { getGames } from "../../../actions/game";
 import { getAllUers } from "../../../actions/user";
+import PlayingUserBox from "../../commons/PlayingUserBox";
 
-const GameRoom = ({ rooms, getRoom }) => {
+const GameRoom = ({ rooms, users, games, getRoom, getGames, getAllUers }) => {
   const [isGameFinished, setIsGameFinished] = useState(true);
 
   const { roomID } = useParams();
 
   useEffect(() => {
     getRoom(roomID);
-  }, [getRoom, roomID]);
+    getGames(roomID);
+    getAllUers();
+  }, [getAllUers, getGames, getRoom, roomID]);
 
   return (
     <section className="container">
@@ -36,74 +39,24 @@ const GameRoom = ({ rooms, getRoom }) => {
       {rooms.length > 0 && (
         <div className="text-success" style={{ fontSize: "24px" }}>
           <TimeCounter
-          startedDate={rooms[rooms.length - 1].startedDate}
-          duration={rooms[rooms.length - 1].duration}
-        />
+            startedDate={rooms[rooms.length - 1].startedDate}
+            duration={rooms[rooms.length - 1].duration}
+          />
         </div>
-        
       )}
 
       <div className="players-in-progress d-flex flex-column gap-3 py-2">
-        <div className="player">
-          <div className="player-info col-3">
-            <p className="mb-0">Player 1</p>
-          </div>
-          <div className="player-stocks col-7">
-            <div className="player-stocks-item">player-stocks-item2</div>
-            <div className="player-stocks-item">player-stocks-item4</div>
-            <div className="player-stocks-item">player-stocks-item6</div>
-            <div className="player-stocks-item">player-stocks-item11</div>
-          </div>
-          <div className="player-point col-2">
-            <p className="score">4</p>
-            <p className="score-caption">Current Point</p>
-          </div>
-        </div>
-        <div className="player mine">
-          <div className="player-info col-3">
-            <p className="mb-0">Player 3</p>
-          </div>
-          <div className="player-stocks col-7">
-            <div className="player-stocks-item">player-stocks-item2</div>
-            <div className="player-stocks-item">player-stocks-item4</div>
-            <div className="player-stocks-item">player-stocks-item6</div>
-            <div className="player-stocks-item">player-stocks-item11</div>
-          </div>
-          <div className="player-point col-2">
-            <p className="score">3</p>
-            <p className="score-caption">Current Point</p>
-          </div>
-        </div>
-        <div className="player">
-          <div className="player-info col-3">
-            <p className="mb-0">Player 4</p>
-          </div>
-          <div className="player-stocks col-7">
-            <div className="player-stocks-item">player-stocks-item2</div>
-            <div className="player-stocks-item">player-stocks-item4</div>
-            <div className="player-stocks-item">player-stocks-item6</div>
-            <div className="player-stocks-item">player-stocks-item11</div>
-          </div>
-          <div className="player-point col-2">
-            <p className="score">2</p>
-            <p className="score-caption">Current Point</p>
-          </div>
-        </div>
-        <div className="player">
-          <div className="player-info col-3">
-            <p>Player 2</p>
-          </div>
-          <div className="player-stocks col-7">
-            <div className="player-stocks-item">player-stocks-item2</div>
-            <div className="player-stocks-item">player-stocks-item4</div>
-            <div className="player-stocks-item">player-stocks-item6</div>
-            <div className="player-stocks-item">player-stocks-item11</div>
-          </div>
-          <div className="player-point col-2">
-            <p className="score">1</p>
-            <p className="score-caption">Current Point</p>
-          </div>
-        </div>
+        {rooms.length > 0 &&
+          rooms[rooms.length - 1].players.map((player) => (
+            <PlayingUserBox
+              key={player}
+              user={
+                users.length > 0 && users.find((user) => user._id === player)
+              }
+            
+              isPlaying={true}
+            />
+          ))}
       </div>
     </section>
   );
@@ -123,6 +76,6 @@ const mapStateToProps = (state) => ({
   users: state.userReducer.users,
   games: state.gameReducer.games,
 });
-export default connect(mapStateToProps, { getRoom,
-  getGames,
-  getAllUers, })(GameRoom);
+export default connect(mapStateToProps, { getRoom, getGames, getAllUers })(
+  GameRoom
+);

@@ -83,19 +83,15 @@ const GameSetup = ({
 
   //if all users of the room are ready then start the game.
   useEffect(() => {
-    if (
-      rooms.length > 0 &&
-      games.find((game) => game.roomID === roomID) &&
-      rooms[rooms.length - 1].players.length > 0 &&
-      rooms[rooms.length - 1].players.map(
-        (player) =>
-          games.find((game) => game.playerID === player) &&
-          games.find((game) => game.playerID === player).isReady
-      )
-    ) {
-      startGame(roomID);
+    if (rooms.length > 0 && games.length > 0) {
+      const thisGame = games.filter((game) => game.roomID === roomID);
+      const players = rooms[rooms.length - 1].players;
+
+      if (thisGame.length === players.length && players.length === 2) {
+        startGame(roomID);
+      }
     }
-  }, [games, roomID, rooms, startGame]);
+  }, [rooms, games, startGame]);
 
   const handleReadyBtn = (e) => {
     e.preventDefault();
