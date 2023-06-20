@@ -14,10 +14,11 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
 
   const navigate = useNavigate();
   useEffect(() => {
-    // const interval = setInterval(() => {
     getRooms(false);
-    // }, 1000)
-    // return () => clearInterval(interval);
+    const interval = setInterval(() => {
+      getRooms(false);
+    }, 5000);
+    return () => clearInterval(interval);
   }, [getRooms]);
 
   useEffect(() => {
@@ -25,10 +26,14 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
       setInvitedRooms(
         rooms.filter(
           (room) =>
-            room.players.includes(user._id) && room.roomType === "private" && !room.startedDate
+            room.players.includes(user._id) &&
+            room.roomType === "private" &&
+            !room.startedDate
         )
       );
-      setRandomRooms(rooms.filter((room) => room.roomType === "random" && !room.startedDate));
+      setRandomRooms(
+        rooms.filter((room) => room.roomType === "random" && !room.startedDate)
+      );
     }
   }, [rooms, user._id]);
   useEffect(() => {
