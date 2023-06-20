@@ -53,7 +53,6 @@ import {
           ...state,
           loading: false,
           games: [...state.games, action.payload],
-          isGameStarted: true,
         };
       case CREATE_GAME_REQUEST_ERROR:
         return { ...state, loading: false, error: action.payload };

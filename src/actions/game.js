@@ -30,7 +30,7 @@ export const createGame = (formData) => async (dispatch) => {
     dispatch({ type: CREATE_GAME_REQUEST_SUCCESS, payload: data });
 
    
-    dispatch(setAlert(`Game started-${data.name}`, "success"));
+    dispatch(setAlert("Game started", "success"));
     
   } catch (error) {
     const message =

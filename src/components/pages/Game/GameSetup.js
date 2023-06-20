@@ -23,6 +23,7 @@ const GameSetup = ({
   updateUser,
   rooms,
   user,
+  games,
   stocks,
   isRoomCreated,
   isGameStarted,
@@ -40,6 +41,7 @@ const GameSetup = ({
 
   useEffect(() => {
     getRoom(roomID);
+    // getGames(roomID);
   }, [getRoom, roomID]);
 
   useEffect(() => {
@@ -155,8 +157,8 @@ const GameSetup = ({
             </button>
           </div>
           <div className="selected-stocks">
-            {selectedStocks.length > 0 ? (
-              selectedStocks.map((stock) => (
+            {games.length>0 && games.find(game => game.playerID === user._id).stocks.length > 0 ? (
+              games.find(game => game.playerID === user._id).stocks.map((stock) => (
                 <SelectedStockItem
                   key={stock.id}
                   onClick={() => handleClickSelectedStock(stock.id)}
@@ -182,8 +184,9 @@ GameSetup.propTypes = {
   exitGame: PropTypes.func,
   createGame: PropTypes.func,
   updateUser: PropTypes.func,
-  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  stocks: PropTypes.arrayOf(PropTypes.object).isRequired,
+  rooms: PropTypes.object,
+  games: PropTypes.arrayOf(PropTypes.object),
+  stocks: PropTypes.arrayOf(PropTypes.object),
   user: PropTypes.object.isRequired,
   isRoomCreated: PropTypes.bool.isRequired,
   isGameStarted: PropTypes.bool.isRequired,
@@ -194,6 +197,7 @@ const mapStateToProps = (state) => ({
   rooms: state.roomReducer.rooms,
   isJoined: state.roomReducer.isJoined,
   isRoomCreated: state.roomReducer.isRoomCreated,
+  games: state.gameReducer.games,
   stocks: state.gameReducer.stocks,
   isGameStarted: state.gameReducer.isGameStarted,
   user: state.auth.user,
