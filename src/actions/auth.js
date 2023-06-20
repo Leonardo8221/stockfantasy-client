@@ -69,7 +69,6 @@ export const updatePassword = (formData) => async (dispatch) => {
     });
     dispatch(setAlert('Updated Password Successfully', 'success'));
   } catch (err) {
-    console.log("ERROR", err)
     dispatch({
       type: UPDATE_PASSWORD_FAIL,
       payload: { msg: err.response.statusText, status: err.response.status }

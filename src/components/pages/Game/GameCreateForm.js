@@ -62,7 +62,6 @@ const GameCreateForm = ({ createRoom, getAllUers, rooms, users, isRoomCreated })
   //Handles the selected user box close event
   const handleSeletedUserClose = (e, id) => {
     e.preventDefault();
-    console.log(id);
     let newArray = formData.players.filter((item) => item !== id);
     // formData.players = ;
     setFormData({
@@ -88,7 +87,6 @@ const GameCreateForm = ({ createRoom, getAllUers, rooms, users, isRoomCreated })
   //Handles the submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.stopPropagation();

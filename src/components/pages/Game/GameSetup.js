@@ -11,6 +11,7 @@ import { createGame } from "../../../actions/game";
 import { updateUser } from "../../../actions/user";
 import { getGames } from "../../../actions/game";
 import { getAllUers } from "../../../actions/user";
+import { startGame } from "../../../actions/game";
 
 import StockListItem from "../../commons/StockListItem";
 import PlayerBox from "../../commons/PlayerBox";
@@ -25,6 +26,7 @@ const GameSetup = ({
   updateUser,
   getGames,
   getAllUers,
+  startGame,
 
   rooms,
   user,
@@ -36,7 +38,6 @@ const GameSetup = ({
   users,
 }) => {
   const [selectedStocks, setSelectedStocks] = useState([]);
-  const [isReady, setIsReady] = useState(false);
   const navigate = useNavigate();
   const { roomID } = useParams();
 
@@ -66,6 +67,7 @@ const GameSetup = ({
   useEffect(() => {
     if (!isJoined) {
       navigate("/join-room");
+      localStorage.setItem("isJoined", isJoined);
     }
   }, [isJoined, navigate]);
 
@@ -78,6 +80,22 @@ const GameSetup = ({
   useEffect(() => {
     getAllUers();
   }, [getAllUers]);
+
+  //if all users of the room are ready then start the game.
+  useEffect(() => {
+    if (
+      rooms.length > 0 &&
+      games.find((game) => game.roomID === roomID) &&
+      rooms[rooms.length - 1].players.length > 0 &&
+      rooms[rooms.length - 1].players.map(
+        (player) =>
+          games.find((game) => game.playerID === player) &&
+          games.find((game) => game.playerID === player).isReady
+      )
+    ) {
+      startGame(roomID);
+    }
+  }, [games, roomID, rooms, startGame]);
 
   const handleReadyBtn = (e) => {
     e.preventDefault();
@@ -141,7 +159,7 @@ const GameSetup = ({
         <h1 className="large text-primary mb-4">
           Game Setup -{" "}
           <span className="text-success mb-0 text-uppercase">
-            {rooms.name && rooms.name}
+            {rooms.length > 0 && rooms[rooms.length - 1].name}
           </span>
         </h1>
         <div>
@@ -155,14 +173,20 @@ const GameSetup = ({
       </div>
 
       <div className="game-players mb-4">
-        {rooms.players &&
-          rooms.players
+        {rooms.length > 0 &&
+          rooms[rooms.length - 1].players
             .filter((item) => item !== user._id)
             .map((item) => (
               <PlayerBox
                 key={item}
-                name={users.length > 0 && users.find(user => user._id === item).name}
-                email={users.length > 0 && users.find(user => user._id === item).email}
+                name={
+                  users.length > 0 &&
+                  users.find((user) => user._id === item).name
+                }
+                email={
+                  users.length > 0 &&
+                  users.find((user) => user._id === item).email
+                }
                 isReady={
                   games.length > 0 &&
                   games.find((game) => game.playerID === item)
@@ -243,12 +267,13 @@ GameSetup.propTypes = {
   updateUser: PropTypes.func,
   getGames: PropTypes.func,
   getAllUers: PropTypes.func,
+  startGame: PropTypes.func,
   rooms: PropTypes.object,
   games: PropTypes.arrayOf(PropTypes.object),
   stocks: PropTypes.arrayOf(PropTypes.object),
   user: PropTypes.object.isRequired,
-  isRoomCreated: PropTypes.bool.isRequired,
-  isGameStarted: PropTypes.bool.isRequired,
+  isRoomCreated: PropTypes.bool,
+  isGameStarted: PropTypes.bool,
   isJoined: PropTypes.bool,
 };
 
@@ -258,7 +283,7 @@ const mapStateToProps = (state) => ({
   isRoomCreated: state.roomReducer.isRoomCreated,
   games: state.gameReducer.games,
   stocks: state.gameReducer.stocks,
-  isGameStarted: state.gameReducer.isGameStarted,
+  isGameStarted: state.roomReducer.isGameStarted,
   user: state.auth.user,
   users: state.userReducer.users,
 });
@@ -271,4 +296,5 @@ export default connect(mapStateToProps, {
   updateUser,
   getGames,
   getAllUers,
+  startGame,
 })(GameSetup);

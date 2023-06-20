@@ -77,11 +77,11 @@ export const getRooms = (isStarted) => async (dispatch) => {
   }
 };
 
-export const getRoom = (id) => async (dispatch) => {
+export const getRoom = (roomID) => async (dispatch) => {
   try {
     dispatch({ type: GET_ROOM_REQUEST });
 
-    const { data } = await api.get(`/rooms/${id}`);
+    const { data } = await api.get(`/rooms/${roomID}`);
 
     dispatch({ type: GET_ROOM_REQUEST_SUCCESS, payload: data });
     

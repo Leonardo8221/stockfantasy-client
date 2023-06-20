@@ -12,12 +12,15 @@ import {
   JOIN_GAME_REQUEST,
   JOIN_GAME_REQUEST_ERROR,
   JOIN_GAME_REQUEST_SUCCESS,
-  
   EXIT_GAME_REQUEST,
   EXIT_GAME_REQUEST_ERROR,
   EXIT_GAME_REQUEST_SUCCESS,
-
 } from "../constants/roomConstant";
+
+import {
+  START_GAME_REQUEST,
+  START_GAME_REQUEST_ERROR,
+} from "../constants/gameConstant";
 
 import { LOGOUT } from "../constants/userConstant";
 
@@ -27,6 +30,7 @@ const initialState = {
   loading: false,
   error: null,
   isJoined: localStorage.getItem("isJoined"),
+  isGameStarted: false,
 };
 
 export const roomReducer = (state = initialState, action) => {
@@ -53,10 +57,13 @@ export const roomReducer = (state = initialState, action) => {
     case JOIN_GAME_REQUEST:
       return { ...state, loading: true };
     case JOIN_GAME_REQUEST_SUCCESS:
-      // localStorage.setItem('isJoined', true);
-      return { ...state, loading: false, isJoined: true, rooms: action.payload };
+      return {
+        ...state,
+        loading: false,
+        isJoined: true,
+        rooms: [...state.rooms, action.payload],
+      };
     case JOIN_GAME_REQUEST_ERROR:
-      // localStorage.setItem('isJoined', false);
       return { ...state, loading: false, error: action.payload };
     case EXIT_GAME_REQUEST:
       return { ...state, loading: true };
@@ -70,14 +77,31 @@ export const roomReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        rooms: action.payload,
+        rooms: [...state.rooms, action.payload],
       };
     case GET_ROOM_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
-case LOGOUT:
-  return {
-    ...state, isJoined: false
-  }
+    case START_GAME_REQUEST:
+      return {
+        ...state,
+        isJoined: false,
+        rooms: action.payload,
+        isGameStarted: true,
+      };
+
+    case START_GAME_REQUEST_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        isGameStarted: false,
+      };
+
+    case LOGOUT:
+      return {
+        ...state,
+        isJoined: false,
+      };
     default:
       return state;
   }

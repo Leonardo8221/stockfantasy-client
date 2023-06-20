@@ -7,17 +7,10 @@ import { connect } from "react-redux";
 import { getRooms, joinGame } from "../../../actions/room";
 import RoomBox from "../../commons/RoomBox";
 
-const JoinGameRoom = ({
-  rooms,
-  user,
-   isJoined,
-  getRooms,
-  joinGame,
-}) => {
+const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
   const [randomRooms, setRandomRooms] = useState([]);
   const [invitedRooms, setInvitedRooms] = useState([]);
   const [roomID, setRoomID] = useState();
-  // const [isJoined, setIsJoined] = useState(localStorage.getItem('isJoined'));
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -28,18 +21,18 @@ const JoinGameRoom = ({
   }, [getRooms]);
 
   useEffect(() => {
-    if (rooms.length) {
+    if (rooms.length > 0) {
       setInvitedRooms(
         rooms.filter(
           (room) =>
-            room.players.includes(user._id) && room.roomType === "private"
+            room.players.includes(user._id) && room.roomType === "private" && !room.startedDate
         )
       );
-      setRandomRooms(rooms.filter((room) => room.roomType === "random"));
+      setRandomRooms(rooms.filter((room) => room.roomType === "random" && !room.startedDate));
     }
   }, [rooms, user._id]);
   useEffect(() => {
-    if (isJoined) {
+    if (isJoined === true) {
       navigate("/game-setup/" + roomID);
       localStorage.setItem("isJoined", isJoined);
     }
@@ -76,7 +69,7 @@ const JoinGameRoom = ({
             ))
           ) : (
             <h3 className="mt-5 text-dark text-center no-rooms">
-              There is no room in progess
+              There is no room in pending
             </h3>
           )}
         </div>
@@ -96,7 +89,7 @@ const JoinGameRoom = ({
             ))
           ) : (
             <h3 className="mt-5 text-dark text-center no-rooms">
-              There is no room in progess
+              There is no room in pending
             </h3>
           )}
         </div>

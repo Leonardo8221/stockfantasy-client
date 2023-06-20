@@ -4,7 +4,6 @@ import {
     CREATE_GAME_REQUEST,
     CREATE_GAME_REQUEST_ERROR,
     CREATE_GAME_REQUEST_SUCCESS,
-    FORMAT_GAME_REQUEST,
     GET_GAME_REQUEST,
     GET_GAME_REQUEST_ERROR,
     GET_GAME_REQUEST_SUCCESS,
@@ -15,7 +14,6 @@ import {
   
   const initialState = {
     games: [],
-    isGameStarted: false,
     stocks: [
       { id: uuidv4(), ticker: "AAPL", price: 184.94, date: "2023-06-19" },
       { id: uuidv4(), ticker: "MSFT", price: 342.97, date: "2023-06-19" },
@@ -56,9 +54,6 @@ import {
         };
       case CREATE_GAME_REQUEST_ERROR:
         return { ...state, loading: false, error: action.payload };
-      case FORMAT_GAME_REQUEST:
-        return { ...state, isGameStarted: false };
-  
       case GET_GAMES_REQUEST:
         return { ...state, loading: true };
       case GET_GAMES_REQUEST_SUCCESS:

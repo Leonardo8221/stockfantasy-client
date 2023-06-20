@@ -22,14 +22,18 @@ const Home = ({ rooms, getRooms }) => {
   }, [getRooms]);
 
   useEffect(() => {
-    if (rooms.length) {
-      const finishedRooms = rooms.filter((room) => room.endDate !== undefined);
-      const playingRooms = rooms.filter((room) => room.endDate === undefined);
+    if (rooms.length>0) {
+      const finishedRooms = rooms.filter(
+        (room) => room.endDate  && room.startedDate
+      );
+      const playingRooms = rooms.filter(
+        (room) => !room.endDate  && room.startedDate
+      );
 
       finishedRooms.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
       setOrderedRooms([...finishedRooms, ...playingRooms]);
     }
-  }, [rooms]);
+  }, [rooms.length]);
 
   return (
     <section className="container">
@@ -60,7 +64,9 @@ const Home = ({ rooms, getRooms }) => {
             />
           ))
         ) : (
-          <h3 className="mt-5 text-dark no-rooms">There is no room in progess</h3>
+          <h3 className="mt-5 text-dark no-rooms">
+            There is no room in progess
+          </h3>
         )}
       </div>
     </section>

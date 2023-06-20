@@ -2,10 +2,10 @@ import "./style.scss";
 const PlayerBox = (props) => {
   const { name, email, isReady } = props;
   return (
-    <div className="playerBox">
-      <div className="playerBox-info">
+    <div className="playerBox" >
+      <div className="playerBox-info" title={email}>
         <i className="playerBox-info-icon fa fa-user"></i>
-        <div className="playerBox-info-name">
+        <div className="playerBox-info-name" >
           <strong className="mb-0">{name}</strong>
         </div>
       </div>
