@@ -52,11 +52,11 @@ export const formatGame = () => async (dispatch) => {
   }
 };
 
-export const getGames = (isStarted) => async (dispatch) => {
+export const getGames = (roomID) => async (dispatch) => {
    try {
     dispatch({ type: GET_GAMES_REQUEST });
 
-    const { data } = await api.get(`/games?isStarted=${isStarted}`);
+    const { data } = await api.get(`/games?roomID=${roomID}`);
 
     dispatch({ type: GET_GAMES_REQUEST_SUCCESS, payload: data });
     

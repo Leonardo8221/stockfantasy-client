@@ -9,6 +9,7 @@ import { formatRoom } from "../../../actions/room";
 import { getRoom, exitGame } from "../../../actions/room";
 import { createGame } from "../../../actions/game";
 import { updateUser } from "../../../actions/user";
+import { getGames } from "../../../actions/game";
 
 import StockListItem from "../../commons/StockListItem";
 import PlayerBox from "../../commons/PlayerBox";
@@ -21,6 +22,7 @@ const GameSetup = ({
   exitGame,
   createGame,
   updateUser,
+  getGames,
   rooms,
   user,
   games,
@@ -41,8 +43,8 @@ const GameSetup = ({
 
   useEffect(() => {
     getRoom(roomID);
-    // getGames(roomID);
-  }, [getRoom, roomID]);
+    getGames(roomID);
+  }, [getRoom, getGames, roomID]);
 
   useEffect(() => {
     if (!isJoined) {
@@ -184,6 +186,7 @@ GameSetup.propTypes = {
   exitGame: PropTypes.func,
   createGame: PropTypes.func,
   updateUser: PropTypes.func,
+  getGames: PropTypes.func,
   rooms: PropTypes.object,
   games: PropTypes.arrayOf(PropTypes.object),
   stocks: PropTypes.arrayOf(PropTypes.object),
@@ -209,4 +212,5 @@ export default connect(mapStateToProps, {
   exitGame,
   createGame,
   updateUser,
+  getGames
 })(GameSetup);
