@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import PlayingUserBox from '../../commons/PlayingUserBox';
+
 const GameResult = () => {
   const [isGameFinished, setIsGameFinished] = useState(false);
 

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import "./style.scss";
 
 const PlayingUserBox = (props) => {
-  const { user, mine, stocks, isPlaying } = props;
+  const { user, mine, stocks, isPlaying, score} = props;
 
   return (
     <div className={`player ${mine ? "mine" : ""}`}>
@@ -26,7 +26,7 @@ const PlayingUserBox = (props) => {
           ))}
       </div>
       <div className="player-point col-2">
-        <p className="player-point-score mb-0">{user.score}</p>
+        <p className="player-point-score mb-0">{score}</p>
         <p className="player-point-caption mb-0">
           {isPlaying ? "Current Score" : "Total socre"}
         </p>

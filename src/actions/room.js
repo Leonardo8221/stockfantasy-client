@@ -6,25 +6,22 @@ import {
   CREATE_ROOM_REQUEST,
   CREATE_ROOM_REQUEST_ERROR,
   CREATE_ROOM_REQUEST_SUCCESS,
-
   FORMAT_ROOM_REQUEST,
-
   JOIN_GAME_REQUEST,
   JOIN_GAME_REQUEST_ERROR,
   JOIN_GAME_REQUEST_SUCCESS,
-
   EXIT_GAME_REQUEST,
   EXIT_GAME_REQUEST_ERROR,
   EXIT_GAME_REQUEST_SUCCESS,
-
+  END_GAME_REQUEST,
+  END_GAME_REQUEST_ERROR,
+  END_GAME_REQUEST_SUCCESS,
   GET_ROOM_REQUEST,
   GET_ROOM_REQUEST_ERROR,
   GET_ROOM_REQUEST_SUCCESS,
-
   GET_ROOMS_REQUEST,
   GET_ROOMS_REQUEST_ERROR,
   GET_ROOMS_REQUEST_SUCCESS,
-
 } from "../constants/roomConstant";
 
 export const createRoom = (formData) => async (dispatch) => {
@@ -35,7 +32,6 @@ export const createRoom = (formData) => async (dispatch) => {
 
     dispatch({ type: CREATE_ROOM_REQUEST_SUCCESS, payload: data });
     dispatch(setAlert(`Created Room successfully-${data.name}`, "success"));
-    
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -52,18 +48,35 @@ export const createRoom = (formData) => async (dispatch) => {
 export const formatRoom = () => async (dispatch) => {
   try {
     dispatch({ type: FORMAT_ROOM_REQUEST });
+  } catch (error) {}
+};
+
+export const endGame = (roomID, endDate) => async (dispatch) => {
+  try {
+    dispatch({ type: END_GAME_REQUEST });
+
+    const { data } = await api.put(`/rooms/${roomID}`, { endDate });
+    dispatch({ type: END_GAME_REQUEST_SUCCESS, payload: data });
   } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch(setAlert(message, "error"));
+    dispatch({ type: END_GAME_REQUEST_ERROR, payload: message });
   }
 };
 
 export const getRooms = (isStarted) => async (dispatch) => {
-   try {
+  try {
     dispatch({ type: GET_ROOMS_REQUEST });
 
     const { data } = await api.get(`/rooms?isStarted=${isStarted}`);
 
     dispatch({ type: GET_ROOMS_REQUEST_SUCCESS, payload: data });
-    
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -84,7 +97,6 @@ export const getRoom = (roomID) => async (dispatch) => {
     const { data } = await api.get(`/rooms/${roomID}`);
 
     dispatch({ type: GET_ROOM_REQUEST_SUCCESS, payload: data });
-    
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -100,10 +112,10 @@ export const getRoom = (roomID) => async (dispatch) => {
 
 export const joinGame = (userID, roomID) => async (dispatch) => {
   try {
-    dispatch({ type: JOIN_GAME_REQUEST});
+    dispatch({ type: JOIN_GAME_REQUEST });
 
-    const {data} = await api.put(`/rooms/join-game/${roomID}`, {userID});
-    dispatch({type: JOIN_GAME_REQUEST_SUCCESS, payload: data});
+    const { data } = await api.put(`/rooms/join-game/${roomID}`, { userID });
+    dispatch({ type: JOIN_GAME_REQUEST_SUCCESS, payload: data });
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -115,13 +127,13 @@ export const joinGame = (userID, roomID) => async (dispatch) => {
     dispatch(setAlert(message, "error"));
     dispatch({ type: JOIN_GAME_REQUEST_ERROR, payload: message });
   }
-}
+};
 export const exitGame = (userID, roomID) => async (dispatch) => {
   try {
-    dispatch({ type: EXIT_GAME_REQUEST});
+    dispatch({ type: EXIT_GAME_REQUEST });
 
-    const {data} = await api.put(`/rooms/exit-game/${roomID}`, {userID});
-    dispatch({type: EXIT_GAME_REQUEST_SUCCESS, payload: data});
+    const { data } = await api.put(`/rooms/exit-game/${roomID}`, { userID });
+    dispatch({ type: EXIT_GAME_REQUEST_SUCCESS, payload: data });
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -133,7 +145,7 @@ export const exitGame = (userID, roomID) => async (dispatch) => {
     dispatch(setAlert(message, "error"));
     dispatch({ type: EXIT_GAME_REQUEST_ERROR, payload: message });
   }
-}
+};
 
 export const getAllRooms = () => async (dispatch) => {};
 

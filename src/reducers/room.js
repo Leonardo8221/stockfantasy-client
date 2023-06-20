@@ -15,6 +15,9 @@ import {
   EXIT_GAME_REQUEST,
   EXIT_GAME_REQUEST_ERROR,
   EXIT_GAME_REQUEST_SUCCESS,
+  END_GAME_REQUEST,
+  END_GAME_REQUEST_ERROR,
+  END_GAME_REQUEST_SUCCESS,
 } from "../constants/roomConstant";
 
 import {
@@ -70,6 +73,16 @@ export const roomReducer = (state = initialState, action) => {
     case EXIT_GAME_REQUEST_SUCCESS:
       return { ...state, loading: false, isJoined: false };
     case EXIT_GAME_REQUEST_ERROR:
+      return { ...state, loading: false, error: action.payload };
+    case END_GAME_REQUEST:
+      return { ...state, loading: true };
+    case END_GAME_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        rooms: [...state.rooms, action.payload],
+      };
+    case END_GAME_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
     case GET_ROOM_REQUEST:
       return { ...state, loading: true };

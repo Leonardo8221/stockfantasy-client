@@ -5,36 +5,43 @@ import TimeCounter from "../../commons/TimeCounter";
 
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getRoom } from "../../../actions/room";
-import { getGames, giveScoreToUser } from "../../../actions/game";
+import { getRoom, endGame } from "../../../actions/room";
+import { getGames } from "../../../actions/game";
 import { getAllUers } from "../../../actions/user";
+import { giveScoreToUser } from "../../../actions/score";
 import PlayingUserBox from "../../commons/PlayingUserBox";
-
-import PortfolioEvaluator from "../../../utils/portfolioEvaluator";
 
 const GameRoom = ({
   rooms,
   users,
   games,
   user,
+  scores,
   getRoom,
   getGames,
   getAllUers,
-  giveScoreToUser
+  giveScoreToUser,
+  endGame
 }) => {
+
   const [isGameFinished, setIsGameFinished] = useState(true);
+  const [evaluations, setEvaluations] = useState([]);
+  const [endTime, setEndtime] = useState();
 
   const { roomID } = useParams();
 
+  //Get room and games from server
   useEffect(() => {
     getRoom(roomID);
     getGames(roomID);
   }, [getGames, getRoom, roomID]);
+
   //Get all the users
   useEffect(() => {
     getAllUers();
   }, [getAllUers]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const stockPrices = {
     AAPL: [100, 105, 110, 115, 120],
     GOOG: [500, 510, 520, 530, 540],
@@ -45,15 +52,11 @@ const GameRoom = ({
   };
 
   const evaluationTime = "9:00 AM";
-
-  const [evaluations, setEvaluations] = useState([]);
-  const [endTime, setEndtime] = useState();
-
   useEffect(() => {
     if (rooms.length > 0) {
       let currentRoom = rooms.find((room) => room._id === roomID);
       let millisecondsInDay = 86400000; // 1000 * 60 * 60 * 24;
-      let start = Date(currentRoom.startedDate);
+      let start = new Date(currentRoom.startedDate);
 
       setEndtime(
         new Date(start.getTime() + currentRoom.duration * millisecondsInDay)
@@ -80,24 +83,33 @@ const GameRoom = ({
           setEvaluations((prevEvaluations) => [
             ...prevEvaluations,
             newEvaluations,
-          ]); 
+          ]);
           evaluations.sort((a, b) => b.portfolioValue - a.portfolioValue);
 
-          evaluations.map((evaluation) =>{
-            let currentGame = games.length > 0 &&
-            games.filter(
-              (game) => game.roomID === roomID && game.playerID === evaluation.playerID
-            );
-            giveScoreToUser({id: currentGame._id, user: evaluation.playerID, score: evaluations.length-1, room: roomID});
+          evaluations.map((evaluation) => {
+            giveScoreToUser({
+              user: evaluation.playerID,
+              room: roomID,
+              score: evaluations.length - 1,
+            });
             return true;
-        });
+          });
         }
       }, millisecondsInDay); // 24 hours in milliseconds
 
       return () => clearInterval(interval);
     }
-  }, [stockPrices, evaluationTime, rooms, roomID, games, evaluations, giveScoreToUser]);
+  }, [
+    stockPrices,
+    evaluationTime,
+    rooms,
+    roomID,
+    games,
+    evaluations,
+    giveScoreToUser,
+  ]);
 
+  //when end the game
   useEffect(() => {
     if (Date.now() >= endTime) {
       const winner = evaluations.reduce(
@@ -112,8 +124,10 @@ const GameRoom = ({
       console.log(
         `The winner is player ${winner.playerId} with a portfolio value of ${winner.portfolioValue}`
       );
+      setIsGameFinished(true);
+      endGame(roomID, endTime);
     }
-  }, [endTime, evaluations]);
+  }, [endGame, endTime, evaluations, roomID]);
 
   return (
     <section className="container">
@@ -157,6 +171,7 @@ const GameRoom = ({
                 ).stocks
               }
               mine={user._id === player ? true : false}
+              score={scores.length>0 ? scores.filter(score => score.playerID === player) : 0}
               isPlaying={true}
             />
           ))}
@@ -171,16 +186,23 @@ GameRoom.propTypes = {
   getGames: PropTypes.func,
   getAllUers: PropTypes.func,
   giveScoreToUser: PropTypes.func,
+  endGame: PropTypes.func,
   games: PropTypes.arrayOf(PropTypes.object),
   users: PropTypes.arrayOf(PropTypes.object),
+  scores: PropTypes.arrayOf(PropTypes.object),
 };
 
 const mapStateToProps = (state) => ({
   rooms: state.roomReducer.rooms,
   users: state.userReducer.users,
   games: state.gameReducer.games,
+  scores: state.scoreReducer.scores,
   user: state.auth.user,
 });
-export default connect(mapStateToProps, { getRoom, getGames, getAllUers, giveScoreToUser })(
-  GameRoom
-);
+export default connect(mapStateToProps, {
+  getRoom,
+  getGames,
+  getAllUers,
+  giveScoreToUser,
+  endGame
+})(GameRoom);
