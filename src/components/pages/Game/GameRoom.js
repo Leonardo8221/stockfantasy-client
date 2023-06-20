@@ -6,6 +6,8 @@ import TimeCounter from "../../commons/TimeCounter";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getRoom } from "../../../actions/room";
+import { getGames } from "../../../actions/game";
+import { getAllUers } from "../../../actions/user";
 
 const GameRoom = ({ rooms, getRoom }) => {
   const [isGameFinished, setIsGameFinished] = useState(true);
@@ -14,7 +16,7 @@ const GameRoom = ({ rooms, getRoom }) => {
 
   useEffect(() => {
     getRoom(roomID);
-  }, [roomID]);
+  }, [getRoom, roomID]);
 
   return (
     <section className="container">
@@ -110,9 +112,17 @@ const GameRoom = ({ rooms, getRoom }) => {
 GameRoom.propTypes = {
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
   getRoom: PropTypes.func.isRequired,
+  getGames: PropTypes.func,
+  getAllUers: PropTypes.func,
+  games: PropTypes.arrayOf(PropTypes.object),
+  users: PropTypes.arrayOf(PropTypes.object),
 };
 
 const mapStateToProps = (state) => ({
   rooms: state.roomReducer.rooms,
+  users: state.userReducer.users,
+  games: state.gameReducer.games,
 });
-export default connect(mapStateToProps, { getRoom })(GameRoom);
+export default connect(mapStateToProps, { getRoom,
+  getGames,
+  getAllUers, })(GameRoom);

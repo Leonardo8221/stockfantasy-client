@@ -270,6 +270,7 @@ GameSetup.propTypes = {
   startGame: PropTypes.func,
   rooms: PropTypes.object,
   games: PropTypes.arrayOf(PropTypes.object),
+  users: PropTypes.arrayOf(PropTypes.object),
   stocks: PropTypes.arrayOf(PropTypes.object),
   user: PropTypes.object.isRequired,
   isRoomCreated: PropTypes.bool,
