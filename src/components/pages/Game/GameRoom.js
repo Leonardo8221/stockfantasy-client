@@ -57,7 +57,7 @@ const GameRoom = ({
         </div>
       )}
 
-      <div className="players-in-progress d-flex flex-column gap-3 py-2">
+      <div className="players-in-progress">
         {rooms.length > 0 &&
           rooms[rooms.length - 1].players.map((player) => (
             <PlayingUserBox

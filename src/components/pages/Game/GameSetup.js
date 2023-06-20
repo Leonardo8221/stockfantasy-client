@@ -56,7 +56,7 @@ const GameSetup = ({
 
   //if games are loaded successfully then set the state of seletedstocks
   useEffect(() => {
-    if (games.length > 0 && games.find((game) => game.playerID === user._id)) {
+    if (games.length > 0 && games.find((game) => game.roomID === roomID && game.playerID === user._id)) {
       setSelectedStocks(
         games.find((game) => game.playerID === user._id).stocks
       );

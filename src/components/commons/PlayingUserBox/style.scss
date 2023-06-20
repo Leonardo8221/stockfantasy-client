@@ -23,16 +23,17 @@
     }
   }
   &-stocks {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    grid-gap: 2rem;
     align-items: center;
     justify-content: center;
     text-align: center;
     flex: 0 0 auto;
-    width: 45%;
+    width: 100%;
     align-self: stretch;
     box-sizing: border-box;
-    padding: 15px 0;
+    padding: 15px 15px;
     gap: 20px;
     &-item {
       display: flex;
