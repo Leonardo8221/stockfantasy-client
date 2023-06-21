@@ -19,7 +19,7 @@ const Home = ({ rooms, getRooms }) => {
 
   useEffect(() => {
     getRooms(true);
-  }, [getRooms]);
+  }, [rooms]);
 
   useEffect(() => {
     if (rooms.length>0) {
@@ -33,7 +33,7 @@ const Home = ({ rooms, getRooms }) => {
       finishedRooms.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
       setOrderedRooms([...finishedRooms, ...playingRooms]);
     }
-  }, [rooms.length]);
+  }, [rooms]);
 
   return (
     <section className="container">

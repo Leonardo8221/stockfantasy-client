@@ -31,22 +31,26 @@ export const giveScoreToUser = (formData) => async (dispatch) => {
   }
 };
 
-export const getScores = (roomID) => async (dispatch) => {
-  try {
+export const getScores = (roomID) => {
+  return (dispatch) => {
     dispatch({ type: GET_SCORES_REQUEST });
+    api
+      .get(`/scores=roomID=${roomID}`)
+      .then((response) => {
+        const { data } = response;
 
-    const { data } = await api.get(`/scores?roomID=${roomID}`);
-
-    dispatch({ type: GET_SCORES_REQUEST_SUCCESS, payload: data });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
-    }
-    dispatch(setAlert(message, "error"));
-    dispatch({ type: GIVE_SCORE_REQUEST_ERROR, payload: message });
-  }
+        dispatch({ type: GET_SCORES_REQUEST_SUCCESS, payload: data });
+      })
+      .catch((error) => {
+        const message =
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message;
+        if (message === "Not authorized, token failed") {
+          dispatch(logout());
+        }
+        dispatch(setAlert(message, "error"));
+        dispatch({ type: GIVE_SCORE_REQUEST_ERROR, payload: message });
+      });
+  };
 };

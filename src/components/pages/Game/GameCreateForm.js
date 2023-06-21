@@ -32,7 +32,7 @@ const GameCreateForm = ({
   //Fetch users from the server
   useEffect(() => {
     getAllUers();
-  }, [getAllUers]);
+  }, []);
 
   useEffect(() => {
     if (formData.players.length === 3) {
@@ -88,7 +88,7 @@ const GameCreateForm = ({
     return (
       (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      item._id === user._id
+      item._id !== user._id
     );
   });
 

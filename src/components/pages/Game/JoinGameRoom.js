@@ -15,11 +15,7 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
   const navigate = useNavigate();
   useEffect(() => {
     getRooms(false);
-    const interval = setInterval(() => {
-      getRooms(false);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [getRooms]);
+  }, [rooms, isJoined]);
 
   useEffect(() => {
     if (rooms.length > 0) {
@@ -35,13 +31,12 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
         rooms.filter((room) => room.roomType === "random" && !room.startedDate)
       );
     }
-  }, [rooms, user._id]);
+  }, [rooms]);
   useEffect(() => {
     if (isJoined === true) {
       navigate("/game-setup/" + roomID);
-      localStorage.setItem("isJoined", isJoined);
     }
-  }, [isJoined, navigate, roomID]);
+  }, [isJoined]);
 
   const handleJoinGameRoom = (roomID) => {
     if (
@@ -106,8 +101,8 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
 JoinGameRoom.propTypes = {
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
   user: PropTypes.object.isRequired,
-  isJoined: PropTypes.bool.isRequired,
-  getRooms: PropTypes.func.isRequired,
+  isJoined: PropTypes.string,
+  getRooms: PropTypes.func,
   joinGame: PropTypes.func,
 };
 

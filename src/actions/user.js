@@ -11,24 +11,28 @@ import {
   UPDATE_USER_REQUEST_ERROR,
 } from "../constants/userConstant";
 
-export const getAllUers = () => async (dispatch) => {
-  try {
+export const getAllUers = () => {
+  return (dispatch) => {
     dispatch({ type: GET_ALL_USERS_REQUEST });
 
-    const { data } = await api.get("/users/all");
-
-    dispatch({ type: GET_ALL_USERS_REQUEST_SUCCESS, payload: data });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
-    }
-    dispatch(setAlert(message, "error"));
-    dispatch({ type: GET_ALL_USERS_REQUEST_ERROR, payload: message });
-  }
+    api
+      .get("/users/all")
+      .then((response) => {
+        const data = response.data;
+        dispatch({ type: GET_ALL_USERS_REQUEST_SUCCESS, payload: data });
+      })
+      .catch((error) => {
+        const message =
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message;
+        if (message === "Not authorized, token failed") {
+          dispatch(logout());
+        }
+        dispatch(setAlert(message, "error"));
+        dispatch({ type: GET_ALL_USERS_REQUEST_ERROR, payload: message });
+      });
+  };
 };
 export const updateUser = (user) => async (dispatch) => {
   try {

@@ -70,44 +70,52 @@ export const endGame = (roomID, endDate) => async (dispatch) => {
   }
 };
 
-export const getRooms = (isStarted) => async (dispatch) => {
-  try {
+export const getRooms = (isStarted) => {
+  return (dispatch) => {
     dispatch({ type: GET_ROOMS_REQUEST });
 
-    const { data } = await api.get(`/rooms?isStarted=${isStarted}`);
-
-    dispatch({ type: GET_ROOMS_REQUEST_SUCCESS, payload: data });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
-    }
-    dispatch(setAlert(message, "error"));
-    dispatch({ type: GET_ROOMS_REQUEST_ERROR, payload: message });
-  }
+    api
+      .get(`/rooms?isStarted=${isStarted}`)
+      .then((response) => {
+        const data = response.data;
+        dispatch({ type: GET_ROOMS_REQUEST_SUCCESS, payload: data });
+      })
+      .catch((error) => {
+        const message =
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message;
+        if (message === "Not authorized, token failed") {
+          dispatch(logout());
+        }
+        dispatch(setAlert(message, "error"));
+        dispatch({ type: GET_ROOMS_REQUEST_ERROR, payload: message });
+      });
+  };
 };
 
-export const getRoom = (roomID) => async (dispatch) => {
-  try {
+export const getRoom = (roomID) => {
+  return (dispatch) => {
     dispatch({ type: GET_ROOM_REQUEST });
+    api
+      .get(`/rooms/${roomID}`)
+      .then((response) => {
+        const data = response.data;
 
-    const { data } = await api.get(`/rooms/${roomID}`);
-
-    dispatch({ type: GET_ROOM_REQUEST_SUCCESS, payload: data });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
-    }
-    dispatch(setAlert(message, "error"));
-    dispatch({ type: GET_ROOM_REQUEST_ERROR, payload: message });
-  }
+        dispatch({ type: GET_ROOM_REQUEST_SUCCESS, payload: data });
+      })
+      .catch((error) => {
+        const message =
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message;
+        if (message === "Not authorized, token failed") {
+          dispatch(logout());
+        }
+        dispatch(setAlert(message, "error"));
+        dispatch({ type: GET_ROOM_REQUEST_ERROR, payload: message });
+      });
+  };
 };
 
 export const joinGame = (userID, roomID) => async (dispatch) => {
@@ -115,6 +123,8 @@ export const joinGame = (userID, roomID) => async (dispatch) => {
     dispatch({ type: JOIN_GAME_REQUEST });
 
     const { data } = await api.put(`/rooms/join-game/${roomID}`, { userID });
+    
+    localStorage.setItem("isJoined", true);
     dispatch({ type: JOIN_GAME_REQUEST_SUCCESS, payload: data });
   } catch (error) {
     const message =

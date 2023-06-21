@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import "./style.scss";
 
 const PlayingUserBox = (props) => {

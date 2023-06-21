@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
 
 import { formatRoom } from "../../../actions/room";
 import { getRoom, exitGame } from "../../../actions/room";
@@ -18,46 +17,38 @@ import PlayerBox from "../../commons/PlayerBox";
 import SelectedStockItem from "../../commons/SelectedStockItem";
 import "./style.css";
 
-const GameSetup = ({
-  getRoom,
-  formatRoom,
-  exitGame,
-  createGame,
-  updateUser,
-  getGames,
-  getAllUers,
-  startGame,
+const GameSetup = () => {
 
-  rooms,
-  user,
-  games,
-  stocks,
-  isRoomCreated,
-  isGameStarted,
-  isJoined,
-  users,
-}) => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { rooms, isRoomCreated, isGameStarted, isJoined } = useSelector(
+    (state) => state.roomReducer
+  );
+  const { games, stocks } = useSelector((state) => state.gameReducer);
+  const { users } = useSelector((state) => state.userReducer);
   const [selectedStocks, setSelectedStocks] = useState([]);
   const navigate = useNavigate();
   const { roomID } = useParams();
 
+
   // if user is joined then isRoomCreated set to false
   useEffect(() => {
     if (isRoomCreated) {
-      formatRoom();
+      dispatch(formatRoom());
     }
-  }, [formatRoom, isRoomCreated]);
+  }, []);
 
   //Load room, and games by room ID
   useEffect(() => {
-    getRoom(roomID);
-    getGames(roomID);
-    const interval = setInterval(() => {
-      getRoom(roomID);
-      getGames(roomID);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [getGames, getRoom]);
+    dispatch(getRoom(roomID));
+  }, []);
+
+  useEffect(() => {
+    dispatch(getAllUers());
+  }, []);
+  useEffect(() => {
+    dispatch(getGames(roomID));
+  }, []);
 
   //if games are loaded successfully then set the state of seletedstocks
   useEffect(() => {
@@ -69,30 +60,14 @@ const GameSetup = ({
         games.find((game) => game.playerID === user._id).stocks
       );
     }
-  }, [games.length]);
-
-  //if player exit game then move to the join game page
-  useEffect(() => {
-    if (!isJoined) {
-      navigate("/join-room");
-      localStorage.setItem("isJoined", isJoined);
-    }
-  }, [isJoined, navigate]);
+  }, [games]);
 
   //if all players are ready to start game then move to the game room page
   useEffect(() => {
+    
     localStorage.setItem("isJoined", false);
     if (isGameStarted === true) navigate(`/gameRoom/${roomID}`);
-  }, [isGameStarted, navigate, roomID]);
-
-  //Get all the users
-  useEffect(() => {
-    getAllUers();
-    const interval = setInterval(() => {
-      getAllUers();
-    }, 10000);
-    return () => clearInterval(interval);
-  }, [getAllUers]);
+  }, [isGameStarted]);
 
   //if all users of the room are ready then start the game.
   useEffect(() => {
@@ -101,20 +76,22 @@ const GameSetup = ({
       const players = rooms[rooms.length - 1].players;
 
       if (thisGame.length === players.length && players.length === 2) {
-        startGame(roomID);
+        dispatch(startGame(roomID));
       }
     }
-  }, [rooms, games, roomID, startGame]);
+  }, [isGameStarted]);
 
   const handleReadyBtn = (e) => {
     e.preventDefault();
     e.target.disabled = true;
-    createGame({ roomID, selectedStocks });
-    updateUser(user);
+    dispatch(createGame({ roomID, selectedStocks }));
+    dispatch(updateUser(user));
   };
 
   const handleExitBtn = (roomID) => {
-    exitGame(user._id, roomID);
+    dispatch(exitGame(user._id, roomID));
+    navigate("/join-room");
+
   };
 
   const handleClickStocksListItem = (stockID) => {
@@ -268,43 +245,4 @@ const GameSetup = ({
   );
 };
 
-GameSetup.propTypes = {
-  getRoom: PropTypes.func.isRequired,
-  formatRoom: PropTypes.func.isRequired,
-  exitGame: PropTypes.func,
-  createGame: PropTypes.func,
-  updateUser: PropTypes.func,
-  getGames: PropTypes.func,
-  getAllUers: PropTypes.func,
-  startGame: PropTypes.func,
-  rooms: PropTypes.object,
-  games: PropTypes.arrayOf(PropTypes.object),
-  users: PropTypes.arrayOf(PropTypes.object),
-  stocks: PropTypes.arrayOf(PropTypes.object),
-  user: PropTypes.object.isRequired,
-  isRoomCreated: PropTypes.bool,
-  isGameStarted: PropTypes.bool,
-  isJoined: PropTypes.bool,
-};
-
-const mapStateToProps = (state) => ({
-  rooms: state.roomReducer.rooms,
-  isJoined: state.roomReducer,
-  isRoomCreated: state.roomReducer,
-  games: state.gameReducer.games,
-  stocks: state.gameReducer.stocks,
-  isGameStarted: state.roomReducer.isGameStarted,
-  user: state.auth.user,
-  users: state.userReducer.users,
-});
-
-export default connect(mapStateToProps, {
-  getRoom,
-  formatRoom,
-  exitGame,
-  createGame,
-  updateUser,
-  getGames,
-  getAllUers,
-  startGame,
-})(GameSetup);
+export default GameSetup;

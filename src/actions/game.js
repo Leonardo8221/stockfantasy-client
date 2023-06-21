@@ -14,27 +14,30 @@ import {
   GET_GAMES_REQUEST_ERROR,
   GET_GAMES_REQUEST_SUCCESS,
   START_GAME_REQUEST,
-  START_GAME_REQUEST_ERROR
+  START_GAME_REQUEST_ERROR,
 } from "../constants/gameConstant";
 
-export const createGame = (formData) => async (dispatch) => {
-  try {
+export const createGame = (formData) => {
+  return (dispatch) => {
     dispatch({ type: CREATE_GAME_REQUEST });
-
-    const { data } = await api.post("/games", formData);
-
-    dispatch({ type: CREATE_GAME_REQUEST_SUCCESS, payload: data });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
-    }
-    dispatch(setAlert(message, "error"));
-    dispatch({ type: CREATE_GAME_REQUEST_ERROR, payload: message });
-  }
+    api
+      .post("/games", formData)
+      .then((response) => {
+        const { data } = response;
+        dispatch({ type: CREATE_GAME_REQUEST_SUCCESS, payload: data });
+      })
+      .catch((error) => {
+        const message =
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message;
+        if (message === "Not authorized, token failed") {
+          dispatch(logout());
+        }
+        dispatch(setAlert(message, "error"));
+        dispatch({ type: CREATE_GAME_REQUEST_ERROR, payload: message });
+      });
+  };
 };
 
 export const formatGame = () => async (dispatch) => {
@@ -43,49 +46,58 @@ export const formatGame = () => async (dispatch) => {
   } catch (error) {}
 };
 
-export const getGames = (roomID) => async (dispatch) => {
-  try {
+export const getGames = (roomID) => {
+  return (dispatch) => {
     dispatch({ type: GET_GAMES_REQUEST });
 
-    const { data } = await api.get(`/games?roomID=${roomID}`);
-    dispatch({ type: GET_GAMES_REQUEST_SUCCESS, payload: data });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
-    }
-    dispatch(setAlert(message, "error"));
-    dispatch({ type: GET_GAMES_REQUEST_ERROR, payload: message });
-  }
+    api
+      .get(`/games?roomID=${roomID}`)
+      .then((response) => {
+        const { data } = response;
+        dispatch({ type: GET_GAMES_REQUEST_SUCCESS, payload: data });
+      })
+      .catch((error) => {
+        const message =
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message;
+        if (message === "Not authorized, token failed") {
+          dispatch(logout());
+        }
+        dispatch(setAlert(message, "error"));
+        dispatch({ type: GET_GAMES_REQUEST_ERROR, payload: message });
+      });
+  };
 };
 
-export const getGame = (id) => async (dispatch) => {
-  try {
+export const getGame = (id) => {
+  return (dispatch) => {
     dispatch({ type: GET_GAME_REQUEST });
-
-    const { data } = await api.get(`/games/${id}`);
-
-    dispatch({ type: GET_GAME_REQUEST_SUCCESS, payload: data });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
-    }
-    dispatch(setAlert(message, "error"));
-    dispatch({ type: GET_GAME_REQUEST_ERROR, payload: message });
-  }
+    api
+      .get(`/games/${id}`)
+      .then((response) => {
+        const { data } = response;
+        dispatch({ type: GET_GAME_REQUEST_SUCCESS, payload: data });
+      })
+      .catch((error) => {
+        const message =
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message;
+        if (message === "Not authorized, token failed") {
+          dispatch(logout());
+        }
+        dispatch(setAlert(message, "error"));
+        dispatch({ type: GET_GAME_REQUEST_ERROR, payload: message });
+      });
+  };
 };
-
 
 export const startGame = (roomID) => async (dispatch) => {
   try {
-    const { data } = await api.put(`/rooms/${roomID}`, {startedDate: new Date()});
+    const { data } = await api.put(`/rooms/${roomID}`, {
+      startedDate: new Date(),
+    });
     dispatch({ type: START_GAME_REQUEST, payload: data });
     // dispatch(setAlert("Game started", "success"));
   } catch (error) {
