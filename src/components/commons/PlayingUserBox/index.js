@@ -14,7 +14,7 @@ const PlayingUserBox = (props) => {
           stocks.map((stock) => (
             <div className="player-stocks-item">
               <p className="mb-0 player-stocks-item-ticker">
-                {stock.stock.ticker}
+                {stock.stock.symbol}
               </p>
               <p className="mb-0 player-stocks-item-number">{stock.length}</p>
               <p className="mb-0 player-stocks-item-price">

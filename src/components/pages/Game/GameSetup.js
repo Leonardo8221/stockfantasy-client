@@ -17,21 +17,19 @@ import PlayerBox from "../../commons/PlayerBox";
 import SelectedStockItem from "../../commons/SelectedStockItem";
 import "./style.css";
 
-import axios from "axios";
-
 const GameSetup = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { room, isRoomCreated, isGameStarted, isJoined } = useSelector(
     (state) => state.roomReducer
   );
-  const { games } = useSelector((state) => state.gameReducer);
+  const { games, stocks } = useSelector((state) => state.gameReducer);
   const { users } = useSelector((state) => state.userReducer);
   const [selectedStocks, setSelectedStocks] = useState([]);
   const navigate = useNavigate();
   const { roomID } = useParams();
 
-  const [stocks, setStocks] = useState([]);
+  // const [stocks, setStocks] = useState([]);
 
   // if user is joined then isRoomCreated set to false
   useEffect(() => {
@@ -143,7 +141,7 @@ const GameSetup = () => {
   };
 
   return (
-    <section className="container p-2">
+    <section className="container">
       <div className="d-flex align-items justify-content-between">
         <h1 className="large text-primary mb-4">
           Game Setup -{" "}
@@ -226,7 +224,7 @@ const GameSetup = () => {
                 <SelectedStockItem
                   key={key}
                   onClick={() => handleClickSelectedStock(stock.symbol)}
-                  ticker={stock.stock.ticker}
+                  symbol={stock.stock.symbol}
                   length={stock.length}
                   disabled={
                     games.length > 0 &&
