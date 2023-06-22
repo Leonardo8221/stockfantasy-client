@@ -11,7 +11,7 @@ import { getScores } from "../../../actions/score";
 import PlayingUserBox from "../../commons/PlayingUserBox";
 
 const GameResult = ({
-  rooms,
+  room,
   users,
   user,
   scores,
@@ -41,7 +41,7 @@ const GameResult = ({
         <h1 className="large text-primary mb-4">
           Game Room{" "}
           <span style={{ textTransform: "uppercase" }}>
-            ({rooms.length > 0 && rooms[rooms.length - 1].name})
+            ({room && room.name})
           </span>
           <span className="lead text-danger">Finished</span>
         </h1>
@@ -51,8 +51,8 @@ const GameResult = ({
       </div>
 
       <div className="players-in-progress">
-        {rooms.length > 0 &&
-          rooms[rooms.length - 1].players.map((player) => (
+        {room &&
+          room.players.map((player) => (
             <PlayingUserBox
               key={player}
               user={
@@ -83,13 +83,13 @@ GameResult.propTypes = {
   getGames: PropTypes.func,
   getAllUers: PropTypes.func,
   getScores: PropTypes.func,
-  rooms: PropTypes.arrayOf(PropTypes.object),
+  room: PropTypes.object,
   users: PropTypes.arrayOf(PropTypes.object),
   scores: PropTypes.arrayOf(PropTypes.object),
 };
 
 const mapStateToProps = (state) => ({
-  rooms: state.roomReducer.rooms,
+  room: state.roomReducer.room,
   users: state.userReducer.users,
   scores: state.scoreReducer.scores,
   games: state.gameReducer.games,

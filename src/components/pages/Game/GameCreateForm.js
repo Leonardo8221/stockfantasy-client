@@ -12,7 +12,7 @@ import { getAllUers } from "../../../actions/user";
 const GameCreateForm = ({
   createRoom,
   getAllUers,
-  rooms,
+  room,
   users,
   user,
   isRoomCreated,
@@ -45,10 +45,10 @@ const GameCreateForm = ({
   }, [formData.players.length]);
 
   useEffect(() => {
-    if (isRoomCreated && rooms.length) {
-      navigator("/game-setup/" + rooms[rooms.length - 1]._id);
+    if (isRoomCreated && room) {
+      navigator("/game-setup/" + room._id);
     }
-  }, [isRoomCreated, navigator, rooms]);
+  }, [isRoomCreated, navigator, room]);
 
   //Handels the form values changing events
   const onChange = (e) => {
@@ -235,14 +235,14 @@ const GameCreateForm = ({
 GameCreateForm.propTypes = {
   createRoom: PropTypes.func.isRequired,
   getAllUers: PropTypes.func.isRequired,
-  rooms: PropTypes.arrayOf(PropTypes.object),
+  room: PropTypes.object,
   users: PropTypes.arrayOf(PropTypes.object),
   isRoomCreated: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
   users: state.userReducer.users,
-  rooms: state.roomReducer.rooms,
+  room: state.roomReducer.room,
   isRoomCreated: state.roomReducer.isRoomCreated,
   user: state.auth.user,
 });

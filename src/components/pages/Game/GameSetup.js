@@ -17,19 +17,21 @@ import PlayerBox from "../../commons/PlayerBox";
 import SelectedStockItem from "../../commons/SelectedStockItem";
 import "./style.css";
 
-const GameSetup = () => {
+import axios from "axios";
 
+const GameSetup = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { rooms, isRoomCreated, isGameStarted, isJoined } = useSelector(
+  const { room, isRoomCreated, isGameStarted, isJoined } = useSelector(
     (state) => state.roomReducer
   );
-  const { games, stocks } = useSelector((state) => state.gameReducer);
+  const { games } = useSelector((state) => state.gameReducer);
   const { users } = useSelector((state) => state.userReducer);
   const [selectedStocks, setSelectedStocks] = useState([]);
   const navigate = useNavigate();
   const { roomID } = useParams();
 
+  const [stocks, setStocks] = useState([]);
 
   // if user is joined then isRoomCreated set to false
   useEffect(() => {
@@ -50,6 +52,11 @@ const GameSetup = () => {
     dispatch(getGames(roomID));
   }, []);
 
+  //when clike the exit buttom
+  useEffect(() => {
+    if (isJoined === false) navigate("/join-room");
+  }, [isJoined, navigate]);
+
   //if games are loaded successfully then set the state of seletedstocks
   useEffect(() => {
     if (
@@ -64,16 +71,14 @@ const GameSetup = () => {
 
   //if all players are ready to start game then move to the game room page
   useEffect(() => {
-    
-    localStorage.setItem("isJoined", false);
     if (isGameStarted === true) navigate(`/gameRoom/${roomID}`);
   }, [isGameStarted]);
 
   //if all users of the room are ready then start the game.
   useEffect(() => {
-    if (rooms.length > 0 && games.length > 0) {
+    if (room && games.length > 0) {
       const thisGame = games.filter((game) => game.roomID === roomID);
-      const players = rooms[rooms.length - 1].players;
+      const players = room.players;
 
       if (thisGame.length === players.length && players.length === 2) {
         dispatch(startGame(roomID));
@@ -90,19 +95,17 @@ const GameSetup = () => {
 
   const handleExitBtn = (roomID) => {
     dispatch(exitGame(user._id, roomID));
-    navigate("/join-room");
-
   };
 
-  const handleClickStocksListItem = (stockID) => {
+  const handleClickStocksListItem = (stockSymbol) => {
     if (
-      user.budget < stocks.find((stock) => stock.id === stockID).price ||
+      user.budget < stocks.find((stock) => stock.symbol === stockSymbol).price ||
       (games.length > 0 && games.find((game) => game.playerID === user._id))
     ) {
       alert("You can't buy the stock anymore");
       return;
     }
-    const index = selectedStocks.find((s) => s.stock.id === stockID);
+    const index = selectedStocks.find((s) => s.stock.symbol === stockSymbol);
     if (index) {
       const updatedSelectedStocks = [...selectedStocks];
       index.length += 1;
@@ -113,24 +116,24 @@ const GameSetup = () => {
         {
           id: uuidv4(),
           length: 1,
-          stock: stocks.find((stock) => stock.id === stockID),
+          stock: stocks.find((stock) => stock.symbol === stockSymbol),
         },
       ]);
     }
 
     user.budget = (
-      user.budget - stocks.find((stock) => stock.id === stockID).price
+      user.budget - stocks.find((stock) => stock.symbol === stockSymbol).price
     ).toFixed(2);
   };
 
-  const handleClickSelectedStock = (stockID) => {
-    const index = selectedStocks.find((s) => s.id === stockID);
+  const handleClickSelectedStock = (stockSymbol) => {
+    const index = selectedStocks.find((s) => s.symbol === stockSymbol);
     if (index) {
       const updatedSelectedStocks = [...selectedStocks];
       index.length -= 1;
       if (index.length === 0) {
         const newArr = updatedSelectedStocks.filter(
-          (item) => item.id !== index.id
+          (item) => item.symbol !== index.symbol
         );
         setSelectedStocks(newArr);
       } else setSelectedStocks(updatedSelectedStocks);
@@ -145,7 +148,7 @@ const GameSetup = () => {
         <h1 className="large text-primary mb-4">
           Game Setup -{" "}
           <span className="text-success mb-0 text-uppercase">
-            {rooms.length > 0 && rooms[rooms.length - 1].name}
+            {room && room.name}
           </span>
         </h1>
         <div>
@@ -159,8 +162,8 @@ const GameSetup = () => {
       </div>
 
       <div className="game-players mb-4">
-        {rooms.length > 0 &&
-          rooms[rooms.length - 1].players
+        {room &&
+          room.players
             .filter((item) => item !== user._id)
             .map((item) => (
               <PlayerBox
@@ -187,11 +190,11 @@ const GameSetup = () => {
         <div className="left p-4">
           <h4>Stock List</h4>
           <div className="stock-list">
-            {stocks.map((stock) => (
+            {stocks.map((stock, key) => (
               <StockListItem
-                key={stock.id}
+                key={key}
                 {...stock}
-                onClick={() => handleClickStocksListItem(stock.id)}
+                onClick={() => handleClickStocksListItem(stock.symbol)}
               />
             ))}
           </div>
@@ -219,10 +222,10 @@ const GameSetup = () => {
           </div>
           <div className="selected-stocks">
             {selectedStocks.length > 0 ? (
-              selectedStocks.map((stock) => (
+              selectedStocks.map((stock, key) => (
                 <SelectedStockItem
-                  key={stock.id}
-                  onClick={() => handleClickSelectedStock(stock.id)}
+                  key={key}
+                  onClick={() => handleClickSelectedStock(stock.symbol)}
                   ticker={stock.stock.ticker}
                   length={stock.length}
                   disabled={

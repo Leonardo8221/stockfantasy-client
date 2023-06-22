@@ -12,7 +12,7 @@ import { giveScoreToUser } from "../../../actions/score";
 import PlayingUserBox from "../../commons/PlayingUserBox";
 
 const GameRoom = ({
-  rooms,
+  room,
   users,
   games,
   user,
@@ -57,18 +57,15 @@ const GameRoom = ({
 
   const evaluationTime = "9:00 AM";
   useEffect(() => {
-    if (rooms.length > 0) {
-      let currentRoom = rooms.find((room) => room._id === roomID);
+    if (room) {
       let millisecondsInDay = 86400000; // 1000 * 60 * 60 * 24;
-      let start = new Date(currentRoom.startedDate);
+      let start = new Date(room.startedDate);
 
-      setEndtime(
-        new Date(start.getTime() + currentRoom.duration * millisecondsInDay)
-      );
+      setEndtime(new Date(start.getTime() + room.duration * millisecondsInDay));
 
       const interval = setInterval(() => {
-        if (currentRoom.players.length > 0) {
-          const newEvaluations = currentRoom.players.map((player) => {
+        if (room.players.length > 0) {
+          const newEvaluations = room.players.map((player) => {
             let currentPlayerStocks =
               games.length > 0 &&
               games.filter(
@@ -106,7 +103,7 @@ const GameRoom = ({
   }, [
     stockPrices,
     evaluationTime,
-    rooms,
+    room,
     roomID,
     games,
     evaluations,
@@ -139,7 +136,7 @@ const GameRoom = ({
         <h1 className="large text-primary mb-4">
           Game Room{" "}
           <span style={{ textTransform: "uppercase" }}>
-            ({rooms.length > 0 && rooms[rooms.length - 1].name})
+            ({room && room.name})
           </span>
           <span className="lead text-dark">Playing...</span>
         </h1>
@@ -147,18 +144,18 @@ const GameRoom = ({
           Back
         </Link>
       </div>
-      {rooms.length > 0 && (
+      {room && (
         <div className="text-success" style={{ fontSize: "24px" }}>
           <TimeCounter
-            startedDate={rooms[rooms.length - 1].startedDate}
-            duration={rooms[rooms.length - 1].duration}
+            startedDate={room.startedDate}
+            duration={room.duration}
           />
         </div>
       )}
 
       <div className="players-in-progress">
-        {rooms.length > 0 &&
-          rooms[rooms.length - 1].players.map((player) => (
+        {room &&
+          room.players.map((player) => (
             <PlayingUserBox
               key={player}
               user={
@@ -185,7 +182,7 @@ const GameRoom = ({
 };
 
 GameRoom.propTypes = {
-  rooms: PropTypes.arrayOf(PropTypes.object),
+  room: PropTypes.arrayOf(PropTypes.object),
   getRoom: PropTypes.func,
   getGames: PropTypes.func,
   getAllUers: PropTypes.func,
@@ -197,7 +194,7 @@ GameRoom.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  rooms: state.roomReducer.rooms,
+  room: state.roomReducer.room,
   users: state.userReducer.users,
   games: state.gameReducer.games,
   scores: state.scoreReducer.scores,

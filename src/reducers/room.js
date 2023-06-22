@@ -29,6 +29,7 @@ import { LOGOUT } from "../constants/userConstant";
 
 const initialState = {
   rooms: [],
+  room:{},
   isRoomCreated: false,
   loading: false,
   error: null,
@@ -44,7 +45,7 @@ export const roomReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        rooms: [...state.rooms, action.payload],
+        room: action.payload,
         isRoomCreated: true,
       };
     case CREATE_ROOM_REQUEST_ERROR:
@@ -64,7 +65,7 @@ export const roomReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         isJoined: true,
-        rooms: [...state.rooms, action.payload],
+        room: action.payload,
       };
     case JOIN_GAME_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
@@ -80,7 +81,7 @@ export const roomReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        rooms: [...state.rooms, action.payload],
+        room: action.payload,
       };
     case END_GAME_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
@@ -90,7 +91,7 @@ export const roomReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        rooms: [...state.rooms, action.payload],
+        room: action.payload,
       };
     case GET_ROOM_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
@@ -98,7 +99,7 @@ export const roomReducer = (state = initialState, action) => {
       return {
         ...state,
         isJoined: false,
-        rooms: [...state.rooms, action.payload],
+        room: action.payload,
         isGameStarted: true,
       };
 

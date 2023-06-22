@@ -19,7 +19,7 @@ const Home = ({ rooms, getRooms }) => {
 
   useEffect(() => {
     getRooms(true);
-  }, [rooms]);
+  }, []);
 
   useEffect(() => {
     if (rooms.length>0) {

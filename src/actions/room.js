@@ -29,7 +29,7 @@ export const createRoom = (formData) => async (dispatch) => {
     dispatch({ type: CREATE_ROOM_REQUEST });
 
     const { data } = await api.post("/rooms", formData);
-
+  
     dispatch({ type: CREATE_ROOM_REQUEST_SUCCESS, payload: data });
     dispatch(setAlert(`Created Room successfully-${data.name}`, "success"));
   } catch (error) {
@@ -118,13 +118,13 @@ export const getRoom = (roomID) => {
   };
 };
 
-export const joinGame = (userID, roomID) => async (dispatch) => {
+export const joinGame = (userID, roomID) => async (dispatch, getState) => {
   try {
     dispatch({ type: JOIN_GAME_REQUEST });
 
     const { data } = await api.put(`/rooms/join-game/${roomID}`, { userID });
     
-    localStorage.setItem("isJoined", true);
+    localStorage.setItem("isJoined", !getState().roomReducer.isJoined);
     dispatch({ type: JOIN_GAME_REQUEST_SUCCESS, payload: data });
   } catch (error) {
     const message =

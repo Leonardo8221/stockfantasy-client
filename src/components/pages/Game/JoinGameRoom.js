@@ -13,11 +13,14 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
   const [roomID, setRoomID] = useState();
 
   const navigate = useNavigate();
-  useEffect(() => {
-    getRooms(false);
-  }, [rooms, isJoined]);
 
   useEffect(() => {
+    getRooms();
+  }, [getRooms]);
+
+
+  useEffect(() => {
+    console.log('hahaha')
     if (rooms.length > 0) {
       setInvitedRooms(
         rooms.filter(
