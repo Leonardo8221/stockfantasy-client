@@ -3,24 +3,21 @@ import { useEffect, useState } from "react";
 import { Form, Button, Toast } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
 
 import { createRoom } from "../../../actions/room";
 import { getAllUers } from "../../../actions/user";
 
-const GameCreateForm = ({
-  createRoom,
-  getAllUers,
-  room,
-  users,
-  user,
-  isRoomCreated,
-  socket
-}) => {
+const GameCreateForm = () => {
+  const { users } = useSelector((state) => state.userReducer);
+  const { room, isRoomCreated } = useSelector((state) => state.roomReducer);
+  const { user } = useSelector((state) => state.auth);
+  const { socket } = useSelector((state) => state.socket);
   const [validated, setValidated] = useState(false);
   const [isPlayersFull, setIsPlayersFull] = useState(false);
   const [isToastShow, setIsToastShow] = useState(false);
+
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -33,7 +30,7 @@ const GameCreateForm = ({
 
   //Fetch users from the server
   useEffect(() => {
-    getAllUers();
+    dispatch(getAllUers());
   }, []);
 
   useEffect(() => {
@@ -101,8 +98,8 @@ const GameCreateForm = ({
     if (form.checkValidity() === false) {
       e.stopPropagation();
     }
-
-    createRoom(formData, socket);
+    const newRoom = { ...formData, creater: user._id };
+    dispatch(createRoom(newRoom, socket));
 
     setValidated(true);
   };
@@ -234,23 +231,4 @@ const GameCreateForm = ({
   );
 };
 
-GameCreateForm.propTypes = {
-  createRoom: PropTypes.func.isRequired,
-  getAllUers: PropTypes.func.isRequired,
-  room: PropTypes.object,
-  users: PropTypes.arrayOf(PropTypes.object),
-  isRoomCreated: PropTypes.bool,
-  socket: PropTypes.object,
-};
-
-const mapStateToProps = (state) => ({
-  users: state.userReducer.users,
-  room: state.roomReducer.room,
-  isRoomCreated: state.roomReducer.isRoomCreated,
-  user: state.auth.user,
-  socket: state.socket
-});
-
-export default connect(mapStateToProps, { createRoom, getAllUers })(
-  GameCreateForm
-);
+export default GameCreateForm;

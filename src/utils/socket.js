@@ -1,4 +1,5 @@
 import { io } from "socket.io-client";
+import { getRooms } from "../actions/room";
 
 let socket;
 export const initiateSocketConnection = () => {
@@ -6,8 +7,8 @@ export const initiateSocketConnection = () => {
   return (socket = io("http://localhost:5000", {
     withCredentials: true,
     auth: {
-			token: localStorage.getItem("token")
-		},
+      token: localStorage.getItem("token"),
+    },
   }));
 };
 
@@ -16,11 +17,12 @@ export const disconnectSocket = () => {
   if (socket) socket.disconnect();
 };
 
-
-export const addedRoomListener = (socket) => {
+export const addedRoomListener = (socket, dispatch) => {
   if (socket) {
     return new Promise((resolve, reject) => {
       socket.on("RoomAdded", (room) => {
+        console.log("RoomAdded ", room);
+        if (dispatch) dispatch(getRooms());
         resolve(room);
       });
     });
@@ -29,7 +31,6 @@ export const addedRoomListener = (socket) => {
     return null;
   }
 };
-
 
 export const getRoomRequest = (roomID) => {
   socket.emit("GetRoom", roomID);

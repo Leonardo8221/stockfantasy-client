@@ -30,10 +30,9 @@ export const createRoom = (formData, socket) => async (dispatch) => {
     dispatch({ type: CREATE_ROOM_REQUEST });
     // const { data } = await api.post("/rooms", formData);
     socket.emit("addRoom", formData);
-    const  room = await addedRoomListener(socket);
-    console.log("Succeeded", room);
+    const  room = await addedRoomListener(socket, dispatch);
     dispatch({ type: CREATE_ROOM_REQUEST_SUCCESS, payload: room });
-    dispatch(setAlert(`"${room.name}" romm was created successfully!`, "success"));
+    dispatch(setAlert(`"${room.name}" room was created successfully!`, "success"));
   } catch (error) {
     const message =
       error.response && error.response.data.message

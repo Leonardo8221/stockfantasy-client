@@ -1,28 +1,30 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
 import { getRooms, joinGame } from "../../../actions/room";
 import RoomBox from "../../commons/RoomBox";
-import {
-  addedRoomListener,
-} from "../../../utils/socket";
+import { addedRoomListener } from "../../../utils/socket";
 
-const JoinGameRoom = ({ rooms, user, isJoined, socket, getRooms, joinGame }) => {
+const JoinGameRoom = () => {
+  const { rooms, isJoined } = useSelector((state) => state.roomReducer);
+  const { user } = useSelector((state) => state.auth);
+  const { socket } = useSelector((state) => state.socket);
   const [randomRooms, setRandomRooms] = useState([]);
   const [invitedRooms, setInvitedRooms] = useState([]);
   const [roomID, setRoomID] = useState();
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    getRooms();
-  }, [getRooms]);
+    dispatch(getRooms());
+  }, []);
 
   useEffect(() => {
-    if (socket) addedRoomListener(socket);
+    if (socket) {
+      addedRoomListener(socket, dispatch);
+    }
   }, []);
 
   useEffect(() => {
@@ -40,10 +42,9 @@ const JoinGameRoom = ({ rooms, user, isJoined, socket, getRooms, joinGame }) => 
       );
     }
   }, [rooms]);
+
   useEffect(() => {
-    if (isJoined === true) {
-      navigate("/game-setup/" + roomID);
-    }
+    if (isJoined === true) navigate("/game-setup/" + roomID);
   }, [isJoined]);
 
   const handleJoinGameRoom = (roomID) => {
@@ -55,7 +56,7 @@ const JoinGameRoom = ({ rooms, user, isJoined, socket, getRooms, joinGame }) => 
       alert("This room is full of players");
       return;
     }
-    joinGame(user._id, roomID);
+    dispatch(joinGame(user._id, roomID));
     setRoomID(roomID);
   };
 
@@ -106,20 +107,4 @@ const JoinGameRoom = ({ rooms, user, isJoined, socket, getRooms, joinGame }) => 
   );
 };
 
-JoinGameRoom.propTypes = {
-  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  user: PropTypes.object.isRequired,
-  isJoined: PropTypes.string,
-  getRooms: PropTypes.func,
-  joinGame: PropTypes.func,
-  socket: PropTypes.object,
-};
-
-const mapStateToProps = (state) => ({
-  rooms: state.roomReducer.rooms,
-  isJoined: state.roomReducer.isJoined,
-  user: state.auth.user,
-  socket: state.socket
-});
-
-export default connect(mapStateToProps, { getRooms, joinGame })(JoinGameRoom);
+export default JoinGameRoom;
