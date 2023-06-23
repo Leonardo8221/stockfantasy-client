@@ -28,6 +28,7 @@ import { addedRoomListener } from "../utils/socket";
 export const createRoom = (formData, socket) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_ROOM_REQUEST });
+    console.log("actions for creating", socket)
     // const { data } = await api.post("/rooms", formData);
     socket.emit("addRoom", formData);
     const  room = await addedRoomListener(socket, dispatch);

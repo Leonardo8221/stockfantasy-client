@@ -12,7 +12,8 @@ const GameCreateForm = () => {
   const { users } = useSelector((state) => state.userReducer);
   const { room, isRoomCreated } = useSelector((state) => state.roomReducer);
   const { user } = useSelector((state) => state.auth);
-  const { socket } = useSelector((state) => state.socket);
+  const socket = useSelector((state) => state.socket);
+
   const [validated, setValidated] = useState(false);
   const [isPlayersFull, setIsPlayersFull] = useState(false);
   const [isToastShow, setIsToastShow] = useState(false);
@@ -30,6 +31,7 @@ const GameCreateForm = () => {
 
   //Fetch users from the server
   useEffect(() => {
+    console.log(socket);
     dispatch(getAllUers());
   }, []);
 
@@ -79,7 +81,7 @@ const GameCreateForm = () => {
   //Handles the search event
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
-    users = users.filter((item) => item.name !== event.target.value);
+    users.filter((item) => item.name !== event.target.value);
   };
 
   //Filtered users
@@ -99,7 +101,10 @@ const GameCreateForm = () => {
       e.stopPropagation();
     }
     const newRoom = { ...formData, creater: user._id };
-    dispatch(createRoom(newRoom, socket));
+    console.log(socket);
+    if (socket) {
+      dispatch(createRoom(newRoom, socket));
+    }
 
     setValidated(true);
   };
@@ -223,7 +228,7 @@ const GameCreateForm = () => {
             )}
           </Form.Group>
         )}
-        <Button variant="primary" type="submit">
+        <Button className="mt-3" variant="primary" type="submit">
           Submit
         </Button>
       </Form>

@@ -6,9 +6,6 @@ export const initiateSocketConnection = () => {
   console.log(`Connecting socket...`);
   return (socket = io("http://localhost:5000", {
     withCredentials: true,
-    auth: {
-      token: localStorage.getItem("token"),
-    },
   }));
 };
 

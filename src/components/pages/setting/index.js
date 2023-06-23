@@ -60,7 +60,7 @@ const Setting = ({ setAlert, updatePassword, auth: { user } }) => {
                 onChange={onChange}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Group className="mb-3" controlId="formConfirmPassword">
               <Form.Label>Confirm Password</Form.Label>
               <Form.Control
                 type="password"

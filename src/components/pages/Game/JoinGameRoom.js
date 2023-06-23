@@ -9,7 +9,7 @@ import { addedRoomListener } from "../../../utils/socket";
 const JoinGameRoom = () => {
   const { rooms, isJoined } = useSelector((state) => state.roomReducer);
   const { user } = useSelector((state) => state.auth);
-  const { socket } = useSelector((state) => state.socket);
+  const socket = useSelector((state) => state.socket);
   const [randomRooms, setRandomRooms] = useState([]);
   const [invitedRooms, setInvitedRooms] = useState([]);
   const [roomID, setRoomID] = useState();
@@ -19,9 +19,6 @@ const JoinGameRoom = () => {
 
   useEffect(() => {
     dispatch(getRooms());
-  }, []);
-
-  useEffect(() => {
     if (socket) {
       addedRoomListener(socket, dispatch);
     }
