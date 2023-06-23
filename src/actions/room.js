@@ -23,15 +23,17 @@ import {
   GET_ROOMS_REQUEST_ERROR,
   GET_ROOMS_REQUEST_SUCCESS,
 } from "../constants/roomConstant";
+import { addedRoomListener } from "../utils/socket";
 
-export const createRoom = (formData) => async (dispatch) => {
+export const createRoom = (formData, socket) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_ROOM_REQUEST });
-
-    const { data } = await api.post("/rooms", formData);
-  
-    dispatch({ type: CREATE_ROOM_REQUEST_SUCCESS, payload: data });
-    dispatch(setAlert(`Created Room successfully-${data.name}`, "success"));
+    // const { data } = await api.post("/rooms", formData);
+    socket.emit("addRoom", formData);
+    const  room = await addedRoomListener(socket);
+    console.log("Succeeded", room);
+    dispatch({ type: CREATE_ROOM_REQUEST_SUCCESS, payload: room });
+    dispatch(setAlert(`"${room.name}" romm was created successfully!`, "success"));
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -123,7 +125,7 @@ export const joinGame = (userID, roomID) => async (dispatch, getState) => {
     dispatch({ type: JOIN_GAME_REQUEST });
 
     const { data } = await api.put(`/rooms/join-game/${roomID}`, { userID });
-    
+
     localStorage.setItem("isJoined", !getState().roomReducer.isJoined);
     dispatch({ type: JOIN_GAME_REQUEST_SUCCESS, payload: data });
   } catch (error) {

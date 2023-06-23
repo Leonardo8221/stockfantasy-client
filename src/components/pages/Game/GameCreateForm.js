@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 
 import { createRoom } from "../../../actions/room";
 import { getAllUers } from "../../../actions/user";
+import { disconnectSocket, initiateSocketConnection } from "../../../utils/socket";
 
 const GameCreateForm = ({
   createRoom,
@@ -20,6 +21,7 @@ const GameCreateForm = ({
   const [validated, setValidated] = useState(false);
   const [isPlayersFull, setIsPlayersFull] = useState(false);
   const [isToastShow, setIsToastShow] = useState(false);
+  const [socket, setSocket] = useState({});
 
   const [formData, setFormData] = useState({
     name: "",
@@ -29,6 +31,14 @@ const GameCreateForm = ({
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigator = useNavigate();
+
+  useEffect(() => {
+    setSocket(initiateSocketConnection())
+    return () => {
+      disconnectSocket();
+    };
+  }, []);
+
   //Fetch users from the server
   useEffect(() => {
     getAllUers();
@@ -99,8 +109,8 @@ const GameCreateForm = ({
     if (form.checkValidity() === false) {
       e.stopPropagation();
     }
-
-    createRoom(formData);
+    
+    createRoom(formData, socket);
 
     setValidated(true);
   };

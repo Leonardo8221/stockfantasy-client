@@ -6,6 +6,11 @@ import { connect } from "react-redux";
 
 import { getRooms, joinGame } from "../../../actions/room";
 import RoomBox from "../../commons/RoomBox";
+import {
+  addedRoomListener,
+  disconnectSocket,
+  initiateSocketConnection,
+} from "../../../utils/socket";
 
 const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
   const [randomRooms, setRandomRooms] = useState([]);
@@ -18,9 +23,14 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
     getRooms();
   }, [getRooms]);
 
+  useEffect(() => {
+    initiateSocketConnection();
+    return () => {
+      disconnectSocket();
+    };
+  }, []);
 
   useEffect(() => {
-    console.log('hahaha')
     if (rooms.length > 0) {
       setInvitedRooms(
         rooms.filter(
@@ -78,7 +88,7 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
         </div>
       </div>
       <hr className="divider" />
-      <div className="">
+      <div className="py-2">
         <h4>Random Rooms</h4>
         <div className="game-rooms">
           {randomRooms.length > 0 ? (

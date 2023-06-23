@@ -92,12 +92,16 @@ const GameSetup = () => {
   };
 
   const handleExitBtn = (roomID) => {
-    dispatch(exitGame(user._id, roomID));
+    if (window.confirm("Do you want to exit the game?")) {
+      dispatch(exitGame(user._id, roomID));
+      return;
+    }
   };
 
   const handleClickStocksListItem = (stockSymbol) => {
     if (
-      user.budget < stocks.find((stock) => stock.symbol === stockSymbol).price ||
+      user.budget <
+        stocks.find((stock) => stock.symbol === stockSymbol).price ||
       (games.length > 0 && games.find((game) => game.playerID === user._id))
     ) {
       alert("You can't buy the stock anymore");
@@ -154,13 +158,14 @@ const GameSetup = () => {
             className="btn btn-danger"
             onClick={() => handleExitBtn(roomID)}
           >
-            Exit
+            Exit <i className="fa fa-sign-out-alt"></i>
           </button>
         </div>
       </div>
 
       <div className="game-players mb-4">
         {room &&
+          room.players &&
           room.players
             .filter((item) => item !== user._id)
             .map((item) => (
