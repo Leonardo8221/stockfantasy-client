@@ -16,10 +16,11 @@ export const disconnectSocket = () => {
   if (socket) socket.disconnect();
 };
 
-export const addedRoomListener = (connectedSocket) => {
-  if (connectedSocket) {
+
+export const addedRoomListener = (socket) => {
+  if (socket) {
     return new Promise((resolve, reject) => {
-      connectedSocket.on("RoomAdded", (room) => {
+      socket.on("RoomAdded", (room) => {
         resolve(room);
       });
     });
@@ -28,6 +29,7 @@ export const addedRoomListener = (connectedSocket) => {
     return null;
   }
 };
+
 
 export const getRoomRequest = (roomID) => {
   socket.emit("GetRoom", roomID);

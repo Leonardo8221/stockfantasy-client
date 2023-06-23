@@ -8,7 +8,6 @@ import PropTypes from "prop-types";
 
 import { createRoom } from "../../../actions/room";
 import { getAllUers } from "../../../actions/user";
-import { disconnectSocket, initiateSocketConnection } from "../../../utils/socket";
 
 const GameCreateForm = ({
   createRoom,
@@ -17,11 +16,11 @@ const GameCreateForm = ({
   users,
   user,
   isRoomCreated,
+  socket
 }) => {
   const [validated, setValidated] = useState(false);
   const [isPlayersFull, setIsPlayersFull] = useState(false);
   const [isToastShow, setIsToastShow] = useState(false);
-  const [socket, setSocket] = useState({});
 
   const [formData, setFormData] = useState({
     name: "",
@@ -31,13 +30,6 @@ const GameCreateForm = ({
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigator = useNavigate();
-
-  useEffect(() => {
-    setSocket(initiateSocketConnection())
-    return () => {
-      disconnectSocket();
-    };
-  }, []);
 
   //Fetch users from the server
   useEffect(() => {
@@ -109,7 +101,7 @@ const GameCreateForm = ({
     if (form.checkValidity() === false) {
       e.stopPropagation();
     }
-    
+
     createRoom(formData, socket);
 
     setValidated(true);
@@ -248,6 +240,7 @@ GameCreateForm.propTypes = {
   room: PropTypes.object,
   users: PropTypes.arrayOf(PropTypes.object),
   isRoomCreated: PropTypes.bool,
+  socket: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
@@ -255,6 +248,7 @@ const mapStateToProps = (state) => ({
   room: state.roomReducer.room,
   isRoomCreated: state.roomReducer.isRoomCreated,
   user: state.auth.user,
+  socket: state.socket
 });
 
 export default connect(mapStateToProps, { createRoom, getAllUers })(

@@ -8,11 +8,9 @@ import { getRooms, joinGame } from "../../../actions/room";
 import RoomBox from "../../commons/RoomBox";
 import {
   addedRoomListener,
-  disconnectSocket,
-  initiateSocketConnection,
 } from "../../../utils/socket";
 
-const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
+const JoinGameRoom = ({ rooms, user, isJoined, socket, getRooms, joinGame }) => {
   const [randomRooms, setRandomRooms] = useState([]);
   const [invitedRooms, setInvitedRooms] = useState([]);
   const [roomID, setRoomID] = useState();
@@ -24,10 +22,7 @@ const JoinGameRoom = ({ rooms, user, isJoined, getRooms, joinGame }) => {
   }, [getRooms]);
 
   useEffect(() => {
-    initiateSocketConnection();
-    return () => {
-      disconnectSocket();
-    };
+    if (socket) addedRoomListener(socket);
   }, []);
 
   useEffect(() => {
@@ -117,12 +112,14 @@ JoinGameRoom.propTypes = {
   isJoined: PropTypes.string,
   getRooms: PropTypes.func,
   joinGame: PropTypes.func,
+  socket: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
   rooms: state.roomReducer.rooms,
   isJoined: state.roomReducer.isJoined,
   user: state.auth.user,
+  socket: state.socket
 });
 
 export default connect(mapStateToProps, { getRooms, joinGame })(JoinGameRoom);

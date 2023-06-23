@@ -30,6 +30,8 @@ import { loadUser } from "./actions/auth";
 //styles
 import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
+import { disconnectSocket, initiateSocketConnection } from "./utils/socket";
+import { setSocket } from "./actions/socket";
 
 const App = () => {
   useEffect(() => {
@@ -46,6 +48,14 @@ const App = () => {
     window.addEventListener("storage", () => {
       if (!localStorage.token) store.dispatch({ type: LOGOUT });
     });
+  }, []);
+
+  useEffect(() => {
+    const socket = initiateSocketConnection();
+    if(socket) store.dispatch(setSocket(socket));
+    return () => {
+      disconnectSocket();
+    };
   }, []);
 
   return (
