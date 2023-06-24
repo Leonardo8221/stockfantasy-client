@@ -4,33 +4,30 @@ import { v4 as uuidv4 } from "uuid";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { formatRoom } from "../../../actions/room";
-import { getRoom, exitGame } from "../../../actions/room";
-import { createGame } from "../../../actions/game";
-import { updateUser } from "../../../actions/user";
-import { getGames } from "../../../actions/game";
-import { getAllUers } from "../../../actions/user";
-import { startGame } from "../../../actions/game";
+import { formatRoom, getRooms, exitGame } from "../../../actions/room";
+import { createGame, startGame, getGames } from "../../../actions/game";
+import { updateUser, getAllUers } from "../../../actions/user";
 
 import StockListItem from "../../commons/StockListItem";
 import PlayerBox from "../../commons/PlayerBox";
 import SelectedStockItem from "../../commons/SelectedStockItem";
 import "./style.css";
+import { exitUserListener, joinedRoomListener } from "../../../utils/socket";
 
 const GameSetup = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { room, isRoomCreated, isGameStarted, isJoined } = useSelector(
+  const { rooms, isRoomCreated, isGameStarted, isJoined } = useSelector(
     (state) => state.roomReducer
   );
   const { games, stocks } = useSelector((state) => state.gameReducer);
   const { users } = useSelector((state) => state.userReducer);
   const socket = useSelector((state) => state.socket);
   const [selectedStocks, setSelectedStocks] = useState([]);
+  const [currentRoom, setCurrentRoom] = useState({});
   const navigate = useNavigate();
   const { roomID } = useParams();
 
-  
   useEffect(() => {
     // if user is joined then isRoomCreated set to false
     if (isRoomCreated) {
@@ -38,22 +35,28 @@ const GameSetup = () => {
     }
   }, [dispatch, isRoomCreated]);
 
-  //Load room, and games by room ID
+  //Load room, games, users
   useEffect(() => {
-    dispatch(getRoom(roomID));
-  }, [dispatch, roomID]);
-
-  useEffect(() => {
+    dispatch(getRooms());
     dispatch(getAllUers());
-  }, [dispatch]);
-  useEffect(() => {
     dispatch(getGames(roomID));
-  }, [dispatch, roomID]);
+    if (socket) {
+      joinedRoomListener(socket, dispatch);
+      exitUserListener(socket, dispatch);
+    }
+  }, [dispatch, roomID, socket]);
 
   //when clike the exit buttom
   useEffect(() => {
     if (isJoined === false) navigate("/join-room");
   }, [isJoined, navigate]);
+
+  //set current room
+  useEffect(() => {
+    if (rooms.length > 0) {
+      setCurrentRoom(rooms.find((room) => room._id === roomID));
+    }
+  }, [roomID, rooms]);
 
   //if games are loaded successfully then set the state of seletedstocks
   useEffect(() => {
@@ -74,15 +77,15 @@ const GameSetup = () => {
 
   //if all users of the room are ready then start the game.
   useEffect(() => {
-    if (room && games.length > 0) {
+    if (currentRoom && games.length > 0) {
       const thisGame = games.filter((game) => game.roomID === roomID);
-      const players = room.players;
+      const players = currentRoom.players;
 
       if (thisGame.length === players.length && players.length === 2) {
         dispatch(startGame(roomID));
       }
     }
-  }, [dispatch, games, isGameStarted, room, roomID]);
+  }, [dispatch, games, isGameStarted, currentRoom, roomID]);
 
   const handleReadyBtn = (e) => {
     e.preventDefault();
@@ -93,7 +96,7 @@ const GameSetup = () => {
 
   const handleExitBtn = (roomID) => {
     if (window.confirm("Do you want to exit the game?")) {
-      dispatch(exitGame({userID: user._id, roomID}, socket));
+      dispatch(exitGame({ userID: user._id, roomID }, socket));
       return;
     }
   };
@@ -150,7 +153,7 @@ const GameSetup = () => {
         <h1 className="large text-primary mb-4">
           Game Setup -{" "}
           <span className="text-success mb-0 text-uppercase">
-            {room && room.name}
+            {currentRoom && currentRoom.name}
           </span>
         </h1>
         <div>
@@ -164,9 +167,9 @@ const GameSetup = () => {
       </div>
 
       <div className="game-players mb-4">
-        {room &&
-          room.players &&
-          room.players
+        {currentRoom &&
+          currentRoom.players &&
+          currentRoom.players
             .filter((item) => item !== user._id)
             .map((item) => (
               <PlayerBox
