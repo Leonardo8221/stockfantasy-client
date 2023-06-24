@@ -33,7 +33,7 @@ const initialState = {
   isRoomCreated: false,
   loading: false,
   error: null,
-  isJoined: localStorage.getItem('isJoined'),
+  isJoined: localStorage.getItem("isJoined"),
   isGameStarted: false,
 };
 

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getRooms, joinGame } from "../../../actions/room";
 import RoomBox from "../../commons/RoomBox";
-import { addedRoomListener } from "../../../utils/socket";
+import { createdRoomListener, joinedRoomListener } from "../../../utils/socket";
 
 const JoinGameRoom = () => {
   const { rooms, isJoined } = useSelector((state) => state.roomReducer);
@@ -20,7 +20,8 @@ const JoinGameRoom = () => {
   useEffect(() => {
     dispatch(getRooms());
     if (socket) {
-      addedRoomListener(socket, dispatch);
+      createdRoomListener(socket, dispatch);
+      joinedRoomListener(socket, dispatch)
     }
   }, []);
 
@@ -38,11 +39,11 @@ const JoinGameRoom = () => {
         rooms.filter((room) => room.roomType === "random" && !room.startedDate)
       );
     }
-  }, [rooms]);
+  }, [rooms, user._id]);
 
   useEffect(() => {
     if (isJoined === true) navigate("/game-setup/" + roomID);
-  }, [isJoined]);
+  }, [isJoined, navigate, roomID]);
 
   const handleJoinGameRoom = (roomID) => {
     if (
@@ -53,7 +54,7 @@ const JoinGameRoom = () => {
       alert("This room is full of players");
       return;
     }
-    dispatch(joinGame(user._id, roomID));
+    dispatch(joinGame({userID: user._id, roomID}, socket));
     setRoomID(roomID);
   };
 

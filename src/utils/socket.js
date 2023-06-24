@@ -14,11 +14,10 @@ export const disconnectSocket = () => {
   if (socket) socket.disconnect();
 };
 
-export const addedRoomListener = (socket, dispatch) => {
+export const createdRoomListener = (socket, dispatch) => {
   if (socket) {
     return new Promise((resolve, reject) => {
       socket.on("RoomAdded", (room) => {
-        console.log("RoomAdded ", room);
         if (dispatch) dispatch(getRooms());
         resolve(room);
       });
@@ -29,6 +28,16 @@ export const addedRoomListener = (socket, dispatch) => {
   }
 };
 
-export const getRoomRequest = (roomID) => {
-  socket.emit("GetRoom", roomID);
+export const joinedRoomListener = (socket, dispatch) => {
+  if (socket) {
+    return new Promise((resolve, reject) => {
+      socket.on("UserJoined", (room) => {
+        if (dispatch) dispatch(getRooms());
+        resolve(room);
+      });
+    });
+  } else {
+    console.error("Socket is undefined");
+    return null;
+  }
 };

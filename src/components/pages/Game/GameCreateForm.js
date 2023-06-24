@@ -101,7 +101,6 @@ const GameCreateForm = () => {
       e.stopPropagation();
     }
     const newRoom = { ...formData, creater: user._id };
-    console.log(socket);
     if (socket) {
       dispatch(createRoom(newRoom, socket));
     }

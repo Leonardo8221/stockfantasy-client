@@ -23,15 +23,14 @@ import {
   GET_ROOMS_REQUEST_ERROR,
   GET_ROOMS_REQUEST_SUCCESS,
 } from "../constants/roomConstant";
-import { addedRoomListener } from "../utils/socket";
+import { createdRoomListener, joinedRoomListener } from "../utils/socket";
 
 export const createRoom = (formData, socket) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_ROOM_REQUEST });
-    console.log("actions for creating", socket)
     // const { data } = await api.post("/rooms", formData);
     socket.emit("addRoom", formData);
-    const  room = await addedRoomListener(socket, dispatch);
+    const  room = await createdRoomListener(socket, dispatch);
     dispatch({ type: CREATE_ROOM_REQUEST_SUCCESS, payload: room });
     dispatch(setAlert(`"${room.name}" room was created successfully!`, "success"));
   } catch (error) {
@@ -120,14 +119,14 @@ export const getRoom = (roomID) => {
   };
 };
 
-export const joinGame = (userID, roomID) => async (dispatch, getState) => {
+export const joinGame = (joinUser, socket) => async (dispatch, getState) => {
   try {
     dispatch({ type: JOIN_GAME_REQUEST });
-
-    const { data } = await api.put(`/rooms/join-game/${roomID}`, { userID });
-
-    localStorage.setItem("isJoined", !getState().roomReducer.isJoined);
-    dispatch({ type: JOIN_GAME_REQUEST_SUCCESS, payload: data });
+    socket.emit('joinGameRequest',joinUser);
+    const room = await joinedRoomListener(socket, dispatch);
+    // const { data } = await api.put(`/rooms/join-game/${roomID}`, { userID });
+    localStorage.setItem("isJoined", true);
+    dispatch({ type: JOIN_GAME_REQUEST_SUCCESS, payload: room });
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -140,11 +139,12 @@ export const joinGame = (userID, roomID) => async (dispatch, getState) => {
     dispatch({ type: JOIN_GAME_REQUEST_ERROR, payload: message });
   }
 };
-export const exitGame = (userID, roomID) => async (dispatch) => {
+export const exitGame = (roomID) => async (dispatch) => {
   try {
     dispatch({ type: EXIT_GAME_REQUEST });
 
-    const { data } = await api.put(`/rooms/exit-game/${roomID}`, { userID });
+    const { data } = await api.put(`/rooms/exit-game/${roomID}`);
+    localStorage.setItem('isJoined', false);
     dispatch({ type: EXIT_GAME_REQUEST_SUCCESS, payload: data });
   } catch (error) {
     const message =

@@ -25,30 +25,30 @@ const GameSetup = () => {
   );
   const { games, stocks } = useSelector((state) => state.gameReducer);
   const { users } = useSelector((state) => state.userReducer);
+  const socket = useSelector((state) => state.socket);
   const [selectedStocks, setSelectedStocks] = useState([]);
   const navigate = useNavigate();
   const { roomID } = useParams();
 
-  // const [stocks, setStocks] = useState([]);
-
-  // if user is joined then isRoomCreated set to false
+  
   useEffect(() => {
+    // if user is joined then isRoomCreated set to false
     if (isRoomCreated) {
       dispatch(formatRoom());
     }
-  }, []);
+  }, [dispatch, isRoomCreated]);
 
   //Load room, and games by room ID
   useEffect(() => {
     dispatch(getRoom(roomID));
-  }, []);
+  }, [dispatch, roomID]);
 
   useEffect(() => {
     dispatch(getAllUers());
-  }, []);
+  }, [dispatch]);
   useEffect(() => {
     dispatch(getGames(roomID));
-  }, []);
+  }, [dispatch, roomID]);
 
   //when clike the exit buttom
   useEffect(() => {
@@ -65,12 +65,12 @@ const GameSetup = () => {
         games.find((game) => game.playerID === user._id).stocks
       );
     }
-  }, [games]);
+  }, [games, roomID, user._id]);
 
   //if all players are ready to start game then move to the game room page
   useEffect(() => {
     if (isGameStarted === true) navigate(`/gameRoom/${roomID}`);
-  }, [isGameStarted]);
+  }, [isGameStarted, navigate, roomID]);
 
   //if all users of the room are ready then start the game.
   useEffect(() => {
@@ -82,7 +82,7 @@ const GameSetup = () => {
         dispatch(startGame(roomID));
       }
     }
-  }, [isGameStarted]);
+  }, [dispatch, games, isGameStarted, room, roomID]);
 
   const handleReadyBtn = (e) => {
     e.preventDefault();
@@ -93,7 +93,7 @@ const GameSetup = () => {
 
   const handleExitBtn = (roomID) => {
     if (window.confirm("Do you want to exit the game?")) {
-      dispatch(exitGame(user._id, roomID));
+      dispatch(exitGame(roomID));
       return;
     }
   };
