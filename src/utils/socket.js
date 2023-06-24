@@ -41,3 +41,16 @@ export const joinedRoomListener = (socket, dispatch) => {
     return null;
   }
 };
+export const exitUserListener = (socket, dispatch) => {
+  if (socket) {
+    return new Promise((resolve, reject) => {
+      socket.on("UserExited", (room) => {
+        if (dispatch) dispatch(getRooms());
+        resolve(room);
+      });
+    });
+  } else {
+    console.error("Socket is undefined");
+    return null;
+  }
+};

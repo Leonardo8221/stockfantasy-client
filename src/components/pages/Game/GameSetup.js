@@ -93,7 +93,7 @@ const GameSetup = () => {
 
   const handleExitBtn = (roomID) => {
     if (window.confirm("Do you want to exit the game?")) {
-      dispatch(exitGame(roomID));
+      dispatch(exitGame({userID: user._id, roomID}, socket));
       return;
     }
   };

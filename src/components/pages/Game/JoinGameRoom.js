@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getRooms, joinGame } from "../../../actions/room";
 import RoomBox from "../../commons/RoomBox";
-import { createdRoomListener, joinedRoomListener } from "../../../utils/socket";
+import { createdRoomListener, exitUserListener, joinedRoomListener } from "../../../utils/socket";
 
 const JoinGameRoom = () => {
   const { rooms, isJoined } = useSelector((state) => state.roomReducer);
@@ -21,9 +21,10 @@ const JoinGameRoom = () => {
     dispatch(getRooms());
     if (socket) {
       createdRoomListener(socket, dispatch);
-      joinedRoomListener(socket, dispatch)
+      joinedRoomListener(socket, dispatch);
+      exitUserListener(socket, dispatch);
     }
-  }, []);
+  }, [dispatch, socket]);
 
   useEffect(() => {
     if (rooms.length > 0) {
