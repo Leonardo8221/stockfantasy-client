@@ -101,6 +101,7 @@ export const roomReducer = (state = initialState, action) => {
         ...state,
         isJoined: false,
         room: action.payload,
+        isGameStarted: true
       };
 
     case START_GAME_REQUEST_ERROR:

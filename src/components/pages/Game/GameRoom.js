@@ -35,20 +35,22 @@ const GameRoom = () => {
 
   //Sorting users
   useEffect(() => {
-    scores
-      ?.sort((a, b) => a.score - b.score)
-      .map((player) => {
-        setCurrentPlayers([
-          ...currentPlayers,
-          {
-            name: users?.find((user) => user._id === player).name,
-            email: users?.find((user) => user._id === player).email,
-            stocks: games?.find((game) => game.playerID === player).stocks,
-            score: scores.find((score) => score.playerID === player).score,
-          },
-        ]);
-      });
-  }, [currentPlayers, games, scores, users]);
+    if (scores.length > 0) {
+      let temp = [];
+      scores
+        .sort((a, b) => b.point - a.point)
+        .map((score) => {
+          temp.push({
+            name: users.find((user) => user._id === score.playerID).name,
+            email: users.find((user) => user._id === score.playerID).email,
+            stocks: games.find((game) => game.playerID === score.playerID)
+              .stocks,
+            score: score.point,
+          });
+        });
+      setCurrentPlayers(temp);
+    }
+  }, [games, scores, users]);
 
   // useEffect(() => {
   //   if (isGameFinished) navigate(`/game-result/${roomID}/`);
@@ -157,28 +159,17 @@ const GameRoom = () => {
       )}
 
       <div className="players-in-progress">
-        {room &&
-          room.players?.map((player, key) => (
-            <PlayingUserBox
-              key={key}
-              user={
-                users?.length > 0 && users.find((user) => user._id === player)
-              }
-              stocks={
-                games?.length > 0 &&
-                games.find(
-                  (game) => game.roomID === roomID && game.playerID === player
-                ).stocks
-              }
-              mine={user._id === player ? true : false}
-              score={
-                scores.length > 0
-                  ? scores.filter((score) => score.playerID === player)
-                  : 0
-              }
-              isPlaying={true}
-            />
-          ))}
+        {currentPlayers?.map((player, key) => (
+          <PlayingUserBox
+            key={key}
+            name={player.name}
+            email={player.email}
+            stocks={player.stocks}
+            mine={user.email === player.email ? true : false}
+            score={player.score}
+            isPlaying={true}
+          />
+        ))}
       </div>
     </section>
   );

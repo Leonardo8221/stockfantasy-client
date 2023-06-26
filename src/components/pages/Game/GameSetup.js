@@ -54,7 +54,7 @@ const GameSetup = () => {
 
   //when clike the exit buttom
   useEffect(() => {
-    if (isJoined === false && isGameStarted === false) navigate("/join-room");
+    if (!isJoined && isGameStarted === false) navigate("/join-room");
   }, [isJoined, navigate]);
 
   //if games are loaded successfully then set the state of seletedstocks
@@ -74,24 +74,20 @@ const GameSetup = () => {
     if (isGameStarted) {
       navigate(`/gameRoom/${roomID}`);
     }
-  }, [dispatch, isGameStarted, navigate, room.players, roomID]);
+  }, [isGameStarted, navigate, roomID]);
 
   //if all users of the room are ready then start the game.
   useEffect(() => {
     if (room && games?.length > 0) {
       const players = room.players;
-      console.log("games", games);
-      console.log(games.length, players.length);
       if (games.length === players?.length && players?.length === 2) {
         dispatch(startGame(roomID));
-        room.players?.map((player, key) => {
+        room.players?.map((player) => {
           let formData = {
             playerID: player,
             roomID: roomID,
-            score: 0,
-            key
+            point: 0,
           };
-          console.log("score", formData, key);
           dispatch(giveScoreToUser(formData));
         });
       }
