@@ -33,6 +33,7 @@ const GameSetup = () => {
   const navigate = useNavigate();
   const { roomID } = useParams();
 
+
   useEffect(() => {
     // if user is joined then isRoomCreated set to false
     if (isRoomCreated) {

@@ -10,7 +10,7 @@ const PlayingUserBox = (props) => {
         <p className="player-info-email mb-0">{email}</p>
       </div>
       <div className="player-stocks col-7">
-        {stocks.length > 0 &&
+        {stocks?.length > 0 &&
           stocks.map((stock) => (
             <div className="player-stocks-item">
               <p className="mb-0 player-stocks-item-ticker">

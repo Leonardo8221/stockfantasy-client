@@ -14,7 +14,7 @@ const GameRoom = () => {
   const [isGameFinished, setIsGameFinished] = useState(true);
   const [evaluations, setEvaluations] = useState([]);
   const [endTime, setEndtime] = useState();
-  const [currentPlayers, setCurrentPlayers] = useState([]);
+  const [players, setPlayers] = useState([]);
   const { room } = useSelector((state) => state.roomReducer);
   const { users } = useSelector((state) => state.userReducer);
   const { games } = useSelector((state) => state.gameReducer);
@@ -44,11 +44,11 @@ const GameRoom = () => {
             name: users.find((user) => user._id === score.playerID).name,
             email: users.find((user) => user._id === score.playerID).email,
             stocks: games.find((game) => game.playerID === score.playerID)
-              .stocks,
+              ?.stocks,
             score: score.point,
           });
         });
-      setCurrentPlayers(temp);
+      setPlayers(temp);
     }
   }, [games, scores, users]);
 
@@ -67,23 +67,20 @@ const GameRoom = () => {
   };
 
   const evaluationTime = "9:00 AM";
-  /*
+
   useEffect(() => {
     if (room) {
       let millisecondsInDay = 86400000; // 1000 * 60 * 60 * 24;
-      let start = new Date(room.startedDate);
+      let start = new Date(room?.startedDate);
 
       setEndtime(new Date(start.getTime() + room.duration * millisecondsInDay));
 
+      console.log(start, endTime);
       const interval = setInterval(() => {
-        if (room.players.length > 0) {
-          const newEvaluations = room.players.map((player) => {
-            let currentPlayerStocks =
-              games.length > 0 &&
-              games.filter(
-                (game) => game.roomID === roomID && game.playerID === player
-              );
-            const portfolioValue = currentPlayerStocks.reduce(
+        if (players.length > 0) {
+          const newEvaluations = players.map((player) => {
+            
+            const portfolioValue = player.stocks.reduce(
               (totalValue, stock) => {
                 const stockPrice = stockPrices[stock.stock][evaluationTime];
                 return totalValue + stockPrice * stock.length;
@@ -100,11 +97,13 @@ const GameRoom = () => {
           evaluations.sort((a, b) => b.portfolioValue - a.portfolioValue);
 
           evaluations.map((evaluation) => {
-            dispatch(giveScoreToUser({
-              user: evaluation.playerID,
-              room: roomID,
-              score: evaluations.length - 1,
-            }));
+            dispatch(
+              giveScoreToUser({
+                user: evaluation.playerID,
+                room: roomID,
+                point: evaluations.length - 1,
+              })
+            );
             return true;
           });
         }
@@ -112,7 +111,7 @@ const GameRoom = () => {
 
       return () => clearInterval(interval);
     }
-  }, [stockPrices, evaluationTime, room, roomID, games, evaluations, dispatch]);
+  }, [room]);
 
   //when end the game
   useEffect(() => {
@@ -133,7 +132,6 @@ const GameRoom = () => {
       dispatch(endGame(roomID, endTime));
     }
   }, [dispatch, endTime, evaluations, roomID]);
-*/
 
   return (
     <section className="container">
@@ -159,7 +157,7 @@ const GameRoom = () => {
       )}
 
       <div className="players-in-progress">
-        {currentPlayers?.map((player, key) => (
+        {players?.map((player, key) => (
           <PlayingUserBox
             key={key}
             name={player.name}

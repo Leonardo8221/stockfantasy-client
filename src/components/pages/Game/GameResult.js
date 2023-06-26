@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,7 @@ const GameResult = () => {
   const { games } = useSelector((state) => state.gameReducer);
   const { user } = useSelector((state) => state.auth);
   const { scores } = useSelector((state) => state.scoreReducer);
+  const [players, setPlayers] = useState([]);
 
   const { roomID } = useParams();
   const dispatch = useDispatch();
@@ -26,6 +27,25 @@ const GameResult = () => {
     dispatch(getScores(roomID));
     dispatch(getAllUers());
   }, [dispatch, roomID]);
+
+  //Sorting users
+  useEffect(() => {
+    if (scores.length > 0) {
+      let temp = [];
+      scores
+        .sort((a, b) => b.point - a.point)
+        .map((score) => {
+          temp.push({
+            name: users.find((user) => user._id === score.playerID).name,
+            email: users.find((user) => user._id === score.playerID).email,
+            stocks: games.find((game) => game.playerID === score.playerID)
+              .stocks,
+            score: score.point,
+          });
+        });
+      setPlayers(temp);
+    }
+  }, [games, scores, users]);
 
   return (
     <section className="container">
@@ -43,28 +63,17 @@ const GameResult = () => {
       </div>
 
       <div className="players-in-progress">
-        {room &&
-          room.players?.map((player) => (
-            <PlayingUserBox
-              key={player}
-              user={
-                users.length > 0 && users.find((user) => user._id === player)
-              }
-              stocks={
-                games.length > 0 &&
-                games.find(
-                  (game) => game.roomID === roomID && game.playerID === player
-                ).stocks
-              }
-              mine={user._id === player ? true : false}
-              score={
-                scores.length > 0
-                  ? scores.filter((score) => score.playerID === player)
-                  : 0
-              }
-              isPlaying={true}
-            />
-          ))}
+        {players?.map((player, key) => (
+          <PlayingUserBox
+            key={key}
+            name={player.name}
+            email={player.email}
+            stocks={player.stocks}
+            mine={user.email === player.email ? true : false}
+            score={player.score}
+            isPlaying={true}
+          />
+        ))}
       </div>
     </section>
   );
