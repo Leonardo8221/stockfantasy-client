@@ -6,7 +6,7 @@ import TimeCounter from "../../commons/TimeCounter";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getRoom, endGame } from "../../../actions/room";
-import { getGames } from "../../../actions/game";
+import { getGamesByRoomID } from "../../../actions/game";
 import { getAllUers } from "../../../actions/user";
 import { giveScoreToUser } from "../../../actions/score";
 import PlayingUserBox from "../../commons/PlayingUserBox";
@@ -18,7 +18,7 @@ const GameRoom = ({
   user,
   scores,
   getRoom,
-  getGames,
+  getGamesByRoomID,
   getAllUers,
   giveScoreToUser,
   endGame,
@@ -33,8 +33,8 @@ const GameRoom = ({
   //Get room and games from server
   useEffect(() => {
     getRoom(roomID);
-    getGames(roomID);
-  }, [getGames, getRoom, roomID]);
+    getGamesByRoomID(roomID);
+  }, [getGamesByRoomID, getRoom, roomID]);
 
   //Get all the users
   useEffect(() => {
@@ -184,7 +184,7 @@ const GameRoom = ({
 GameRoom.propTypes = {
   room: PropTypes.arrayOf(PropTypes.object),
   getRoom: PropTypes.func,
-  getGames: PropTypes.func,
+  getGamesByRoomID: PropTypes.func,
   getAllUers: PropTypes.func,
   giveScoreToUser: PropTypes.func,
   endGame: PropTypes.func,
@@ -202,7 +202,7 @@ const mapStateToProps = (state) => ({
 });
 export default connect(mapStateToProps, {
   getRoom,
-  getGames,
+  getGamesByRoomID,
   getAllUers,
   giveScoreToUser,
   endGame,

@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
 import { getRooms } from "../actions/room";
+import { getGamesByRoomID } from "../actions/game";
 
 let socket;
 export const initiateSocketConnection = () => {
@@ -47,6 +48,19 @@ export const exitUserListener = (socket, dispatch) => {
       socket.on("UserExited", (room) => {
         if (dispatch) dispatch(getRooms());
         resolve(room);
+      });
+    });
+  } else {
+    console.error("Socket is undefined");
+    return null;
+  }
+};
+export const gameReadyListener = (socket, dispatch) => {
+  if (socket) {
+    return new Promise((resolve, reject) => {
+      socket.on("GameReady", (game) => {
+        if (dispatch) dispatch(getGamesByRoomID(game.roomID));
+        resolve(game);
       });
     });
   } else {

@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getRoom } from "../../../actions/room";
-import { getGames } from "../../../actions/game";
+import { getGamesByRoomID } from "../../../actions/game";
 import { getAllUers } from "../../../actions/user";
 import { getScores } from "../../../actions/score";
 
@@ -17,7 +17,7 @@ const GameResult = ({
   scores,
   games,
   getRoom,
-  getGames,
+  getGamesByRoomID,
   getAllUers,
   getScores
 }) => {
@@ -26,9 +26,9 @@ const GameResult = ({
   //Get room and games from server
   useEffect(() => {
     getRoom(roomID);
-    getGames(roomID);
+    getGamesByRoomID(roomID);
     getScores(roomID);
-  }, [getGames, getRoom, getScores, roomID]);
+  }, [getGamesByRoomID, getRoom, getScores, roomID]);
 
   //Get all the users
   useEffect(() => {
@@ -80,7 +80,7 @@ const GameResult = ({
 
 GameResult.propTypes = {
   getRoom: PropTypes.func,
-  getGames: PropTypes.func,
+  getGamesByRoomID: PropTypes.func,
   getAllUers: PropTypes.func,
   getScores: PropTypes.func,
   room: PropTypes.object,
@@ -97,7 +97,7 @@ const mapStateToProps = (state) => ({
 });
 export default connect(mapStateToProps, {
   getRoom,
-  getGames,
+  getGamesByRoomID,
   getAllUers,
   getScores,
 })(GameResult);

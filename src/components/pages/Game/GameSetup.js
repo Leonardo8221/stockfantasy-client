@@ -5,14 +5,14 @@ import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 
 import { formatRoom, getRooms, exitGame } from "../../../actions/room";
-import { createGame, startGame, getGames } from "../../../actions/game";
+import { createGame, startGame, getGamesByRoomID } from "../../../actions/game";
 import { updateUser, getAllUers } from "../../../actions/user";
 
 import StockListItem from "../../commons/StockListItem";
 import PlayerBox from "../../commons/PlayerBox";
 import SelectedStockItem from "../../commons/SelectedStockItem";
 import "./style.css";
-import { exitUserListener, joinedRoomListener } from "../../../utils/socket";
+import { exitUserListener, gameReadyListener, joinedRoomListener } from "../../../utils/socket";
 
 const GameSetup = () => {
   const dispatch = useDispatch();
@@ -39,10 +39,11 @@ const GameSetup = () => {
   useEffect(() => {
     dispatch(getRooms());
     dispatch(getAllUers());
-    dispatch(getGames(roomID));
+    dispatch(getGamesByRoomID(roomID));
     if (socket) {
       joinedRoomListener(socket, dispatch);
       exitUserListener(socket, dispatch);
+      gameReadyListener(socket, dispatch);
     }
   }, [dispatch, roomID, socket]);
 
@@ -90,7 +91,7 @@ const GameSetup = () => {
   const handleReadyBtn = (e) => {
     e.preventDefault();
     e.target.disabled = true;
-    dispatch(createGame({ roomID, selectedStocks }));
+    dispatch(createGame({ roomID, selectedStocks, playerID: user._id }, socket));
     dispatch(updateUser(user));
   };
 

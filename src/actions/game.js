@@ -16,28 +16,27 @@ import {
   START_GAME_REQUEST,
   START_GAME_REQUEST_ERROR,
 } from "../constants/gameConstant";
+import { gameReadyListener } from "../utils/socket";
 
-export const createGame = (formData) => {
-  return (dispatch) => {
+export const createGame = (formData, socket) => async (dispatch) => {
+  try {
     dispatch({ type: CREATE_GAME_REQUEST });
-    api
-      .post("/games", formData)
-      .then((response) => {
-        const { data } = response;
-        dispatch({ type: CREATE_GAME_REQUEST_SUCCESS, payload: data });
-      })
-      .catch((error) => {
-        const message =
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message;
-        if (message === "Not authorized, token failed") {
-          dispatch(logout());
-        }
-        dispatch(setAlert(message, "error"));
-        dispatch({ type: CREATE_GAME_REQUEST_ERROR, payload: message });
-      });
-  };
+    socket.emit("gameReadyRequest", formData);
+    console.log('game ready request');
+    const game = await gameReadyListener(socket, dispatch);
+
+    dispatch({ type: CREATE_GAME_REQUEST_SUCCESS, payload: game });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch(setAlert(message, "error"));
+    dispatch({ type: CREATE_GAME_REQUEST_ERROR, payload: message });
+  }
 };
 
 export const formatGame = () => async (dispatch) => {
@@ -46,7 +45,7 @@ export const formatGame = () => async (dispatch) => {
   } catch (error) {}
 };
 
-export const getGames = (roomID) => {
+export const getGamesByRoomID = (roomID) => {
   return (dispatch) => {
     dispatch({ type: GET_GAMES_REQUEST });
 
