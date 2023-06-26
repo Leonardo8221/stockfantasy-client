@@ -1,10 +1,11 @@
+/* eslint-disable array-callback-return */
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { formatRoom, getRooms, exitGame } from "../../../actions/room";
+import { formatRoom, exitGame, getRoom } from "../../../actions/room";
 import { createGame, startGame, getGamesByRoomID } from "../../../actions/game";
 import { updateUser, getAllUers } from "../../../actions/user";
 
@@ -12,19 +13,23 @@ import StockListItem from "../../commons/StockListItem";
 import PlayerBox from "../../commons/PlayerBox";
 import SelectedStockItem from "../../commons/SelectedStockItem";
 import "./style.css";
-import { exitUserListener, gameReadyListener, joinedRoomListener } from "../../../utils/socket";
+import {
+  exitUserListener,
+  gameReadyListener,
+  joinedRoomListener,
+} from "../../../utils/socket";
+import { giveScoreToUser } from "../../../actions/score";
 
 const GameSetup = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { rooms, isRoomCreated, isGameStarted, isJoined } = useSelector(
+  const { room, isRoomCreated, isGameStarted, isJoined } = useSelector(
     (state) => state.roomReducer
   );
   const { games, stocks } = useSelector((state) => state.gameReducer);
   const { users } = useSelector((state) => state.userReducer);
   const socket = useSelector((state) => state.socket);
   const [selectedStocks, setSelectedStocks] = useState([]);
-  const [currentRoom, setCurrentRoom] = useState({});
   const navigate = useNavigate();
   const { roomID } = useParams();
 
@@ -37,7 +42,7 @@ const GameSetup = () => {
 
   //Load room, games, users
   useEffect(() => {
-    dispatch(getRooms());
+    dispatch(getRoom(roomID));
     dispatch(getAllUers());
     dispatch(getGamesByRoomID(roomID));
     if (socket) {
@@ -49,15 +54,8 @@ const GameSetup = () => {
 
   //when clike the exit buttom
   useEffect(() => {
-    if (isJoined === false) navigate("/join-room");
+    if (isJoined === false && isGameStarted === false) navigate("/join-room");
   }, [isJoined, navigate]);
-
-  //set current room
-  useEffect(() => {
-    if (rooms.length > 0) {
-      setCurrentRoom(rooms.find((room) => room._id === roomID));
-    }
-  }, [roomID, rooms]);
 
   //if games are loaded successfully then set the state of seletedstocks
   useEffect(() => {
@@ -73,25 +71,39 @@ const GameSetup = () => {
 
   //if all players are ready to start game then move to the game room page
   useEffect(() => {
-    if (isGameStarted === true) navigate(`/gameRoom/${roomID}`);
-  }, [isGameStarted, navigate, roomID]);
+    if (isGameStarted) {
+      navigate(`/gameRoom/${roomID}`);
+    }
+  }, [dispatch, isGameStarted, navigate, room.players, roomID]);
 
   //if all users of the room are ready then start the game.
   useEffect(() => {
-    if (currentRoom && games.length > 0) {
-      const thisGame = games.filter((game) => game.roomID === roomID);
-      const players = currentRoom.players;
-
-      if (thisGame.length === players.length && players.length === 2) {
+    if (room && games?.length > 0) {
+      const players = room.players;
+      console.log("games", games);
+      console.log(games.length, players.length);
+      if (games.length === players?.length && players?.length === 2) {
         dispatch(startGame(roomID));
+        room.players?.map((player, key) => {
+          let formData = {
+            playerID: player,
+            roomID: roomID,
+            score: 0,
+            key
+          };
+          console.log("score", formData, key);
+          dispatch(giveScoreToUser(formData));
+        });
       }
     }
-  }, [dispatch, games, isGameStarted, currentRoom, roomID]);
+  }, [games.length, dispatch]);
 
   const handleReadyBtn = (e) => {
     e.preventDefault();
     e.target.disabled = true;
-    dispatch(createGame({ roomID, selectedStocks, playerID: user._id }, socket));
+    dispatch(
+      createGame({ roomID, selectedStocks, playerID: user._id }, socket)
+    );
     dispatch(updateUser(user));
   };
 
@@ -154,7 +166,7 @@ const GameSetup = () => {
         <h1 className="large text-primary mb-4">
           Game Setup -{" "}
           <span className="text-success mb-0 text-uppercase">
-            {currentRoom && currentRoom.name}
+            {room && room.name}
           </span>
         </h1>
         <div>
@@ -168,9 +180,9 @@ const GameSetup = () => {
       </div>
 
       <div className="game-players mb-4">
-        {currentRoom &&
-          currentRoom.players &&
-          currentRoom.players
+        {room &&
+          room.players &&
+          room.players
             .filter((item) => item !== user._id)
             .map((item) => (
               <PlayerBox

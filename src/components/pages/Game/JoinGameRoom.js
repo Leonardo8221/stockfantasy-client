@@ -43,14 +43,14 @@ const JoinGameRoom = () => {
   }, [rooms, user._id]);
 
   useEffect(() => {
-    if (isJoined === true) navigate("/game-setup/" + roomID);
+    if (isJoined) navigate("/game-setup/" + roomID);
   }, [isJoined, navigate, roomID]);
 
   const handleJoinGameRoom = (roomID) => {
     if (
-      rooms.find((room) => room._id === roomID).roomType === "random" &&
-      !rooms.find((room) => room._id === roomID).players.includes(user._id) &&
-      rooms.find((room) => room._id === roomID).players.length >= 4
+      rooms.find((room) => room._id === roomID)?.roomType === "random" &&
+      !rooms.find((room) => room._id === roomID)?.players.includes(user._id) &&
+      rooms.find((room) => room._id === roomID)?.players.length >= 4
     ) {
       alert("This room is full of players");
       return;

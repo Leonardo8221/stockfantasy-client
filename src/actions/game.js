@@ -22,7 +22,6 @@ export const createGame = (formData, socket) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_GAME_REQUEST });
     socket.emit("gameReadyRequest", formData);
-    console.log('game ready request');
     const game = await gameReadyListener(socket, dispatch);
 
     dispatch({ type: CREATE_GAME_REQUEST_SUCCESS, payload: game });
@@ -98,7 +97,7 @@ export const startGame = (roomID) => async (dispatch) => {
       startedDate: new Date(),
     });
     dispatch({ type: START_GAME_REQUEST, payload: data });
-    // dispatch(setAlert("Game started", "success"));
+    localStorage.setItem('isJoined', false)
   } catch (error) {
     const message =
       error.response && error.response.data.message

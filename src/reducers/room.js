@@ -29,11 +29,11 @@ import { LOGOUT } from "../constants/userConstant";
 
 const initialState = {
   rooms: [],
-  room:{},
+  room: {},
   isRoomCreated: false,
   loading: false,
   error: null,
-  isJoined: localStorage.getItem("isJoined"),
+  isJoined: JSON.parse(localStorage.getItem("isJoined")),
   isGameStarted: false,
 };
 
@@ -47,6 +47,7 @@ export const roomReducer = (state = initialState, action) => {
         loading: false,
         room: action.payload,
         isRoomCreated: true,
+        isJoined: true
       };
     case CREATE_ROOM_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
@@ -100,7 +101,6 @@ export const roomReducer = (state = initialState, action) => {
         ...state,
         isJoined: false,
         room: action.payload,
-        isGameStarted: true,
       };
 
     case START_GAME_REQUEST_ERROR:
@@ -108,7 +108,6 @@ export const roomReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: action.payload,
-        isGameStarted: false,
       };
 
     case LOGOUT:

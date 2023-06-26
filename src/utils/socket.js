@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import { getRooms } from "../actions/room";
+import { getRoom, getRooms } from "../actions/room";
 import { getGamesByRoomID } from "../actions/game";
 
 let socket;
@@ -19,7 +19,10 @@ export const createdRoomListener = (socket, dispatch) => {
   if (socket) {
     return new Promise((resolve, reject) => {
       socket.on("RoomAdded", (room) => {
-        if (dispatch) dispatch(getRooms());
+        if (dispatch) {
+          dispatch(getRooms());
+          dispatch(getRoom(room._id));
+        }
         resolve(room);
       });
     });
@@ -33,7 +36,10 @@ export const joinedRoomListener = (socket, dispatch) => {
   if (socket) {
     return new Promise((resolve, reject) => {
       socket.on("UserJoined", (room) => {
-        if (dispatch) dispatch(getRooms());
+        if (dispatch) {
+          dispatch(getRooms());
+          dispatch(getRoom(room._id));
+        }
         resolve(room);
       });
     });
@@ -46,7 +52,10 @@ export const exitUserListener = (socket, dispatch) => {
   if (socket) {
     return new Promise((resolve, reject) => {
       socket.on("UserExited", (room) => {
-        if (dispatch) dispatch(getRooms());
+        if (dispatch) {
+          dispatch(getRooms());
+          dispatch(getRoom(room._id));
+        }
         resolve(room);
       });
     });

@@ -31,7 +31,6 @@ const GameCreateForm = () => {
 
   //Fetch users from the server
   useEffect(() => {
-    console.log(socket);
     dispatch(getAllUers());
   }, []);
 
@@ -46,10 +45,10 @@ const GameCreateForm = () => {
   }, [formData.players.length]);
 
   useEffect(() => {
-    if (isRoomCreated && room) {
+    if (isRoomCreated) {
       navigator("/game-setup/" + room._id);
     }
-  }, [isRoomCreated, navigator, room]);
+  }, [isRoomCreated, navigator, room._id]);
 
   //Handels the form values changing events
   const onChange = (e) => {

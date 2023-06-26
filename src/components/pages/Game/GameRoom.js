@@ -3,47 +3,56 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 import TimeCounter from "../../commons/TimeCounter";
 
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getRoom, endGame } from "../../../actions/room";
 import { getGamesByRoomID } from "../../../actions/game";
 import { getAllUers } from "../../../actions/user";
-import { giveScoreToUser } from "../../../actions/score";
+import { getScores, giveScoreToUser } from "../../../actions/score";
 import PlayingUserBox from "../../commons/PlayingUserBox";
 
-const GameRoom = ({
-  room,
-  users,
-  games,
-  user,
-  scores,
-  getRoom,
-  getGamesByRoomID,
-  getAllUers,
-  giveScoreToUser,
-  endGame,
-}) => {
+const GameRoom = () => {
   const [isGameFinished, setIsGameFinished] = useState(true);
   const [evaluations, setEvaluations] = useState([]);
   const [endTime, setEndtime] = useState();
+  const [currentPlayers, setCurrentPlayers] = useState([]);
+  const { room } = useSelector((state) => state.roomReducer);
+  const { users } = useSelector((state) => state.userReducer);
+  const { games } = useSelector((state) => state.gameReducer);
+  const { user } = useSelector((state) => state.auth);
+  const { scores } = useSelector((state) => state.scoreReducer);
 
   const { roomID } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  //Get room and games from server
+  //Get room, games, users from server
   useEffect(() => {
-    getRoom(roomID);
-    getGamesByRoomID(roomID);
-  }, [getGamesByRoomID, getRoom, roomID]);
+    dispatch(getRoom(roomID));
+    dispatch(getGamesByRoomID(roomID));
+    dispatch(getAllUers());
+    dispatch(getScores(roomID));
+  }, [dispatch, roomID]);
 
-  //Get all the users
+  //Sorting users
   useEffect(() => {
-    getAllUers();
-  }, [getAllUers]);
+    scores
+      ?.sort((a, b) => a.score - b.score)
+      .map((player) => {
+        setCurrentPlayers([
+          ...currentPlayers,
+          {
+            name: users?.find((user) => user._id === player).name,
+            email: users?.find((user) => user._id === player).email,
+            stocks: games?.find((game) => game.playerID === player).stocks,
+            score: scores.find((score) => score.playerID === player).score,
+          },
+        ]);
+      });
+  }, [currentPlayers, games, scores, users]);
 
-  useEffect(() => {
-    if (isGameFinished) navigate(`/game-result/${roomID}/`);
-  }, [isGameFinished, navigate, roomID]);
+  // useEffect(() => {
+  //   if (isGameFinished) navigate(`/game-result/${roomID}/`);
+  // }, [isGameFinished, navigate, roomID]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stockPrices = {
@@ -56,6 +65,7 @@ const GameRoom = ({
   };
 
   const evaluationTime = "9:00 AM";
+  /*
   useEffect(() => {
     if (room) {
       let millisecondsInDay = 86400000; // 1000 * 60 * 60 * 24;
@@ -88,11 +98,11 @@ const GameRoom = ({
           evaluations.sort((a, b) => b.portfolioValue - a.portfolioValue);
 
           evaluations.map((evaluation) => {
-            giveScoreToUser({
+            dispatch(giveScoreToUser({
               user: evaluation.playerID,
               room: roomID,
               score: evaluations.length - 1,
-            });
+            }));
             return true;
           });
         }
@@ -100,15 +110,7 @@ const GameRoom = ({
 
       return () => clearInterval(interval);
     }
-  }, [
-    stockPrices,
-    evaluationTime,
-    room,
-    roomID,
-    games,
-    evaluations,
-    giveScoreToUser,
-  ]);
+  }, [stockPrices, evaluationTime, room, roomID, games, evaluations, dispatch]);
 
   //when end the game
   useEffect(() => {
@@ -126,9 +128,10 @@ const GameRoom = ({
         `The winner is player ${winner.playerId} with a portfolio value of ${winner.portfolioValue}`
       );
       setIsGameFinished(true);
-      endGame(roomID, endTime);
+      dispatch(endGame(roomID, endTime));
     }
-  }, [endGame, endTime, evaluations, roomID]);
+  }, [dispatch, endTime, evaluations, roomID]);
+*/
 
   return (
     <section className="container">
@@ -155,14 +158,14 @@ const GameRoom = ({
 
       <div className="players-in-progress">
         {room &&
-          room.players.map((player) => (
+          room.players?.map((player, key) => (
             <PlayingUserBox
-              key={player}
+              key={key}
               user={
-                users.length > 0 && users.find((user) => user._id === player)
+                users?.length > 0 && users.find((user) => user._id === player)
               }
               stocks={
-                games.length > 0 &&
+                games?.length > 0 &&
                 games.find(
                   (game) => game.roomID === roomID && game.playerID === player
                 ).stocks
@@ -181,29 +184,4 @@ const GameRoom = ({
   );
 };
 
-GameRoom.propTypes = {
-  room: PropTypes.arrayOf(PropTypes.object),
-  getRoom: PropTypes.func,
-  getGamesByRoomID: PropTypes.func,
-  getAllUers: PropTypes.func,
-  giveScoreToUser: PropTypes.func,
-  endGame: PropTypes.func,
-  games: PropTypes.arrayOf(PropTypes.object),
-  users: PropTypes.arrayOf(PropTypes.object),
-  scores: PropTypes.arrayOf(PropTypes.object),
-};
-
-const mapStateToProps = (state) => ({
-  room: state.roomReducer.room,
-  users: state.userReducer.users,
-  games: state.gameReducer.games,
-  scores: state.scoreReducer.scores,
-  user: state.auth.user,
-});
-export default connect(mapStateToProps, {
-  getRoom,
-  getGamesByRoomID,
-  getAllUers,
-  giveScoreToUser,
-  endGame,
-})(GameRoom);
+export default GameRoom;

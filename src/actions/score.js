@@ -14,7 +14,6 @@ import {
 export const giveScoreToUser = (formData) => async (dispatch) => {
   try {
     dispatch({ type: GIVE_SCORE_REQUEST });
-
     const { data } = await api.post("/scores", formData);
 
     dispatch({ type: GIVE_SCORE_REQUEST_SUCCESS, payload: data });
@@ -27,7 +26,7 @@ export const giveScoreToUser = (formData) => async (dispatch) => {
       dispatch(logout());
     }
     dispatch(setAlert(message, "error"));
-    dispatch({ type: GET_SCORES_REQUEST_ERROR, payload: message });
+    dispatch({ type: GIVE_SCORE_REQUEST_ERROR, payload: message });
   }
 };
 
@@ -35,7 +34,7 @@ export const getScores = (roomID) => {
   return (dispatch) => {
     dispatch({ type: GET_SCORES_REQUEST });
     api
-      .get(`/scores=roomID=${roomID}`)
+      .get(`/scores?roomID=${roomID}`)
       .then((response) => {
         const { data } = response;
 
@@ -50,7 +49,7 @@ export const getScores = (roomID) => {
           dispatch(logout());
         }
         dispatch(setAlert(message, "error"));
-        dispatch({ type: GIVE_SCORE_REQUEST_ERROR, payload: message });
+        dispatch({ type: GET_SCORES_REQUEST_ERROR, payload: message });
       });
   };
 };

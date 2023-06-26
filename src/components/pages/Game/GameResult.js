@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getRoom } from "../../../actions/room";
 import { getGamesByRoomID } from "../../../actions/game";
 import { getAllUers } from "../../../actions/user";
@@ -10,30 +9,23 @@ import { getScores } from "../../../actions/score";
 
 import PlayingUserBox from "../../commons/PlayingUserBox";
 
-const GameResult = ({
-  room,
-  users,
-  user,
-  scores,
-  games,
-  getRoom,
-  getGamesByRoomID,
-  getAllUers,
-  getScores
-}) => {
+const GameResult = () => {
+  const { room } = useSelector((state) => state.roomReducer);
+  const { users } = useSelector((state) => state.userReducer);
+  const { games } = useSelector((state) => state.gameReducer);
+  const { user } = useSelector((state) => state.auth);
+  const { scores } = useSelector((state) => state.scoreReducer);
+
   const { roomID } = useParams();
+  const dispatch = useDispatch();
 
-  //Get room and games from server
+  //Get room, games, users from server
   useEffect(() => {
-    getRoom(roomID);
-    getGamesByRoomID(roomID);
-    getScores(roomID);
-  }, [getGamesByRoomID, getRoom, getScores, roomID]);
-
-  //Get all the users
-  useEffect(() => {
-    getAllUers();
-  }, [getAllUers]);
+    dispatch(getRoom(roomID));
+    dispatch(getGamesByRoomID(roomID));
+    dispatch(getScores(roomID));
+    dispatch(getAllUers());
+  }, [dispatch, roomID]);
 
   return (
     <section className="container">
@@ -52,7 +44,7 @@ const GameResult = ({
 
       <div className="players-in-progress">
         {room &&
-          room.players.map((player) => (
+          room.players?.map((player) => (
             <PlayingUserBox
               key={player}
               user={
@@ -78,26 +70,4 @@ const GameResult = ({
   );
 };
 
-GameResult.propTypes = {
-  getRoom: PropTypes.func,
-  getGamesByRoomID: PropTypes.func,
-  getAllUers: PropTypes.func,
-  getScores: PropTypes.func,
-  room: PropTypes.object,
-  users: PropTypes.arrayOf(PropTypes.object),
-  scores: PropTypes.arrayOf(PropTypes.object),
-};
-
-const mapStateToProps = (state) => ({
-  room: state.roomReducer.room,
-  users: state.userReducer.users,
-  scores: state.scoreReducer.scores,
-  games: state.gameReducer.games,
-  user: state.auth.user,
-});
-export default connect(mapStateToProps, {
-  getRoom,
-  getGamesByRoomID,
-  getAllUers,
-  getScores,
-})(GameResult);
+export default GameResult;
