@@ -19,12 +19,7 @@ const JoinGameRoom = () => {
 
   useEffect(() => {
     dispatch(getRooms());
-    if (socket) {
-      createdRoomListener(socket, dispatch);
-      joinedRoomListener(socket, dispatch);
-      exitUserListener(socket, dispatch);
-    }
-  }, [dispatch, socket]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (rooms.length > 0) {

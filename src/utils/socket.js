@@ -17,6 +17,7 @@ export const disconnectSocket = () => {
 
 export const createdRoomListener = (socket, dispatch) => {
   if (socket) {
+    console.log("Creating room listener for socket ");
     return new Promise((resolve, reject) => {
       socket.on("RoomAdded", (room) => {
         if (dispatch) {
@@ -34,6 +35,8 @@ export const createdRoomListener = (socket, dispatch) => {
 
 export const joinedRoomListener = (socket, dispatch) => {
   if (socket) {
+    console.log("join room listener for socket ");
+
     return new Promise((resolve, reject) => {
       socket.on("UserJoined", (room) => {
         if (dispatch) {
@@ -50,6 +53,8 @@ export const joinedRoomListener = (socket, dispatch) => {
 };
 export const exitUserListener = (socket, dispatch) => {
   if (socket) {
+    console.log("Exit game listener for socket ");
+
     return new Promise((resolve, reject) => {
       socket.on("UserExited", (room) => {
         if (dispatch) {
@@ -66,6 +71,8 @@ export const exitUserListener = (socket, dispatch) => {
 };
 export const gameReadyListener = (socket, dispatch) => {
   if (socket) {
+    console.log("Game ready listener for socket ");
+
     return new Promise((resolve, reject) => {
       socket.on("GameReady", (game) => {
         if (dispatch) dispatch(getGamesByRoomID(game.roomID));

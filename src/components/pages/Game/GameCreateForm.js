@@ -32,7 +32,7 @@ const GameCreateForm = () => {
   //Fetch users from the server
   useEffect(() => {
     dispatch(getAllUers());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (formData.players.length === 3) {

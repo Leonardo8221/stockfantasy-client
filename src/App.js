@@ -30,7 +30,13 @@ import { loadUser } from "./actions/auth";
 //styles
 import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
-import { disconnectSocket, initiateSocketConnection } from "./utils/socket";
+import {
+  disconnectSocket,
+  exitUserListener,
+  gameReadyListener,
+  initiateSocketConnection,
+  joinedRoomListener,
+} from "./utils/socket";
 import { setSocket } from "./actions/socket";
 
 const App = () => {
@@ -52,7 +58,12 @@ const App = () => {
 
   useEffect(() => {
     const socket = initiateSocketConnection();
-    if(socket) store.dispatch(setSocket(socket));
+    if (socket) {
+      store.dispatch(setSocket(socket));
+      joinedRoomListener(socket, store.dispatch);
+      exitUserListener(socket, store.dispatch);
+      gameReadyListener(socket, store.dispatch);
+    }
     return () => {
       disconnectSocket();
     };

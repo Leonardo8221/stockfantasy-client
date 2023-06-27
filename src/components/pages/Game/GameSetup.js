@@ -34,13 +34,6 @@ const GameSetup = () => {
   const { roomID } = useParams();
 
   useEffect(() => {
-    // 👇️ run a function when the component unmounts 👇️
-    return () => {
-      dispatch(exitGame({ userID: user._id, roomID }, socket));
-      localStorage.setItem("isJoined", false);
-    };
-  }, []);
-  useEffect(() => {
     // if user is joined then isRoomCreated set to false
     if (isRoomCreated) {
       dispatch(formatRoom());
@@ -52,45 +45,39 @@ const GameSetup = () => {
     dispatch(getRoom(roomID));
     dispatch(getAllUers());
     dispatch(getGamesByRoomID(roomID));
-    if (socket) {
-      joinedRoomListener(socket, dispatch);
-      exitUserListener(socket, dispatch);
-      gameReadyListener(socket, dispatch);
-    }
-  }, [dispatch, roomID, socket]);
+  }, [dispatch, roomID]);
 
   //when clike the exit buttom
   useEffect(() => {
-    if (!isJoined && isGameStarted === false) navigate("/join-room");
-  }, [isGameStarted, isJoined, navigate]);
+    if (!isJoined && !isGameStarted) navigate("/join-room");
+    if(!isJoined && isGameStarted ) {
+      navigate(`/gameRoom/${roomID}`);
+    }
+    // return () => {
+    //   console.log("game exited");
+    //   dispatch(exitGame({ userID: user._id, roomID }, socket));
+    //   localStorage.setItem("isJoined", false);
+    // };
+  }, [isJoined, isGameStarted]);
 
   //if games are loaded successfully then set the state of seletedstocks
   useEffect(() => {
-    if (
-      games.length > 0 &&
-      games.find((game) => game.roomID === roomID && game.playerID === user._id)
-    ) {
-      setSelectedStocks(
-        games.find((game) => game.playerID === user._id).stocks
-      );
+    const playerGame = games.find(
+      (game) => game.roomID === roomID && game.playerID === user._id
+    );
+    if (games.length > 0 && playerGame) {
+      setSelectedStocks(playerGame.stocks);
     }
-  }, [games, roomID, user._id]);
-
-  //if all players are ready to start game then move to the game room page
-  useEffect(() => {
-    if (isGameStarted) {
-      navigate(`/gameRoom/${roomID}`);
-    }
-  }, [isGameStarted, navigate, roomID]);
+  }, [games.length]);
 
   //if all users of the room are ready then start the game.
   useEffect(() => {
     if (room && games?.length > 0) {
       const players = room.players;
-      if (games.length === players?.length && players?.length === 4) {
+      if (games.length === players?.length && players?.length === 2) {
         dispatch(startGame(roomID));
-        room.players?.map((player) => {
-          let formData = {
+        players.forEach((player) => {
+          const formData = {
             playerID: player,
             roomID: roomID,
             point: 0,
@@ -99,7 +86,7 @@ const GameSetup = () => {
         });
       }
     }
-  }, [games.length, dispatch]);
+  }, [games.length, dispatch, room]);
 
   const handleReadyBtn = (e) => {
     e.preventDefault();
