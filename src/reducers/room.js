@@ -35,6 +35,7 @@ const initialState = {
   error: null,
   isJoined: JSON.parse(localStorage.getItem("isJoined")),
   isGameStarted: false,
+  isGameFinished: false
 };
 
 export const roomReducer = (state = initialState, action) => {
@@ -83,6 +84,7 @@ export const roomReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         room: action.payload,
+        isGameFinished: true
       };
     case END_GAME_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };

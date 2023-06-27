@@ -34,15 +34,15 @@ const GameResult = () => {
       let temp = [];
       scores
         .sort((a, b) => b.point - a.point)
-        .map((score) => {
+        .map((score) => (
           temp.push({
-            name: users.find((user) => user._id === score.playerID).name,
-            email: users.find((user) => user._id === score.playerID).email,
+            name: users.find((user) => user._id === score.playerID)?.name,
+            email: users.find((user) => user._id === score.playerID)?.email,
             stocks: games.find((game) => game.playerID === score.playerID)
-              .stocks,
+              ?.stocks,
             score: score.point,
-          });
-        });
+          })
+        ));
       setPlayers(temp);
     }
   }, [games, scores, users]);

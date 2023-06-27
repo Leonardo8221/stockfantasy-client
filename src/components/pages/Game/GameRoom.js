@@ -11,11 +11,10 @@ import { getScores, giveScoreToUser } from "../../../actions/score";
 import PlayingUserBox from "../../commons/PlayingUserBox";
 
 const GameRoom = () => {
-  const [isGameFinished, setIsGameFinished] = useState(true);
   const [evaluations, setEvaluations] = useState([]);
   const [endTime, setEndtime] = useState();
   const [players, setPlayers] = useState([]);
-  const { room } = useSelector((state) => state.roomReducer);
+  const { room, isGameFinished} = useSelector((state) => state.roomReducer);
   const { users } = useSelector((state) => state.userReducer);
   const { games } = useSelector((state) => state.gameReducer);
   const { user } = useSelector((state) => state.auth);
@@ -52,9 +51,9 @@ const GameRoom = () => {
     }
   }, [games, scores, users]);
 
-  // useEffect(() => {
-  //   if (isGameFinished) navigate(`/game-result/${roomID}/`);
-  // }, [isGameFinished, navigate, roomID]);
+  useEffect(() => {
+    if (isGameFinished) navigate(`/game-result/${roomID}/`);
+  }, [isGameFinished]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stockPrices = {
@@ -128,7 +127,6 @@ const GameRoom = () => {
       console.log(
         `The winner is player ${winner.playerId} with a portfolio value of ${winner.portfolioValue}`
       );
-      setIsGameFinished(true);
       dispatch(endGame(roomID, endTime));
     }
   }, [dispatch, endTime, evaluations, roomID]);
