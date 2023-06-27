@@ -99,7 +99,7 @@ const GameCreateForm = () => {
     if (form.checkValidity() === false) {
       e.stopPropagation();
     }
-    const newRoom = { ...formData, creater: user._id };
+    const newRoom = { ...formData, creater: user?._id };
     if (socket) {
       dispatch(createRoom(newRoom, socket));
     }

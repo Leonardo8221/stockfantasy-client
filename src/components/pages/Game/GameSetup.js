@@ -142,13 +142,14 @@ const GameSetup = () => {
   };
 
   const handleClickSelectedStock = (stockSymbol) => {
-    const index = selectedStocks.find((s) => s.symbol === stockSymbol);
+    const index = selectedStocks.find((s) => s.stock.symbol === stockSymbol);
+    console.log(index)
     if (index) {
       const updatedSelectedStocks = [...selectedStocks];
       index.length -= 1;
       if (index.length === 0) {
         const newArr = updatedSelectedStocks.filter(
-          (item) => item.symbol !== index.symbol
+          (item) => item.stock.symbol !== index.stock.symbol
         );
         setSelectedStocks(newArr);
       } else setSelectedStocks(updatedSelectedStocks);
@@ -241,7 +242,7 @@ const GameSetup = () => {
               selectedStocks.map((stock, key) => (
                 <SelectedStockItem
                   key={key}
-                  onClick={() => handleClickSelectedStock(stock.symbol)}
+                  onClick={() => handleClickSelectedStock(stock.stock.symbol)}
                   symbol={stock.stock.symbol}
                   length={stock.length}
                   disabled={
