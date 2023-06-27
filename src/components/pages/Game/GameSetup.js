@@ -36,7 +36,7 @@ const GameSetup = () => {
   useEffect(() => {
     // 👇️ run a function when the component unmounts 👇️
     return () => {
-      dispatch(exitGame({ userID: user._id, roomID }, socket))
+      dispatch(exitGame({ userID: user._id, roomID }, socket));
       localStorage.setItem("isJoined", false);
     };
   }, []);
@@ -185,9 +185,8 @@ const GameSetup = () => {
 
       <div className="game-players mb-4">
         {room &&
-          room.players &&
           room.players
-            .filter((item) => item !== user._id)
+            ?.filter((item) => item !== user._id)
             .map((item) => (
               <PlayerBox
                 key={item}
