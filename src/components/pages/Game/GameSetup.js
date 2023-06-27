@@ -33,7 +33,13 @@ const GameSetup = () => {
   const navigate = useNavigate();
   const { roomID } = useParams();
 
-
+  useEffect(() => {
+    // 👇️ run a function when the component unmounts 👇️
+    return () => {
+      dispatch(exitGame({ userID: user._id, roomID }, socket))
+      localStorage.setItem("isJoined", false);
+    };
+  }, []);
   useEffect(() => {
     // if user is joined then isRoomCreated set to false
     if (isRoomCreated) {
@@ -56,7 +62,7 @@ const GameSetup = () => {
   //when clike the exit buttom
   useEffect(() => {
     if (!isJoined && isGameStarted === false) navigate("/join-room");
-  }, [isJoined, navigate]);
+  }, [isGameStarted, isJoined, navigate]);
 
   //if games are loaded successfully then set the state of seletedstocks
   useEffect(() => {
@@ -143,7 +149,7 @@ const GameSetup = () => {
 
   const handleClickSelectedStock = (stockSymbol) => {
     const index = selectedStocks.find((s) => s.stock.symbol === stockSymbol);
-    console.log(index)
+    console.log(index);
     if (index) {
       const updatedSelectedStocks = [...selectedStocks];
       index.length -= 1;
