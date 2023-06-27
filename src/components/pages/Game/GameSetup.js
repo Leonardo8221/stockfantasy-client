@@ -136,7 +136,6 @@ const GameSetup = () => {
 
   const handleClickSelectedStock = (stockSymbol) => {
     const index = selectedStocks.find((s) => s.stock.symbol === stockSymbol);
-    console.log(index);
     if (index) {
       const updatedSelectedStocks = [...selectedStocks];
       index.length -= 1;

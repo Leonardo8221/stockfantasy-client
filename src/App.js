@@ -31,6 +31,7 @@ import { loadUser } from "./actions/auth";
 import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
 import {
+  createdRoomListener,
   disconnectSocket,
   exitUserListener,
   gameReadyListener,
@@ -60,6 +61,7 @@ const App = () => {
     const socket = initiateSocketConnection();
     if (socket) {
       store.dispatch(setSocket(socket));
+      createdRoomListener(socket, store.dispatch);
       joinedRoomListener(socket, store.dispatch);
       exitUserListener(socket, store.dispatch);
       gameReadyListener(socket, store.dispatch);
