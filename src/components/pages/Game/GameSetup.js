@@ -74,7 +74,7 @@ const GameSetup = () => {
   useEffect(() => {
     if (room && games?.length > 0) {
       const players = room.players;
-      if (games.length === players?.length && players?.length === 2) {
+      if (games.length === players?.length && players?.length === process.env.GAME_PLAYERS_NUMBER) {
         dispatch(startGame(roomID));
         players.forEach((player) => {
           const formData = {

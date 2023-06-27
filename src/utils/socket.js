@@ -5,7 +5,7 @@ import { getGamesByRoomID } from "../actions/game";
 let socket;
 export const initiateSocketConnection = () => {
   console.log(`Connecting socket...`);
-  return (socket = io("http://localhost:5000", {
+  return (socket = io(process.env.SERVER_URL || "http://localhost:5000", {
     withCredentials: true,
   }));
 };
