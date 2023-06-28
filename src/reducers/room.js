@@ -21,6 +21,7 @@ import {
 } from "../constants/roomConstant";
 
 import {
+  GAME_START_INIT,
   START_GAME_REQUEST,
   START_GAME_REQUEST_ERROR,
 } from "../constants/gameConstant";
@@ -117,7 +118,8 @@ export const roomReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload,
       };
-
+    case GAME_START_INIT:
+      return { ...state, isGameStarted: false };
     case LOGOUT:
       return {
         ...state,

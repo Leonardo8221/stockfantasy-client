@@ -45,10 +45,10 @@ const GameCreateForm = () => {
   }, [formData.players.length]);
 
   useEffect(() => {
-    if (isRoomCreated) {
+    if (isRoomCreated && room) {
       navigator("/game-setup/" + room._id);
     }
-  }, [isRoomCreated, navigator, room._id]);
+  }, [isRoomCreated, navigator, room]);
 
   //Handels the form values changing events
   const onChange = (e) => {

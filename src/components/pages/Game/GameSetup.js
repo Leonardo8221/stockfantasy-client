@@ -52,7 +52,7 @@ const GameSetup = () => {
   //when clike the exit buttom
   useEffect(() => {
     if (!isJoined && !isGameStarted) navigate("/join-room");
-    if (isJoined && isGameStarted) {
+    if (isGameStarted) {
       navigate(`/gameRoom/${roomID}`);
     }
   }, [isJoined, isGameStarted]);

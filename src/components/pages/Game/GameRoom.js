@@ -9,12 +9,13 @@ import { getRoom, endGame } from "../../../actions/room";
 import { getGamesByRoomID } from "../../../actions/game";
 import { getAllUers } from "../../../actions/user";
 import { getScores, giveScoreToUser } from "../../../actions/score";
+import { GAME_START_INIT } from "../../../constants/gameConstant";
 
 const GameRoom = () => {
   const [evaluations, setEvaluations] = useState([]);
   const [endTime, setEndtime] = useState();
   const [players, setPlayers] = useState([]);
-  const { room, isGameFinished} = useSelector((state) => state.roomReducer);
+  const { room, isGameFinished } = useSelector((state) => state.roomReducer);
   const { users } = useSelector((state) => state.userReducer);
   const { games } = useSelector((state) => state.gameReducer);
   const { user } = useSelector((state) => state.auth);
@@ -23,6 +24,8 @@ const GameRoom = () => {
   const { roomID } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => dispatch({ type: GAME_START_INIT }), []);
 
   //Get room, games, users from server
   useEffect(() => {
@@ -38,7 +41,7 @@ const GameRoom = () => {
       let temp = [];
       scores
         .sort((a, b) => b.point - a.point)
-        .map((score) => (
+        .map((score) =>
           temp.push({
             name: users.find((user) => user._id === score.playerID)?.name,
             email: users.find((user) => user._id === score.playerID)?.email,
@@ -46,7 +49,7 @@ const GameRoom = () => {
               ?.stocks,
             score: score.point,
           })
-        ));
+        );
       setPlayers(temp);
     }
   }, [games, scores, users]);
@@ -75,14 +78,10 @@ const GameRoom = () => {
       const interval = setInterval(() => {
         if (players.length > 0) {
           const newEvaluations = players.map((player) => {
-            
-            const portfolioValue = player.stocks.reduce(
-              (totalValue, stock) => {
-                const stockPrice = stockPrices[stock.stock][evaluationTime];
-                return totalValue + stockPrice * stock.length;
-              },
-              0
-            );
+            const portfolioValue = player.stocks.reduce((totalValue, stock) => {
+              const stockPrice = stockPrices[stock.stock][evaluationTime];
+              return totalValue + stockPrice * stock.length;
+            }, 0);
             return { playerId: player, portfolioValue };
           });
 
