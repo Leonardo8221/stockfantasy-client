@@ -18,7 +18,7 @@ import "./style.css";
 const GameSetup = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { room, isRoomCreated, isGameStarted, isJoined} = useSelector(
+  const { room, isRoomCreated, isGameStarted, isJoined } = useSelector(
     (state) => state.roomReducer
   );
   const { games, stocks } = useSelector((state) => state.gameReducer);
@@ -71,7 +71,11 @@ const GameSetup = () => {
   useEffect(() => {
     if (room && games?.length > 0) {
       const players = room.players;
-      if (games.length === players?.length && players?.length === 4) {
+      if (
+        games.filter((game) => game.roomID === roomID)?.length ===
+          players?.length &&
+        players?.length === 2
+      ) {
         dispatch(startGame(roomID));
         players.forEach((player) => {
           const formData = {
@@ -81,7 +85,7 @@ const GameSetup = () => {
           };
           dispatch(giveScoreToUser(formData));
         });
-      } 
+      }
     }
   }, [games.length]);
 
