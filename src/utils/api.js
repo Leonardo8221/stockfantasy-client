@@ -1,10 +1,9 @@
 import axios from 'axios';
 import store from '../store';
 import { LOGOUT } from '../constants/userConstant';
-
 // Create an instance of axios
 const api = axios.create({
-  baseURL: process.env.SERVER_URL || 'http://localhost:5000/api',
+  baseURL: 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json'
   }

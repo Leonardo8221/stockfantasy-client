@@ -71,10 +71,7 @@ const GameRoom = () => {
     if (room) {
       let millisecondsInDay = 86400000; // 1000 * 60 * 60 * 24;
       let start = new Date(room?.startedDate);
-
       setEndtime(new Date(start.getTime() + room.duration * millisecondsInDay));
-
-      console.log(start, endTime);
       const interval = setInterval(() => {
         if (players.length > 0) {
           const newEvaluations = players.map((player) => {

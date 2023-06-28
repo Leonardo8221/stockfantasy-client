@@ -18,7 +18,7 @@ import "./style.css";
 const GameSetup = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { room, isRoomCreated, isGameStarted, isJoined } = useSelector(
+  const { room, isRoomCreated, isGameStarted } = useSelector(
     (state) => state.roomReducer
   );
   const { games, stocks } = useSelector((state) => state.gameReducer);
@@ -27,7 +27,7 @@ const GameSetup = () => {
   const [selectedStocks, setSelectedStocks] = useState([]);
   const navigate = useNavigate();
   const { roomID } = useParams();
-
+  const isJoined = localStorage.getItem('isJoined');
   // useEffect(() => {
   //   return () => {
   //     console.log("game exited");
@@ -53,7 +53,7 @@ const GameSetup = () => {
   //when clike the exit buttom
   useEffect(() => {
     if (!isJoined && !isGameStarted) navigate("/join-room");
-    if (!isJoined && isGameStarted) {
+    if (isJoined && isGameStarted) {
       navigate(`/gameRoom/${roomID}`);
     }
   }, [isJoined, isGameStarted]);
@@ -72,10 +72,7 @@ const GameSetup = () => {
   useEffect(() => {
     if (room && games?.length > 0) {
       const players = room.players;
-      if (
-        games.length === players?.length &&
-        players?.length === (process.env.GAME_PLAYERS_NUMBER || 4)
-      ) {
+      if (games.length === players?.length && players?.length === 2) {
         dispatch(startGame(roomID));
         players.forEach((player) => {
           const formData = {
@@ -85,9 +82,9 @@ const GameSetup = () => {
           };
           dispatch(giveScoreToUser(formData));
         });
-      }
+      } 
     }
-  }, [games.length, dispatch, room]);
+  }, [games.length]);
 
   const handleReadyBtn = (e) => {
     e.preventDefault();
@@ -214,6 +211,7 @@ const GameSetup = () => {
               <p className="large text-primary mb-0">
                 Budget:{" "}
                 <span className="large text-success">${user.budget}</span>
+                {process.env.PORT}
               </p>
             </div>
             <button

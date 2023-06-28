@@ -7,12 +7,14 @@ import RoomBox from "../../commons/RoomBox";
 import { createdRoomListener, exitUserListener, joinedRoomListener } from "../../../utils/socket";
 
 const JoinGameRoom = () => {
-  const { rooms, isJoined } = useSelector((state) => state.roomReducer);
+  const { rooms } = useSelector((state) => state.roomReducer);
   const { user } = useSelector((state) => state.auth);
   const socket = useSelector((state) => state.socket);
   const [randomRooms, setRandomRooms] = useState([]);
   const [invitedRooms, setInvitedRooms] = useState([]);
   const [roomID, setRoomID] = useState();
+  const isJoined = localStorage.getItem('isJoined');
+
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
