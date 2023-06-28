@@ -8,17 +8,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatRoom, exitGame, getRoom } from "../../../actions/room";
 import { createGame, startGame, getGamesByRoomID } from "../../../actions/game";
 import { updateUser, getAllUers } from "../../../actions/user";
+import { giveScoreToUser } from "../../../actions/score";
 
 import StockListItem from "../../commons/StockListItem";
 import PlayerBox from "../../commons/PlayerBox";
 import SelectedStockItem from "../../commons/SelectedStockItem";
 import "./style.css";
-import {
-  exitUserListener,
-  gameReadyListener,
-  joinedRoomListener,
-} from "../../../utils/socket";
-import { giveScoreToUser } from "../../../actions/score";
 
 const GameSetup = () => {
   const dispatch = useDispatch();
@@ -32,6 +27,14 @@ const GameSetup = () => {
   const [selectedStocks, setSelectedStocks] = useState([]);
   const navigate = useNavigate();
   const { roomID } = useParams();
+
+  // useEffect(() => {
+  //   return () => {
+  //     console.log("game exited");
+  //     dispatch(exitGame({ userID: user._id, roomID }, socket));
+  //     localStorage.setItem("isJoined", false);
+  //   };
+  // }, []);
 
   useEffect(() => {
     // if user is joined then isRoomCreated set to false
@@ -49,15 +52,13 @@ const GameSetup = () => {
 
   //when clike the exit buttom
   useEffect(() => {
+    console.log("#########", isJoined, isGameStarted)
+    console.log("_________________1", !isJoined && !isGameStarted)
+    console.log("_________________2", !isJoined && isGameStarted)
     if (!isJoined && !isGameStarted) navigate("/join-room");
-    if(!isJoined && isGameStarted ) {
+    if (!isJoined && isGameStarted) {
       navigate(`/gameRoom/${roomID}`);
     }
-    // return () => {
-    //   console.log("game exited");
-    //   dispatch(exitGame({ userID: user._id, roomID }, socket));
-    //   localStorage.setItem("isJoined", false);
-    // };
   }, [isJoined, isGameStarted]);
 
   //if games are loaded successfully then set the state of seletedstocks
@@ -74,7 +75,10 @@ const GameSetup = () => {
   useEffect(() => {
     if (room && games?.length > 0) {
       const players = room.players;
-      if (games.length === players?.length && players?.length === process.env.GAME_PLAYERS_NUMBER) {
+      if (
+        games.length === players?.length &&
+        players?.length === (process.env.GAME_PLAYERS_NUMBER || 4)
+      ) {
         dispatch(startGame(roomID));
         players.forEach((player) => {
           const formData = {

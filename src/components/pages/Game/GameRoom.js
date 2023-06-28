@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import TimeCounter from "../../commons/TimeCounter";
+import PlayingUserBox from "../../commons/PlayingUserBox";
 
-import { useDispatch, useSelector } from "react-redux";
 import { getRoom, endGame } from "../../../actions/room";
 import { getGamesByRoomID } from "../../../actions/game";
 import { getAllUers } from "../../../actions/user";
 import { getScores, giveScoreToUser } from "../../../actions/score";
-import PlayingUserBox from "../../commons/PlayingUserBox";
 
 const GameRoom = () => {
   const [evaluations, setEvaluations] = useState([]);
@@ -40,8 +40,8 @@ const GameRoom = () => {
         .sort((a, b) => b.point - a.point)
         .map((score) => (
           temp.push({
-            name: users.find((user) => user._id === score.playerID).name,
-            email: users.find((user) => user._id === score.playerID).email,
+            name: users.find((user) => user._id === score.playerID)?.name,
+            email: users.find((user) => user._id === score.playerID)?.email,
             stocks: games.find((game) => game.playerID === score.playerID)
               ?.stocks,
             score: score.point,

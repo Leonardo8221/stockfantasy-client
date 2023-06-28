@@ -38,7 +38,7 @@ const JoinGameRoom = () => {
   }, [rooms, user._id]);
 
   useEffect(() => {
-    if (isJoined) navigate("/game-setup/" + roomID);
+    if (isJoined && roomID) navigate("/game-setup/" + roomID);
   }, [isJoined, navigate, roomID]);
 
   const handleJoinGameRoom = (roomID) => {
