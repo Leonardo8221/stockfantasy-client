@@ -97,6 +97,7 @@ export const startGame = (roomID) => async (dispatch) => {
       startedDate: new Date(),
     });
     dispatch({ type: START_GAME_REQUEST, payload: data });
+    console.log("started game")
     localStorage.setItem('isJoined', false)
   } catch (error) {
     const message =

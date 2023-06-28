@@ -35,7 +35,7 @@ const initialState = {
   error: null,
   isJoined: JSON.parse(localStorage.getItem("isJoined")),
   isGameStarted: false,
-  isGameFinished: false
+  isGameFinished: false,
 };
 
 export const roomReducer = (state = initialState, action) => {
@@ -48,10 +48,15 @@ export const roomReducer = (state = initialState, action) => {
         loading: false,
         room: action.payload,
         isRoomCreated: true,
-        isJoined: true
+        isJoined: true,
       };
     case CREATE_ROOM_REQUEST_ERROR:
-      return { ...state, loading: false, error: action.payload };
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        isJoined: true,
+      };
     case FORMAT_ROOM_REQUEST:
       return { ...state, isRoomCreated: false };
     case GET_ROOMS_REQUEST:
@@ -84,7 +89,7 @@ export const roomReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         room: action.payload,
-        isGameFinished: true
+        isGameFinished: true,
       };
     case END_GAME_REQUEST_ERROR:
       return { ...state, loading: false, error: action.payload };
@@ -103,7 +108,7 @@ export const roomReducer = (state = initialState, action) => {
         ...state,
         isJoined: false,
         room: action.payload,
-        isGameStarted: true
+        isGameStarted: true,
       };
 
     case START_GAME_REQUEST_ERROR:

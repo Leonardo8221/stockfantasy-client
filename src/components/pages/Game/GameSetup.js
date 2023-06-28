@@ -18,7 +18,7 @@ import "./style.css";
 const GameSetup = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { room, isRoomCreated, isGameStarted } = useSelector(
+  const { room, isRoomCreated, isGameStarted, isJoined} = useSelector(
     (state) => state.roomReducer
   );
   const { games, stocks } = useSelector((state) => state.gameReducer);
@@ -27,7 +27,6 @@ const GameSetup = () => {
   const [selectedStocks, setSelectedStocks] = useState([]);
   const navigate = useNavigate();
   const { roomID } = useParams();
-  const isJoined = localStorage.getItem('isJoined');
   // useEffect(() => {
   //   return () => {
   //     console.log("game exited");
@@ -53,7 +52,7 @@ const GameSetup = () => {
   //when clike the exit buttom
   useEffect(() => {
     if (!isJoined && !isGameStarted) navigate("/join-room");
-    if (isJoined && isGameStarted) {
+    if (isJoined && !isGameStarted) {
       navigate(`/gameRoom/${roomID}`);
     }
   }, [isJoined, isGameStarted]);
