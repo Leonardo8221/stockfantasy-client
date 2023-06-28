@@ -27,6 +27,7 @@ const GameSetup = () => {
   const [selectedStocks, setSelectedStocks] = useState([]);
   const navigate = useNavigate();
   const { roomID } = useParams();
+  const [budget, setBudget] = useState(1000);
 
   useEffect(() => {
     // if user is joined then isRoomCreated set to false
@@ -88,7 +89,6 @@ const GameSetup = () => {
     dispatch(
       createGame({ roomID, selectedStocks, playerID: user._id }, socket)
     );
-    dispatch(updateUser(user));
   };
 
   const handleExitBtn = (roomID) => {
@@ -100,8 +100,7 @@ const GameSetup = () => {
 
   const handleClickStocksListItem = (stockSymbol) => {
     if (
-      user.budget <
-        stocks.find((stock) => stock.symbol === stockSymbol).price ||
+      budget < stocks.find((stock) => stock.symbol === stockSymbol).price ||
       (games.length > 0 && games.find((game) => game.playerID === user._id))
     ) {
       alert("You can't buy the stock anymore");
@@ -123,9 +122,11 @@ const GameSetup = () => {
       ]);
     }
 
-    user.budget = (
-      user.budget - stocks.find((stock) => stock.symbol === stockSymbol).price
-    ).toFixed(2);
+    setBudget(
+      (
+        budget - stocks.find((stock) => stock.symbol === stockSymbol).price
+      ).toFixed(2)
+    );
   };
 
   const handleClickSelectedStock = (stockSymbol) => {
@@ -141,7 +142,7 @@ const GameSetup = () => {
       } else setSelectedStocks(updatedSelectedStocks);
     }
 
-    user.budget = (Number(user.budget) + Number(index.stock.price)).toFixed(2);
+    setBudget((Number(budget) + Number(index.stock.price)).toFixed(2));
   };
 
   return (
@@ -205,8 +206,7 @@ const GameSetup = () => {
           <div className="d-flex flex-row justify-content-between align-items-center mb-3">
             <div className="d-flex flex-row justify-content-between align-items-center">
               <p className="large text-primary mb-0">
-                Budget:{" "}
-                <span className="large text-success">${user.budget}</span>
+                Budget: <span className="large text-success">${budget}</span>
                 {process.env.PORT}
               </p>
             </div>

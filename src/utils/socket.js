@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import { getRoom } from "../actions/room";
+import { getRoom, getRooms } from "../actions/room";
 import { getGamesByRoomID } from "../actions/game";
 
 let socket;
@@ -22,6 +22,7 @@ export const createdRoomListener = (socket, dispatch) => {
       socket.on("RoomAdded", (room) => {
         if (dispatch) {
           dispatch(getRoom(room._id));
+          dispatch(getRooms())
         }
         resolve(room);
       });
