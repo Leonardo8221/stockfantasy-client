@@ -27,13 +27,6 @@ const GameSetup = () => {
   const [selectedStocks, setSelectedStocks] = useState([]);
   const navigate = useNavigate();
   const { roomID } = useParams();
-  // useEffect(() => {
-  //   return () => {
-  //     console.log("game exited");
-  //     dispatch(exitGame({ userID: user._id, roomID }, socket));
-  //     localStorage.setItem("isJoined", false);
-  //   };
-  // }, []);
 
   useEffect(() => {
     // if user is joined then isRoomCreated set to false
@@ -74,7 +67,7 @@ const GameSetup = () => {
       if (
         games.filter((game) => game.roomID === roomID)?.length ===
           players?.length &&
-        players?.length === 2
+        players?.length === 4
       ) {
         dispatch(startGame(roomID));
         players.forEach((player) => {
