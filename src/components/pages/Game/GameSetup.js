@@ -52,9 +52,6 @@ const GameSetup = () => {
 
   //when clike the exit buttom
   useEffect(() => {
-    console.log("#########", isJoined, isGameStarted)
-    console.log("_________________1", !isJoined && !isGameStarted)
-    console.log("_________________2", !isJoined && isGameStarted)
     if (!isJoined && !isGameStarted) navigate("/join-room");
     if (!isJoined && isGameStarted) {
       navigate(`/gameRoom/${roomID}`);
