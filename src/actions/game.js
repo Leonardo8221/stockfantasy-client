@@ -7,6 +7,9 @@ import {
   CREATE_GAME_REQUEST_ERROR,
   CREATE_GAME_REQUEST_SUCCESS,
   FORMAT_GAME_REQUEST,
+  GET_ALL_STOCKS_DATA_REQUEST,
+  GET_ALL_STOCKS_DATA_REQUEST_SUCCESS,
+  GET_ALL_STOCKS_DATA_REQUEST_ERROR,
   GET_GAME_REQUEST,
   GET_GAME_REQUEST_ERROR,
   GET_GAME_REQUEST_SUCCESS,
@@ -97,8 +100,8 @@ export const startGame = (roomID) => async (dispatch) => {
       startedDate: new Date(),
     });
     dispatch({ type: START_GAME_REQUEST, payload: data });
-    console.log("started game")
-    localStorage.setItem('isJoined', false)
+    console.log("started game");
+    localStorage.setItem("isJoined", false);
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -112,4 +115,21 @@ export const startGame = (roomID) => async (dispatch) => {
   }
 };
 
-export const deleteGame = () => async (dispatch) => {};
+export const getAllStocks = () => async (dispatch) => {
+  try {
+    dispatch({ type: GET_ALL_STOCKS_DATA_REQUEST });
+    const stocks = await api.get('/games/stocks');
+
+    dispatch({ type: GET_ALL_STOCKS_DATA_REQUEST_SUCCESS, payload: stocks})
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch(setAlert(message, "error"));
+    dispatch({ type: GET_ALL_STOCKS_DATA_REQUEST_ERROR, payload: message });
+  }
+};

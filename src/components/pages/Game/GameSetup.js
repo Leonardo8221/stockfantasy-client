@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 
 import { formatRoom, exitGame, getRoom } from "../../../actions/room";
-import { createGame, startGame, getGamesByRoomID } from "../../../actions/game";
+import { createGame, startGame, getGamesByRoomID, getAllStocks } from "../../../actions/game";
 import { updateUser, getAllUers } from "../../../actions/user";
 import { giveScoreToUser } from "../../../actions/score";
 
@@ -14,6 +14,7 @@ import StockListItem from "../../commons/StockListItem";
 import PlayerBox from "../../commons/PlayerBox";
 import SelectedStockItem from "../../commons/SelectedStockItem";
 import "./style.css";
+import axios from "axios";
 
 const GameSetup = () => {
   const dispatch = useDispatch();
@@ -41,7 +42,13 @@ const GameSetup = () => {
     dispatch(getRoom(roomID));
     dispatch(getAllUers());
     dispatch(getGamesByRoomID(roomID));
+    dispatch(getAllStocks());
   }, [dispatch, roomID]);
+
+  //get stocks list
+  useEffect(() => {
+    
+  }, []);
 
   //when clike the exit buttom
   useEffect(() => {
@@ -193,7 +200,7 @@ const GameSetup = () => {
         <div className="left p-4">
           <h4>Stock List</h4>
           <div className="stock-list">
-            {stocks.map((stock, key) => (
+            {stocks?.map((stock, key) => (
               <StockListItem
                 key={key}
                 {...stock}

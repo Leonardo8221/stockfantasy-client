@@ -6,7 +6,7 @@ import TimeCounter from "../../commons/TimeCounter";
 import PlayingUserBox from "../../commons/PlayingUserBox";
 
 import { getRoom, endGame } from "../../../actions/room";
-import { getGamesByRoomID } from "../../../actions/game";
+import { getAllStocks, getGamesByRoomID } from "../../../actions/game";
 import { getAllUers } from "../../../actions/user";
 import { getScores, giveScoreToUser } from "../../../actions/score";
 import { GAME_START_INIT } from "../../../constants/gameConstant";
