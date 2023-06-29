@@ -6,7 +6,12 @@ import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 
 import { formatRoom, exitGame, getRoom } from "../../../actions/room";
-import { createGame, startGame, getGamesByRoomID, getAllStocks } from "../../../actions/game";
+import {
+  createGame,
+  startGame,
+  getGamesByRoomID,
+  getAllStocks,
+} from "../../../actions/game";
 import { updateUser, getAllUers } from "../../../actions/user";
 import { giveScoreToUser } from "../../../actions/score";
 
@@ -15,6 +20,7 @@ import PlayerBox from "../../commons/PlayerBox";
 import SelectedStockItem from "../../commons/SelectedStockItem";
 import "./style.css";
 import axios from "axios";
+import Loading from "../../commons/Loading";
 
 const GameSetup = () => {
   const dispatch = useDispatch();
@@ -45,11 +51,6 @@ const GameSetup = () => {
     dispatch(getAllStocks());
   }, [dispatch, roomID]);
 
-  //get stocks list
-  useEffect(() => {
-    
-  }, []);
-
   //when clike the exit buttom
   useEffect(() => {
     if (!isJoined && !isGameStarted) navigate("/join-room");
@@ -63,7 +64,7 @@ const GameSetup = () => {
     const playerGame = games.find(
       (game) => game.roomID === roomID && game.playerID === user._id
     );
-    if (games.length > 0 && playerGame) {
+    if (games.length > 0 && playerGame && stocks.length) {
       setSelectedStocks(playerGame.stocks);
     }
   }, [games.length]);
@@ -107,7 +108,7 @@ const GameSetup = () => {
 
   const handleClickStocksListItem = (stockSymbol) => {
     if (
-      budget < stocks.find((stock) => stock.symbol === stockSymbol).price ||
+      budget < stocks?.find((stock) => stock.symbol === stockSymbol).price ||
       (games.length > 0 && games.find((game) => game.playerID === user._id))
     ) {
       alert("You can't buy the stock anymore");
@@ -124,14 +125,14 @@ const GameSetup = () => {
         {
           id: uuidv4(),
           length: 1,
-          stock: stocks.find((stock) => stock.symbol === stockSymbol),
+          stock: stocks?.find((stock) => stock.symbol === stockSymbol),
         },
       ]);
     }
 
     setBudget(
       (
-        budget - stocks.find((stock) => stock.symbol === stockSymbol).price
+        budget - stocks?.find((stock) => stock.symbol === stockSymbol).price
       ).toFixed(2)
     );
   };
@@ -200,13 +201,17 @@ const GameSetup = () => {
         <div className="left p-4">
           <h4>Stock List</h4>
           <div className="stock-list">
-            {stocks?.map((stock, key) => (
-              <StockListItem
-                key={key}
-                {...stock}
-                onClick={() => handleClickStocksListItem(stock.symbol)}
-              />
-            ))}
+            {stocks.length ? (
+              stocks.map((stock, key) => (
+                <StockListItem
+                  key={key}
+                  {...stock}
+                  onClick={() => handleClickStocksListItem(stock.symbol)}
+                />
+              ))
+            ) : (
+              <Loading />
+            )}
           </div>
         </div>
         <div className="right p-4">

@@ -118,9 +118,9 @@ export const startGame = (roomID) => async (dispatch) => {
 export const getAllStocks = () => async (dispatch) => {
   try {
     dispatch({ type: GET_ALL_STOCKS_DATA_REQUEST });
-    const stocks = await api.get('/games/stocks');
+    const {data} = await api.get('/games/stocks');
 
-    dispatch({ type: GET_ALL_STOCKS_DATA_REQUEST_SUCCESS, payload: stocks})
+    dispatch({ type: GET_ALL_STOCKS_DATA_REQUEST_SUCCESS, payload: data})
   } catch (error) {
     const message =
       error.response && error.response.data.message
