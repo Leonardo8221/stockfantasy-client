@@ -202,7 +202,7 @@ const GameSetup = () => {
           <h4>Stock List</h4>
           <div className="stock-list">
             {stocks.length ? (
-              stocks.map((stock, key) => (
+              stocks?.map((stock, key) => (
                 <StockListItem
                   key={key}
                   {...stock}
