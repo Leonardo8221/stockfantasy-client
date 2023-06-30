@@ -199,9 +199,9 @@ const GameSetup = () => {
 
       <div className="game-setup-container">
         <div className="left p-4">
-          <h4>Stock List</h4>
+          <h4>Stock List ({stocks && stocks.length})</h4>
           <div className="stock-list">
-            {stocks?.length > 0 ? (
+            {stocks.length > 0 ? (
               stocks?.map((stock, key) => (
                 <StockListItem
                   key={key}
