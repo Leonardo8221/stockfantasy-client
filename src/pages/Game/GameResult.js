@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getRoom } from "../../../actions/room";
-import { getGamesByRoomID } from "../../../actions/game";
-import { getAllUers } from "../../../actions/user";
-import { getScores } from "../../../actions/score";
+import { getRoom } from "../../redux/actions/room";
+import { getGamesByRoomID } from "../../redux/actions/game";
+import { getAllUers } from "../../redux/actions/user";
+import { getScores } from "../../redux/actions/score";
 
-import PlayingUserBox from "../../commons/PlayingUserBox";
+import PlayingUserBox from "../../components/commons/PlayingUserBox";
 
 const GameResult = () => {
   const { room } = useSelector((state) => state.roomReducer);

@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Form, Button } from "react-bootstrap";
 
-import { setAlert } from "../../../actions/alert";
-import { updatePassword } from "../../../actions/auth";
+import { setAlert } from "../../redux/actions/alert";
+import { updatePassword } from "../../redux/actions/auth";
 
 const Setting = ({ setAlert, updatePassword, auth: { user } }) => {
   const [formData, setFormData] = useState({

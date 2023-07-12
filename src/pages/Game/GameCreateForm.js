@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { createRoom } from "../../../actions/room";
-import { getAllUers } from "../../../actions/user";
+import { createRoom } from "../../redux/actions/room";
+import { getAllUers } from "../../redux/actions/user";
 
 const GameCreateForm = () => {
   const { users } = useSelector((state) => state.userReducer);

@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getRooms } from "../../../actions/room";
-import RoomBox from "../../commons/RoomBox";
+import { getRooms } from "../../redux/actions/room";
+import RoomBox from "../../components/commons/RoomBox";
 
 import "./style.css";
 

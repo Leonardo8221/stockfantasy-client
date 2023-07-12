@@ -5,23 +5,22 @@ import { v4 as uuidv4 } from "uuid";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { formatRoom, exitGame, getRoom } from "../../../actions/room";
+import { formatRoom, exitGame, getRoom } from "../../redux/actions/room";
 import {
   createGame,
   startGame,
   getGamesByRoomID,
   getAllStocks,
-} from "../../../actions/game";
-import { updateUser, getAllUers } from "../../../actions/user";
-import { giveScoreToUser } from "../../../actions/score";
+} from "../../redux/actions/game";
+import { getAllUers } from "../../redux/actions/user";
+import { giveScoreToUser } from "../../redux/actions/score";
 
-import StockListItem from "../../commons/StockListItem";
-import PlayerBox from "../../commons/PlayerBox";
-import SelectedStockItem from "../../commons/SelectedStockItem";
+import StockListItem from "../../components/commons/StockListItem";
+import PlayerBox from "../../components/commons/PlayerBox";
+import SelectedStockItem from "../../components/commons/SelectedStockItem";
+import Loading from "../../components/commons/Loading";
+
 import "./style.css";
-import axios from "axios";
-import Loading from "../../commons/Loading";
-
 const GameSetup = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);

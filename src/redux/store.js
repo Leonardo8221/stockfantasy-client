@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, compose} from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
-import setAuthToken from './utils/setAuthToken';
+import setAuthToken from '../utils/setAuthToken';
 
 const initialState = {};
 

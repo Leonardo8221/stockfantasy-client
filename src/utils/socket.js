@@ -1,11 +1,11 @@
 import { io } from "socket.io-client";
-import { getRoom, getRooms } from "../actions/room";
-import { getGamesByRoomID } from "../actions/game";
+import { getRoom, getRooms } from "../redux/actions/room";
+import { getGamesByRoomID } from "../redux/actions/game";
 
 let socket;
 export const initiateSocketConnection = () => {
   console.log(`Connecting socket...`);
-  return (socket = io(process.env.SERVER_URL || "http://localhost:5000", {
+  return (socket = io(process.env.SERVER_URL || "http://127.0.0.1:5000", {
     withCredentials: true,
   }));
 };

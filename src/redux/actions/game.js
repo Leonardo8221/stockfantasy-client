@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import api from "../utils/api";
+import api from "../../utils/api";
 import { logout } from "./auth";
 import { setAlert } from "./alert";
 import {
@@ -19,7 +19,7 @@ import {
   START_GAME_REQUEST,
   START_GAME_REQUEST_ERROR,
 } from "../constants/gameConstant";
-import { gameReadyListener } from "../utils/socket";
+import { gameReadyListener } from "../../utils/socket";
 
 export const createGame = (formData, socket) => async (dispatch) => {
   try {

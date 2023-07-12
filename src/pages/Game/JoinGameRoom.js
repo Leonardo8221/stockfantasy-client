@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getRooms, joinGame } from "../../../actions/room";
-import RoomBox from "../../commons/RoomBox";
+import { getRooms, joinGame } from "../../redux/actions/room";
+import RoomBox from "../../components/commons/RoomBox";
 
 const JoinGameRoom = () => {
   const { rooms, isJoined} = useSelector((state) => state.roomReducer);

@@ -1,9 +1,9 @@
 import axios from 'axios';
-import store from '../store';
-import { LOGOUT } from '../constants/userConstant';
+import store from '../redux/store';
+import { LOGOUT } from '../redux/constants/userConstant';
 // Create an instance of axios
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'http://127.0.0.1:5000/api',
   headers: {
     'Content-Type': 'application/json'
   }

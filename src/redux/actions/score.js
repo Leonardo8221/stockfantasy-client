@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import api from "../utils/api";
+import api from "../../utils/api";
 import { logout } from "./auth";
 import { setAlert } from "./alert";
 import {

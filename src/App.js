@@ -12,24 +12,15 @@ import Landing from "./components/layout/Landing";
 
 import PrivateRoute from "./components/routing/PrivateRoute";
 
-import Login from "./components/pages/auth/Login";
-import Register from "./components/pages/auth/Register";
-import Home from "./components/pages/home";
-import GameRoom from "./components/pages/Game/GameRoom";
-import GameCreateForm from "./components/pages/Game/GameCreateForm";
-import JoinGameRoom from "./components/pages/Game/JoinGameRoom";
-import GameSetup from "./components/pages/Game/GameSetup";
-import Setting from "./components/pages/setting";
-import GameResult from "./components/pages/Game/GameResult";
-
-import { LOGOUT } from "./constants/userConstant";
-
-import store from "./store";
-import { loadUser } from "./actions/auth";
-
-//styles
-import "bootstrap/dist/css/bootstrap.css";
-import "./App.css";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import Home from "./pages/home";
+import GameRoom from "./pages/Game/GameRoom";
+import GameCreateForm from "./pages/Game/GameCreateForm";
+import JoinGameRoom from "./pages/Game/JoinGameRoom";
+import GameSetup from "./pages/Game/GameSetup";
+import Setting from "./pages/setting";
+import GameResult from "./pages/Game/GameResult";
 import {
   createdRoomListener,
   disconnectSocket,
@@ -38,7 +29,16 @@ import {
   initiateSocketConnection,
   joinedRoomListener,
 } from "./utils/socket";
-import { setSocket } from "./actions/socket";
+
+import store from "./redux/store";
+import { loadUser } from "./redux/actions/auth";
+import { setSocket } from "./redux/actions/socket";
+import { LOGOUT } from "./redux/constants/userConstant";
+
+//styles
+import "bootstrap/dist/css/bootstrap.css";
+
+import "./App.css";
 
 const App = () => {
   useEffect(() => {

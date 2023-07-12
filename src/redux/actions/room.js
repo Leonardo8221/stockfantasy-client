@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import api from "../utils/api";
+import api from "../../utils/api";
 import { logout } from "./auth";
 import { setAlert } from "./alert";
 import {
@@ -27,7 +27,7 @@ import {
   createdRoomListener,
   joinedRoomListener,
   exitUserListener,
-} from "../utils/socket";
+} from "../../utils/socket";
 
 export const createRoom = (formData, socket) => async (dispatch) => {
   try {
