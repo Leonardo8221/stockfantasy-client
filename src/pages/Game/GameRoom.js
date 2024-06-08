@@ -11,8 +11,9 @@ import { getAllUers } from "../../redux/actions/user";
 import { getScores, giveScoreToUser } from "../../redux/actions/score";
 import { GAME_START_INIT } from "../../redux/constants/gameConstant";
 
+import axios from "axios";
+
 const GameRoom = () => {
-  const [endTime, setEndtime] = useState();
   const [players, setPlayers] = useState([]);
   const { room, isGameFinished } = useSelector((state) => state.roomReducer);
   const { users } = useSelector((state) => state.userReducer);
@@ -23,14 +24,14 @@ const GameRoom = () => {
   const { roomID } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   //Get room, games, users from server
   useEffect(() => {
     dispatch(getRoom(roomID));
     dispatch(getGamesByRoomID(roomID));
     dispatch(getAllUers());
     dispatch(getScores(roomID));
-    dispatch({ type: GAME_START_INIT })
+    dispatch({ type: GAME_START_INIT });
   }, [dispatch, roomID]);
 
   //Sorting users
@@ -52,9 +53,45 @@ const GameRoom = () => {
     }
   }, [games, scores, users]);
 
+  const getCurrentStockPrice = (stock) => {
+    let price = 0;
+    axios
+      .get(
+        `https://financialmodelingprep.com/api/v3/quote-short/${stock}?apikey=16eec80c5f5ee710a5a15f0e381f88a6`
+      )
+      .then((res) => (price = res.data.price))
+      .catch((err) => console.log(err));
+
+      return price;
+  };
+  //calculate the score
+  const calculateScore = (stocks) => {
+    let score = 0;
+    console.log("____________1", stocks);
+    let tempStock = {
+      length: 0,
+      stock: ""
+    };
+    stocks.forEach((stock) => {
+
+    });
+    return score;
+  };
+
+  //when the game ends, give the score to the players
+  const handleGameEnd = (endTime) => {
+    room.players.forEach((playerID) => {
+      const score = calculateScore(
+        games.find((game) => game.playerID === playerID).stocks
+      );
+      // dispatch(giveScoreToUser(playerID, score, roomID));
+    });
+    // dispatch(endGame(roomID, endTime));
+  };
+
   useEffect(() => {
     if (isGameFinished) navigate(`/game-result/${roomID}/`);
-  }, [isGameFinished]);
+  }, [isGameFinished, navigate, roomID]);
 
   return (
     <section className="container">
@@ -75,14 +112,15 @@ const GameRoom = () => {
           <TimeCounter
             startedDate={room.startedDate}
             duration={room.duration}
+            onGameEnd={handleGameEnd}
           />
         </div>
       )}
 
       <div className="players-in-progress">
-        {players?.map((player, key) => (
+        {players?.map((player, idx) => (
           <PlayingUserBox
-            key={key}
+            key={idx}
             name={player.name}
             email={player.email}
             stocks={player.stocks}
